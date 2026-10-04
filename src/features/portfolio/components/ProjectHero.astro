@@ -1,0 +1,82 @@
+---
+import Badge from '../../../shared/components/ui/Badge.astro';
+import Button from '../../../shared/components/ui/Button.astro';
+import Passport from '../../../shared/components/sections/Passport.astro';
+import { QuickContactModal } from '../../../shared/components/ui/QuickContactModal';
+
+interface Props {
+  title: string;
+  category: string;
+  icon?: string;
+  description: string;
+  link?: string;
+  github?: string;
+  statusBadge?: string;
+  clientName?: string;
+  passportFields: Array<{ label: string; value: any }>;
+}
+
+const { title, category, icon, description, link, github, statusBadge, clientName, passportFields } = Astro.props;
+---
+
+<section class="bento-card p-6 sm:p-10 md:p-14 shadow-2xs w-full space-y-6 sm:space-y-8 text-center" data-animate="fade-up">
+  <div class="flex flex-col items-center text-center gap-4 sm:gap-5 max-w-3xl mx-auto">
+    <div class="flex flex-wrap items-center justify-center gap-2">
+      <Badge icon={icon}>{category}</Badge>
+      {statusBadge && (
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-[10px] text-xs font-bold bg-[#FAF1EC] border border-[#623A2D]/15 text-[#623A2D]">
+          <i class="fa-solid fa-circle-check text-[10px] text-[#95553C]"></i>
+          {statusBadge}
+        </span>
+      )}
+      {clientName && (
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-[10px] text-xs font-bold bg-emerald-50 border border-emerald-200 text-emerald-800">
+          <i class="fa-solid fa-building text-[10px]"></i>
+          Замовник: {clientName}
+        </span>
+      )}
+    </div>
+
+    <h1 class="text-2xl sm:text-4xl md:text-5xl font-black text-[#2A1E1E] tracking-tight leading-tight m-0">
+      {title}
+    </h1>
+    
+    <p class="text-sm sm:text-base md:text-lg text-[#623A2D]/80 font-medium leading-relaxed m-0">
+      {description}
+    </p>
+
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3.5 pt-2 w-full sm:w-auto">
+      {category === 'Мобільні застосунки' && link && (
+        <Button href={link} target="_blank" variant="dark" icon="fa-brands fa-android" class="w-full sm:w-auto">
+          Завантажити демо APK (Android)
+        </Button>
+      )}
+
+      {category === 'Сайти' && link && (
+        <Button href={link} target="_blank" variant="dark" icon="fa-solid fa-arrow-up-right-from-square" class="w-full sm:w-auto">
+          {statusBadge?.includes('Комерційний') ? 'Відкрити сайт компанії' : 'Відкрити Live Demo'}
+        </Button>
+      )}
+
+      {category === 'Telegram-боти' && link && (
+        <Button href={link} target="_blank" variant="dark" icon="fa-brands fa-telegram" class="w-full sm:w-auto">
+          Запустити бота
+        </Button>
+      )}
+
+      {github && (
+        <Button href={github} target="_blank" variant="outline" icon="fa-brands fa-github" class="w-full sm:w-auto">
+          Вихідний код на GitHub
+        </Button>
+      )}
+
+      <QuickContactModal
+        client:load
+        triggerText="Замовити схожий проєкт"
+        triggerClass="pill-btn-lilac !py-3 !px-6 !text-sm w-full sm:w-auto flex items-center justify-center gap-2 cursor-pointer shadow-sm hover:shadow-md"
+      />
+    </div>
+  </div>
+
+  <Passport fields={passportFields} />
+</section>

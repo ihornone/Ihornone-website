@@ -1,0 +1,81 @@
+---
+import Card from '../../../shared/components/ui/Card.astro';
+import SectionHeader from '../../../shared/components/ui/SectionHeader.astro';
+
+interface Props {
+  technologies: string[];
+}
+
+const { technologies = [] } = Astro.props;
+
+// Group technologies into 3 clean, simple categories
+const techCategories = [
+  {
+    title: 'Frontend & UI',
+    icon: 'fa-solid fa-code',
+    items: technologies.filter((t) =>
+      ['Astro', 'React', 'Next.js', 'React Native', 'Expo', 'TypeScript', 'Tailwind CSS', 'Figma', 'React Navigation'].includes(t)
+    ),
+  },
+  {
+    title: 'Backend & Бази даних',
+    icon: 'fa-solid fa-server',
+    items: technologies.filter((t) =>
+      ['Node.js', 'Python', 'aiogram', 'Telegram Bot API', 'PostgreSQL', 'Redis', 'Firebase', 'Supabase', 'Redux Toolkit', 'OpenAI API'].includes(t)
+    ),
+  },
+  {
+    title: 'Інфраструктура & Інтеграції',
+    icon: 'fa-solid fa-cloud',
+    items: technologies.filter((t) =>
+      ['Cloudflare', 'Vercel', 'Docker', 'Stripe', 'Monobank API', 'App Store Connect', 'Google Play Console', 'Fastlane'].includes(t)
+    ),
+  },
+];
+
+// Fallback in case none matched specific categories
+const defaultCategory = techCategories.every(c => c.items.length === 0);
+---
+
+{technologies && technologies.length > 0 && (
+  <section class="space-y-6 w-full" data-animate="fade-up">
+    <SectionHeader
+      title="Технологічний стек"
+      subtitle="Сучасні, перевірені та надійні інструменти під кожну задачу."
+    />
+
+    {!defaultCategory ? (
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6" data-animate="fade-up" data-stagger>
+        {techCategories.map((cat) => (
+          <Card class="p-6 space-y-4 bg-white border border-[#623A2D]/10">
+            <div class="flex items-center gap-3 pb-3 border-b border-[#623A2D]/10">
+              <div class="w-8 h-8 rounded-[8px] bg-[#FAF1EC] text-[#95553C] flex items-center justify-center text-sm shrink-0 border border-[#623A2D]/10">
+                <i class={cat.icon}></i>
+              </div>
+              <strong class="text-base font-black text-[#2A1E1E]">{cat.title}</strong>
+            </div>
+            <ul class="space-y-2.5 list-none p-0 m-0">
+              {cat.items.map((item) => (
+                <li class="flex items-center gap-2.5 text-xs font-bold text-[#2A1E1E]">
+                  <i class="fa-solid fa-check text-[#D09AFC] text-xs shrink-0"></i>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </Card>
+        ))}
+      </div>
+    ) : (
+      <div class="p-5 rounded-[10px] bg-white border border-[#623A2D]/10">
+        <div class="flex flex-wrap gap-2">
+          {technologies.map((tech) => (
+            <span class="px-3 py-1 bg-[#FAF1EC] border border-[#623A2D]/10 rounded-[8px] text-xs font-black text-[#2A1E1E]">
+              {tech}
+            </span>
+          ))}
+        </div>
+      </div>
+    )}
+  </section>
+)}
+

@@ -1,0 +1,154 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import BentoCta from '../../shared/components/sections/BentoCta.astro';
+import Gallery from '../../shared/components/sections/Gallery.astro';
+import ProcessSteps from '../../shared/components/sections/ProcessSteps.astro';
+import Breadcrumbs from '../../shared/components/ui/Breadcrumbs.astro';
+import Card from '../../shared/components/ui/Card.astro';
+import SectionHeader from '../../shared/components/ui/SectionHeader.astro';
+import {
+  ProjectHero,
+  ProjectFeatures,
+  ProjectResults,
+  ProjectTestimonial,
+  ProjectNavigation,
+} from '../../features/portfolio';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const allProjects = await getCollection('projects');
+  return allProjects.map((entry) => ({
+    params: { id: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const {
+  title,
+  category,
+  icon,
+  description,
+  type,
+  platform,
+  technologies,
+  duration,
+  year,
+  role,
+  link,
+  github,
+  statusBadge,
+  clientName,
+  features,
+  process,
+  results,
+  gallery,
+  galleryFormat,
+  testimonial,
+} = entry.data;
+
+const { Content } = await render(entry);
+
+const allProjectsEntries = await getCollection('projects');
+const allProjects = [...allProjectsEntries].sort((a, b) => {
+  const pinA = Boolean(a.data.pinned);
+  const pinB = Boolean(b.data.pinned);
+  if (pinA && !pinB) return -1;
+  if (!pinA && pinB) return 1;
+
+  const orderA = a.data.order ?? (typeof a.data.pinned === 'number' ? a.data.pinned : 99);
+  const orderB = b.data.order ?? (typeof b.data.pinned === 'number' ? b.data.pinned : 99);
+  return orderA - orderB;
+});
+const currentIndex = allProjects.findIndex((p) => p.id === entry.id);
+const prevProject = currentIndex > 0 ? allProjects[currentIndex - 1] : null;
+const nextProject = currentIndex < allProjects.length - 1 ? allProjects[currentIndex + 1] : null;
+
+const passportFields = [
+  { label: 'Категорія', value: category },
+  { label: 'Статус', value: statusBadge || 'Демо-проєкт' },
+  ...(clientName ? [{ label: 'Замовник', value: clientName }] : []),
+  { label: 'Платформа', value: platform },
+  { label: 'Тип', value: type },
+  { label: 'Технології', value: technologies },
+  { label: 'Роль', value: role },
+  { label: 'Термін', value: duration },
+  { label: 'Рік', value: year },
+];
+---
+
+<Layout
+  title={`${title} — Портфоліо | ihornone`}
+  description={description}
+  url={`/portfolio/${entry.id}`}
+  image={entry.data.image}
+  type="article"
+  structuredData={{
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    "name": title,
+    "headline": title,
+    "description": description,
+    "image": entry.data.image,
+    "url": `https://ihornone.site/portfolio/${entry.id}`,
+    "author": {
+      "@type": "Person",
+      "name": "ihornone",
+      "url": "https://ihornone.site"
+    },
+    "creator": {
+      "@type": "Person",
+      "name": "ihornone"
+    },
+    "genre": category,
+    "keywords": technologies,
+    "dateCreated": year
+  }}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-4 pb-16 sm:pb-24 space-y-6 sm:space-y-8">
+    <Breadcrumbs
+      items={[
+        { label: 'Портфоліо', href: '/portfolio' },
+        { label: title },
+      ]}
+    />
+
+    <ProjectHero
+      title={title}
+      category={category}
+      icon={icon}
+      description={description}
+      link={link}
+      github={github}
+      statusBadge={statusBadge}
+      clientName={clientName}
+      passportFields={passportFields}
+    />
+
+    <div class="space-y-6 md:space-y-10 w-full">
+      <Card padding="lg" class="space-y-4 sm:space-y-5 w-full" data-animate="fade-up">
+        <SectionHeader title="Завдання та концепція" />
+        <div class="prose prose-sm max-w-none text-[#2A1E1E]/80 font-medium leading-relaxed">
+          <Content />
+        </div>
+      </Card>
+
+      <ProjectFeatures features={features} />
+
+      {gallery && gallery.length > 0 && (
+        <Gallery photos={gallery} format={galleryFormat} />
+      )}
+
+      <ProjectResults results={results} />
+
+      <ProcessSteps steps={process} />
+
+      <ProjectTestimonial testimonial={testimonial} />
+    </div>
+
+    <ProjectNavigation prevProject={prevProject} nextProject={nextProject} />
+
+    <!-- Bento CTA with Mascot -->
+    <BentoCta />
+  </div>
+</Layout>

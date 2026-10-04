@@ -1,0 +1,131 @@
+---
+import Card from '../../../shared/components/ui/Card.astro';
+
+interface StackCategory {
+  category: string;
+  icon: string;
+  items: string[];
+}
+
+interface Props {
+  class?: string;
+}
+
+const defaultCategories: StackCategory[] = [
+  {
+    category: 'Web & Сайти',
+    icon: 'fa-solid fa-globe',
+    items: [
+      'React & Next.js',
+      'Astro & Vite',
+      'TypeScript / JavaScript',
+      'Tailwind CSS & SCSS',
+      'HTML5 / CSS3 / Responsive UI',
+      'SSR, SPA & Оптимізація SEO',
+    ],
+  },
+  {
+    category: 'Мобільні застосунки',
+    icon: 'fa-solid fa-mobile-screen-button',
+    items: [
+      'React Native',
+      'Expo Framework',
+      'Кросплатформність (iOS & Android)',
+      'Нативні модулі та пуш-сповіщення',
+      'Офлайн-кеш та синхронізація',
+      'Публікація в App Store & Google Play',
+    ],
+  },
+  {
+    category: 'Telegram & Боти',
+    icon: 'fa-brands fa-telegram',
+    items: [
+      'aiogram 3 & Python',
+      'Telegram Mini Apps (TMA)',
+      'Telegram Bot API & Webhooks',
+      'Багаторівневі інтерактивні сценарії',
+      'CRM-боти та автоворонки',
+      'High-load черги та асинхронність',
+    ],
+  },
+  {
+    category: 'Backend & Бази даних',
+    icon: 'fa-solid fa-server',
+    items: [
+      'Node.js (Express / Fastify)',
+      'Python (FastAPI / Django)',
+      'PostgreSQL, MySQL, SQLite',
+      'Redis (кешування та черги)',
+      'REST API, GraphQL & WebSocket',
+      'Docker & Linux VPS (Ubuntu / Debian)',
+    ],
+  },
+  {
+    category: 'Платежі & Fintech',
+    icon: 'fa-solid fa-credit-card',
+    items: [
+      'Monobank API (еквайринг та QR)',
+      'LiqPay & PrivatBank',
+      'WayForPay & NovaPay',
+      'Stripe & PayPal',
+      'Автофіскалізація (Checkbox / Вчасно)',
+      'Рекурентні платежі та підписки',
+    ],
+  },
+  {
+    category: 'Інтеграції & Інструменти',
+    icon: 'fa-solid fa-gears',
+    items: [
+      'Інтеграція з CRM (KeyCRM, SalesDrive)',
+      'Google Sheets & Drive API',
+      'OpenAI & Claude AI інтеграції',
+      'Нова Пошта & Укрпошта API',
+      'Git, GitHub & CI/CD автоматизація',
+      'Sentry & Моніторинг працездатності',
+    ],
+  },
+];
+
+const { class: className = '' } = Astro.props;
+---
+
+<section id="tech-stack" class:list={['space-y-8 w-full', className]} data-animate="fade-up">
+  <!-- Section Title -->
+  <div class="space-y-2 text-center max-w-xl mx-auto">
+    <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-[10px] text-xs font-black uppercase tracking-wider bg-[#FAC3C8] text-[#2A1E1E] shadow-2xs">
+      <i class="fa-solid fa-code text-xs"></i>
+      Стек технологій
+    </span>
+    <h2 class="text-2xl sm:text-4xl font-black text-[#2A1E1E] tracking-tight m-0">
+      Технології, з якими я працюю
+    </h2>
+    <p class="text-sm sm:text-base text-[#623A2D]/80 font-medium m-0">
+      Сучасний, перевірений часом та масштабований стек для вирішення завдань будь-якої складності.
+    </p>
+  </div>
+
+  <!-- Expanded Lists with Checkmarks Grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5" data-animate="fade-up" data-stagger>
+    {defaultCategories.map((cat) => (
+      <Card hover class="space-y-4 h-full flex flex-col justify-start !p-5 sm:!p-6 bg-white border border-[#623A2D]/10 rounded-[10px] hover:border-[#D09AFC] transition-colors">
+        <div class="flex items-center gap-2.5 pb-3 border-b border-[#623A2D]/10">
+          <div class="w-8 h-8 rounded-[8px] bg-[#FAF1EC] flex items-center justify-center text-[#2A1E1E] text-sm shrink-0 border border-[#623A2D]/10">
+            <i class={cat.icon}></i>
+          </div>
+          <h3 class="text-sm sm:text-base font-black text-[#2A1E1E] m-0">
+            {cat.category}
+          </h3>
+        </div>
+        
+        <ul class="space-y-2.5 list-none p-0 m-0">
+          {cat.items.map((tech) => (
+            <li class="flex items-start gap-2.5 text-xs sm:text-sm font-bold text-[#2A1E1E]/90 leading-tight">
+              <i class="fa-solid fa-circle-check text-xs text-[#D09AFC] shrink-0 mt-0.5"></i>
+              <span>{tech}</span>
+            </li>
+          ))}
+        </ul>
+      </Card>
+    ))}
+  </div>
+</section>

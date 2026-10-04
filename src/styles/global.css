@@ -1,0 +1,313 @@
+@import "tailwindcss";
+@import "@fontsource/comfortaa";
+@import "@fortawesome/fontawesome-free/css/all.min.css";
+
+@theme {
+  /* Exact Colors Sampled from User's Swatch & Mascot Reference Palette */
+  --color-mascot-bg: #FAF1EC;
+  --color-mascot-cream: #FAF1EC;
+  --color-mascot-espresso: #2A1E1E;
+  --color-mascot-chestnut: #623A2D;
+  --color-mascot-caramel: #95553C;
+  --color-mascot-sand: #E8BA98;
+  --color-mascot-pink: #FAC3C8;
+  --color-mascot-lilac: #D09AFC;
+  --color-mascot-lilac-hover: #BF80FA;
+
+  /* Universal 10px Radius everywhere */
+  --radius-xs: 10px;
+  --radius-sm: 10px;
+  --radius-md: 10px;
+  --radius-lg: 10px;
+  --radius-xl: 10px;
+  --radius-2xl: 10px;
+  --radius-3xl: 10px;
+  --radius: 10px;
+
+  /* Aliases for theme tokens */
+  --color-oat-cream: #FAF1EC;
+  --color-morning-fog: #F4E8E3;
+  --color-ink-black: #2A1E1E;
+  --color-sticker-black: #1E1414;
+  --color-paper-white: #FFFFFF;
+  --color-kofi-blue: #E8BA98;
+  --color-cobalt-pop: #D09AFC;
+  --color-warm-amber: #E8BA98;
+  --color-cat-caramel: #95553C;
+  --color-cat-lilac: #D09AFC;
+
+  --font-comfortaa: 'Comfortaa', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+@layer components {
+  /* Universal 10px radius across the entire site */
+  .rounded-xl, .rounded-2xl, .rounded-3xl, .rounded-lg, .rounded-md, .rounded-sm {
+    border-radius: 10px !important;
+  }
+
+  /* Mascot Badge (10px rounded) */
+  .mascot-pill-badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-[10px] text-xs font-black tracking-tight bg-[#D09AFC] text-[#2A1E1E] shadow-2xs;
+  }
+  
+  /* Buttons with strict 10px radius */
+  .pill-btn {
+    @apply inline-flex items-center justify-center gap-2.5 rounded-[10px] font-bold text-sm px-6 py-3 transition-all duration-300 cursor-pointer no-underline;
+  }
+  .pill-btn-primary {
+    @apply inline-flex items-center justify-center gap-2.5 rounded-[10px] font-black text-sm px-7 py-3 transition-all duration-300 cursor-pointer no-underline bg-[#2A1E1E] text-white shadow-lg hover:bg-[#3D2C2C] hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0;
+  }
+  .pill-btn-lilac {
+    @apply inline-flex items-center justify-center gap-2.5 rounded-[10px] font-black text-sm px-7 py-3 transition-all duration-300 cursor-pointer no-underline bg-[#D09AFC] text-[#2A1E1E] shadow-lg hover:bg-[#BF80FA] hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0;
+  }
+  .pill-btn-sand {
+    @apply inline-flex items-center justify-center gap-2.5 rounded-[10px] font-black text-sm px-7 py-3 transition-all duration-300 cursor-pointer no-underline bg-[#E8BA98] text-[#2A1E1E] shadow-md hover:bg-[#DEAB86] hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0;
+  }
+  .pill-btn-outline {
+    @apply inline-flex items-center justify-center gap-2.5 rounded-[10px] font-bold text-sm px-7 py-3 transition-all duration-300 cursor-pointer no-underline bg-[#FAF1EC] text-[#2A1E1E] border border-[#623A2D]/15 hover:bg-[#F4E8E3] hover:border-[#623A2D]/30 hover:-translate-y-0.5 hover:shadow-sm active:translate-y-0;
+  }
+  .pill-btn-dark {
+    @apply inline-flex items-center justify-center gap-2.5 rounded-[10px] font-bold text-sm px-7 py-3 transition-all duration-300 cursor-pointer no-underline bg-[#2A1E1E] text-white hover:bg-[#3D2C2C] hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0;
+  }
+  .bento-card {
+    @apply bg-white border border-[#623A2D]/10 rounded-[10px] p-6 sm:p-8 transition-all duration-300 hover:border-[#D09AFC] hover:shadow-xl hover:-translate-y-1;
+  }
+}
+
+/* Global html/body defaults */
+html {
+  /* Native scrolling responsiveness */
+  scroll-behavior: auto;
+}
+
+body {
+  font-family: var(--font-comfortaa);
+  background-color: var(--color-mascot-bg);
+  color: var(--color-mascot-espresso);
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* GPU-composited background layer: static texture that never triggers repaints during scrolling */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: 
+    radial-gradient(at 10% 10%, rgba(208, 154, 252, 0.06) 0px, transparent 40%),
+    radial-gradient(at 90% 90%, rgba(232, 186, 152, 0.08) 0px, transparent 50%),
+    radial-gradient(at 50% 50%, rgba(250, 195, 200, 0.05) 0px, transparent 60%);
+  transform: translateZ(0);
+}
+
+/* Base resets */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #D09AFC;
+}
+
+*:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
+.skip-link {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link:focus {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 100;
+  width: auto;
+  height: auto;
+  padding: 0.5rem 1rem;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+  background-color: var(--color-mascot-espresso);
+  color: #FFFFFF;
+  border-radius: 8px;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Fast, GPU-friendly Scroll Animations without filter overhead or permanent will-change memory leaks */
+[data-animate] {
+  opacity: 0;
+  transition: opacity 0.35s ease-out,
+              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-animate].is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+[data-animate="fade-up"] {
+  transform: translate3d(0, 14px, 0);
+}
+
+[data-animate="zoom-in"] {
+  transform: scale3d(0.98, 0.98, 1);
+}
+
+/* Staggered entry for grids */
+[data-animate].is-visible [data-stagger] > *:nth-child(1),
+[data-animate][data-stagger].is-visible > *:nth-child(1) {
+  animation: staggerFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both 0.04s;
+}
+[data-animate].is-visible [data-stagger] > *:nth-child(2),
+[data-animate][data-stagger].is-visible > *:nth-child(2) {
+  animation: staggerFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both 0.08s;
+}
+[data-animate].is-visible [data-stagger] > *:nth-child(3),
+[data-animate][data-stagger].is-visible > *:nth-child(3) {
+  animation: staggerFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both 0.12s;
+}
+[data-animate].is-visible [data-stagger] > *:nth-child(4),
+[data-animate][data-stagger].is-visible > *:nth-child(4) {
+  animation: staggerFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both 0.16s;
+}
+[data-animate].is-visible [data-stagger] > *:nth-child(5),
+[data-animate][data-stagger].is-visible > *:nth-child(5) {
+  animation: staggerFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both 0.20s;
+}
+[data-animate].is-visible [data-stagger] > *:nth-child(6),
+[data-animate][data-stagger].is-visible > *:nth-child(6) {
+  animation: staggerFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both 0.24s;
+}
+
+@keyframes staggerFadeIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Button arrow nudge on hover */
+.pill-btn:hover .fa-arrow-right,
+.pill-btn-primary:hover .fa-arrow-right,
+.pill-btn-lilac:hover .fa-arrow-right,
+.pill-btn-dark:hover .fa-arrow-right,
+.pill-btn-sand:hover .fa-arrow-right,
+.pill-btn-outline:hover .fa-arrow-right {
+  transform: translateX(3px);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Telegram CTA Pulse Glow */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 4px 14px 0 rgba(208, 154, 252, 0.35);
+  }
+  50% {
+    box-shadow: 0 6px 20px 0 rgba(208, 154, 252, 0.65);
+  }
+}
+.animate-pulse-glow {
+  animation: pulseGlow 3s ease-in-out infinite;
+}
+
+/* Mascot peek breathing animation */
+@keyframes catPeek {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-4px) rotate(-0.4deg);
+  }
+}
+.animate-cat-peek {
+  animation: catPeek 3.8s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Mascot cat brand logo wiggle */
+@keyframes catWiggle {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  25% { transform: rotate(-12deg) scale(1.1); }
+  75% { transform: rotate(12deg) scale(1.1); }
+}
+.brand-cat-icon {
+  transition: transform 0.3s ease;
+}
+.group:hover .brand-cat-icon {
+  animation: catWiggle 0.6s ease-in-out;
+}
+
+/* Fullscreen Hero Ambient Cinematic Zoom */
+@keyframes heroAmbientZoom {
+  0%, 100% {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  50% {
+    transform: scale(1.03) translate3d(-0.4%, -0.4%, 0);
+  }
+}
+.hero-ambient-zoom {
+  animation: heroAmbientZoom 18s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* Hero Text Fade In */
+@keyframes heroFadeIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+.animate-hero-fade-in {
+  animation: heroFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-animate],
+  .animate-hero-fade-in,
+  .animate-cat-peek,
+  .hero-ambient-zoom,
+  .animate-pulse-glow {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+}

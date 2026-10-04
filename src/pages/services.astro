@@ -1,0 +1,70 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../shared/components/sections/Hero.astro';
+import BentoCta from '../shared/components/sections/BentoCta.astro';
+import ServiceCard from '../shared/components/sections/ServiceCard.astro';
+import { getCollection } from 'astro:content';
+
+const allServices = (await getCollection('services')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<Layout
+  title="Послуги — Telegram-боти, Мобільні додатки, Веб-сайти | ihornone"
+  description="Розробка Telegram-ботів, мобільних додатків та веб-сайтів будь-якої складності. Повний цикл від ідеї до запуску."
+  url="/services"
+  structuredData={{
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Послуги розробки ihornone",
+    "description": "Повний перелік послуг з розробки Telegram-ботів, сайтів та додатків",
+    "url": "https://ihornone.site/services",
+    "mainEntity": {
+      "@type": "ItemList",
+      "itemListElement": allServices.map((s, index) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "name": s.data.title,
+        "url": `https://ihornone.site/services/${s.id}`,
+        "description": s.data.description
+      }))
+    }
+  }}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-2 sm:pt-4 pb-16 sm:pb-24 space-y-16 sm:space-y-24">
+    <Hero
+      badge={{ text: 'Напрямки розробки', icon: 'fa-solid fa-code' }}
+      title="Послуги та рішення для вашого бізнесу"
+      subtitle="Розробка Telegram-ботів, мобільних додатків та веб-сайтів будь-якої складності."
+      buttons={[
+        { label: 'Обговорити проєкт', href: '/contacts', variant: 'dark', icon: 'fa-solid fa-arrow-right' },
+        { label: 'Переглянути роботи', href: '/portfolio', variant: 'outline' },
+      ]}
+    />
+
+    <section class="space-y-8 w-full" data-animate="fade-up">
+      <div class="flex md:grid items-stretch overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none md:grid-cols-3 gap-5 md:gap-6 -mx-4 px-4 sm:-mx-6 sm:px-6 md:mx-0 md:px-0 pt-4 pb-4 md:pb-0 scrollbar-none" data-animate="fade-up" data-stagger>
+        {allServices.map((service) => {
+          const firstPlan = service.data.pricing?.[0];
+          const startingPrice = firstPlan ? `${firstPlan.price}` : '';
+          return (
+            <ServiceCard
+              id={service.id}
+              icon={service.data.icon}
+              title={service.data.title}
+              description={service.data.description}
+              includes={service.data.includes}
+              isPopular={service.data.isPopular}
+              startingPrice={startingPrice}
+            />
+          );
+        })}
+      </div>
+    </section>
+
+    <!-- Bento CTA with Mascot -->
+    <BentoCta
+      title="Потрібна консультація з вибору технологій?"
+      subtitle="Напишіть мені напряму в Telegram — обговоримо ваші цілі та підберемо найкраще рішення під ваш бюджет."
+    />
+  </div>
+</Layout>

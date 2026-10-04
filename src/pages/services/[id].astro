@@ -1,0 +1,140 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Faq from '../../shared/components/sections/Faq.astro';
+import BentoCta from '../../shared/components/sections/BentoCta.astro';
+import ProcessSteps from '../../shared/components/sections/ProcessSteps.astro';
+import Breadcrumbs from '../../shared/components/ui/Breadcrumbs.astro';
+import Button from '../../shared/components/ui/Button.astro';
+import SectionHeader from '../../shared/components/ui/SectionHeader.astro';
+import ProjectCard from '../../features/portfolio/components/ProjectCard.astro';
+import {
+  ServiceDetailHero,
+  ServiceIncludes,
+  ServicePricing,
+  PlanDecisionGuide,
+  TechTags,
+} from '../../features/services';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const allServices = (await getCollection('services')).sort((a, b) => a.data.order - b.data.order);
+  return allServices.map((entry) => ({
+    params: { id: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { title, shortTitle, icon, description, heroSubtitle, isPopular, includes, examples, process, technologies, pricing, guide = [], faq } = entry.data;
+
+const allProjects = await getCollection('projects');
+const serviceProjects = allProjects
+  .filter((p) => {
+    if (entry.id === 'telegram-bots') return p.id.startsWith('bot-');
+    if (entry.id === 'websites') return p.id.startsWith('web-');
+    if (entry.id === 'mobile-apps') return p.id.startsWith('mobile-');
+    return true;
+  })
+  .sort((a, b) => {
+    const pinA = Boolean(a.data.pinned);
+    const pinB = Boolean(b.data.pinned);
+    if (pinA && !pinB) return -1;
+    if (!pinA && pinB) return 1;
+
+    const orderA = a.data.order ?? (typeof a.data.pinned === 'number' ? a.data.pinned : 99);
+    const orderB = b.data.order ?? (typeof b.data.pinned === 'number' ? b.data.pinned : 99);
+    return orderA - orderB;
+  })
+  .map((p) => ({
+    id: p.id,
+    title: p.data.title,
+    category: p.data.category,
+    icon: p.data.icon,
+    image: p.data.image,
+    description: p.data.description,
+    meta: { technologies: p.data.technologies },
+  }));
+---
+
+<Layout
+  title={`${title} — Послуги розробки | ihornone`}
+  description={description}
+  url={`/services/${entry.id}`}
+  structuredData={{
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": title,
+    "description": description,
+    "provider": {
+      "@type": "Person",
+      "name": "ihornone",
+      "url": "https://ihornone.site"
+    },
+    "areaServed": "UA",
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": `Тарифи: ${title}`,
+      "itemListElement": pricing?.map((p: any) => ({
+        "@type": "Offer",
+        "name": p.name,
+        "price": p.price.replace(/[^\d]/g, '') || undefined,
+        "priceCurrency": "UAH",
+        "description": p.description
+      })) || []
+    }
+  }}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-4 pb-16 sm:pb-24 space-y-10 sm:space-y-16">
+    <Breadcrumbs
+      items={[
+        { label: 'Усі послуги', href: '/services' },
+        { label: title },
+      ]}
+    />
+
+    <ServiceDetailHero
+      title={title}
+      icon={icon}
+      description={description}
+      heroSubtitle={heroSubtitle}
+    />
+
+    <ServiceIncludes includes={includes} />
+
+    {serviceProjects.length > 0 && (
+      <section class="space-y-6 w-full" data-animate="fade-up">
+        <div class="flex items-center justify-between">
+          <SectionHeader
+            title="Приклади готових рішень"
+            subtitle="Реалізовані кейси за цим напрямком"
+          />
+          <Button href="/portfolio" variant="outline" size="sm" icon="fa-solid fa-arrow-right">
+            Усі кейси
+          </Button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6" data-animate="fade-up" data-stagger>
+          {serviceProjects.map((project) => (
+            <ProjectCard project={project} />
+          ))}
+        </div>
+      </section>
+    )}
+
+    <ProcessSteps title="Як відбувається процес розробки" steps={process} />
+
+    <ServicePricing pricing={pricing} />
+
+    <PlanDecisionGuide guide={guide} />
+
+    <TechTags technologies={technologies} />
+
+    <Faq items={faq} />
+
+    <!-- Bento CTA with Mascot -->
+    <BentoCta
+      title="Маєте завдання для розробки?"
+      subtitle="Зв'яжіться зі мною напряму в Telegram — обговоримо концепцію, терміни та бюджет без жодних зобов'язань."
+    />
+  </div>
+</Layout>

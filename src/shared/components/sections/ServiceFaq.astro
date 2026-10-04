@@ -1,0 +1,50 @@
+---
+import Faq, { type FaqItem } from './Faq.astro';
+import { getCollection } from 'astro:content';
+
+export interface Props {
+  title?: string;
+  serviceId?: string;
+  globalOnly?: boolean;
+  showHeader?: boolean;
+  limit?: number;
+}
+
+const { title, serviceId, showHeader, limit = 6 } = Astro.props;
+
+const allServices = (await getCollection('services')).sort((a, b) => a.data.order - b.data.order);
+const globalFaqs = (await getCollection('faqs')).sort((a, b) => a.data.order - b.data.order);
+
+const faqItems: FaqItem[] = [];
+
+if (serviceId) {
+  const service = allServices.find((s) => s.id === serviceId);
+  if (service?.data?.faq) {
+    for (const item of service.data.faq) {
+      if (item.question && item.answer) {
+        faqItems.push({
+          question: item.question.trim(),
+          answer: item.answer.trim(),
+        });
+      }
+    }
+  }
+} else {
+  // General page: show top structured global FAQs
+  for (const item of globalFaqs) {
+    const question = item.data.question.trim();
+    const answer = item.data.answer.trim();
+    if (!question || !answer) continue;
+
+    faqItems.push({
+      question,
+      answer,
+    });
+  }
+}
+
+const displayedFaqItems = limit && limit > 0 ? faqItems.slice(0, limit) : faqItems;
+---
+
+<Faq {title} items={displayedFaqItems} {showHeader} />
+

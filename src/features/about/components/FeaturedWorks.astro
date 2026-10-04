@@ -1,0 +1,65 @@
+---
+import Button from '../../../shared/components/ui/Button.astro';
+import ProjectCard from '../../portfolio/components/ProjectCard.astro';
+import { getCollection } from 'astro:content';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+
+const allEntries = await getCollection('projects');
+const sortedEntries = [...allEntries].sort((a, b) => {
+  const pinA = Boolean(a.data.pinned);
+  const pinB = Boolean(b.data.pinned);
+  if (pinA && !pinB) return -1;
+  if (!pinA && pinB) return 1;
+
+  const orderA = a.data.order ?? (typeof a.data.pinned === 'number' ? a.data.pinned : 99);
+  const orderB = b.data.order ?? (typeof b.data.pinned === 'number' ? b.data.pinned : 99);
+  return orderA - orderB;
+});
+
+const featuredProjects = sortedEntries.slice(0, 3).map((entry) => ({
+  id: entry.id,
+  title: entry.data.title,
+  category: entry.data.category,
+  icon: entry.data.icon,
+  image: entry.data.image,
+  description: entry.data.description,
+  statusBadge: entry.data.statusBadge,
+  meta: {
+    technologies: entry.data.technologies,
+  },
+}));
+---
+
+<section class:list={['space-y-8 w-full', className]} data-animate="fade-up">
+  <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div class="space-y-2">
+      <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-[10px] text-xs font-black uppercase tracking-wider bg-[#FAC3C8] text-[#2A1E1E] shadow-2xs">
+        <i class="fa-solid fa-briefcase text-xs"></i>
+        Живі докази
+      </span>
+      <h2 class="text-2xl sm:text-4xl font-black text-[#2A1E1E] tracking-tight m-0">
+        Приклади реалізованих рішень
+      </h2>
+      <p class="text-sm sm:text-base text-[#623A2D]/80 font-medium m-0 max-w-2xl">
+        Реальні кейси з відкритим кодом, живими демо та прозорими результатами.
+      </p>
+    </div>
+
+    <div class="shrink-0">
+      <Button href="/portfolio" variant="outline" icon="fa-solid fa-arrow-right">
+        Переглянути все портфоліо
+      </Button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6" data-animate="fade-up" data-stagger>
+    {featuredProjects.map((project) => (
+      <ProjectCard project={project} />
+    ))}
+  </div>
+</section>

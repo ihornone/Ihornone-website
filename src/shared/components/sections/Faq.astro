@@ -1,0 +1,67 @@
+---
+import Card from '../ui/Card.astro';
+import SectionHeader from '../ui/SectionHeader.astro';
+
+export interface FaqItem {
+  question: string;
+  answer: string;
+  badge?: string;
+}
+
+interface Props {
+  title?: string;
+  items?: FaqItem[];
+  showHeader?: boolean;
+  class?: string;
+}
+
+const defaultItems: FaqItem[] = [
+  {
+    question: 'Скільки часу займає розробка Telegram-бота чи сайту?',
+    answer: 'Зазвичай розробка базового сайту або бота займає від 1 до 2 тижнів. Складні проєкти з інтеграціями CRM та платежами розробляються за 3-4 тижні.',
+    badge: 'Загальне',
+  },
+  {
+    question: 'Які платіжні системи можна підключити?',
+    answer: 'Можна підключити Monobank, LiqPay, Stripe, WayForPay, Telegram Payments або криптовалютні еквайринги.',
+    badge: 'Оплата',
+  },
+  {
+    question: 'Чи надаєте ви підтримку після запуску?',
+    answer: 'Так, я надаю безкоштовний період технічної підтримки та гарантії на відсутність багів після релізу.',
+    badge: 'Підтримка',
+  },
+  {
+    question: 'Як відбувається процес оплати та співпраці?',
+    answer: 'Робота розбивається на етапи. Ззвичайний порядок: 50% передоплата на початку робіт, та 50% після демонстрації готового проєкту та вашого схвалення.',
+    badge: 'Оплата',
+  },
+];
+
+const {
+  title = 'Часті запитання',
+  items = defaultItems,
+  showHeader = true,
+  class: className = '',
+} = Astro.props;
+---
+
+<div class={`space-y-6 w-full ${className}`}>
+  {showHeader && title && (
+    <SectionHeader title={title} align="center" />
+  )}
+
+  <div class="space-y-3 w-full faq-container" data-animate="fade-up" data-stagger>
+    {items.map((item) => (
+      <details name="faq-accordion" class="bg-white border border-[#623A2D]/10 rounded-[10px] p-4 sm:p-5 shadow-2xs group [&[open]]:border-[#FAC3C8] hover:border-[#FAC3C8]/60 transition-all cursor-pointer">
+        <summary class="font-bold text-sm sm:text-base text-[#2A1E1E] flex items-center justify-between gap-4 select-none list-none">
+          <span>{item.question}</span>
+          <div class="w-7 h-7 rounded-[10px] bg-[#FAC3C8]/25 group-hover:bg-[#FAC3C8]/50 flex items-center justify-center shrink-0 transition-colors text-[#2A1E1E]">
+            <i class="fa-solid fa-plus text-xs group-open:rotate-45 transition-transform duration-200"></i>
+          </div>
+        </summary>
+        <div class="text-xs sm:text-sm text-[#623A2D]/80 font-medium leading-relaxed m-0 mt-3 pt-3 border-t border-[#623A2D]/10" set:html={item.answer} />
+      </details>
+    ))}
+  </div>
+</div>

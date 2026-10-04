@@ -1,0 +1,86 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../shared/components/sections/Hero.astro';
+import Faq from '../shared/components/sections/Faq.astro';
+import ContactCards from '../shared/components/sections/ContactCards.astro';
+import ContactForm from '../shared/components/sections/ContactForm.astro';
+
+const contactsFaq = [
+  {
+    question: 'Як швидко ви відповідаєте після залишення заявки?',
+    answer: 'Зазвичай я відповідаю протягом 1–3 годин у робочий час (з 9:00 до 19:00). Якщо ви залишили заявку вночі або у вихідний — зв’яжусь з вами найпершим зранку.',
+  },
+  {
+    question: 'Що потрібно підготувати перед обговоренням проєкту?',
+    answer: 'Бажано мати загальне розуміння задачі: які проблеми бізнесу має вирішувати бот чи сайт, приклади схожих рішень (якщо є) та орієнтовні терміни.',
+  },
+  {
+    question: 'Чи обов’язково зустрічатись особисто або зідзвонюватись?',
+    answer: 'Ні, всі питання чудово вирішуються в месенджерах (Telegram) чи короткому аудіо/відеодзвінку. Це економить час і дозволяє швидше зафіксувати деталі.',
+  },
+  {
+    question: 'Яка гарантія, що проєкт буде виконано вчасно?',
+    answer: 'Я працюю за чітким поетапним планом та фіксую терміни і кошторис у технічному завданні перед початком робіт.',
+  },
+];
+---
+
+<Layout
+  title="Контакти — Зв'язок та обговорення проєктів | ihornone"
+  description="Зв'яжіться зі мною для обговорення вашого проєкту. Безкоштовна консультація, прозорі умови, швидка відповідь у Telegram та по Email."
+  url="/contacts"
+  structuredData={{
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "name": "Контакти ihornone",
+    "description": "Прямий зв'язок з розробником Telegram-ботів, мобільних додатків та веб-сайтів ihornone",
+    "url": "https://ihornone.site/contacts",
+    "mainEntity": {
+      "@type": "LocalBusiness",
+      "name": "ihornone Digital Studio",
+      "url": "https://ihornone.site",
+      "email": "ihornone.dev@gmail.com",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "UA",
+        "addressRegion": "Ukraine"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "49.8397",
+        "longitude": "24.0297"
+      },
+      "sameAs": [
+        "https://t.me/ihornone",
+        "https://github.com/ihornone",
+        "https://instagram.com/ihornone",
+        "https://threads.net/@ihornone"
+      ]
+    }
+  }}
+>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-2 sm:pt-4 pb-16 sm:pb-24 space-y-16 sm:space-y-24">
+    <Hero
+      badge={{ text: 'Швидкий зв\'язок', icon: 'fa-solid fa-paper-plane' }}
+      title="Маєте ідею проєкту? Давайте обговоримо"
+      subtitle="Напишіть мені в Telegram або залиште контакти у формі нижче. Відповім протягом 15–30 хвилин, підкажу по термінах та зорієнтую за бюджетом."
+    />
+
+    <!-- Картки прямого зв'язку з соцмережами -->
+    <div data-animate="fade-up">
+      <ContactCards />
+    </div>
+
+    <!-- Інтерактивна форма заявки та переваги -->
+    <div data-animate="fade-up">
+      <ContactForm />
+    </div>
+
+    <!-- Часті запитання щодо комунікації -->
+    <div data-animate="fade-up">
+      <Faq items={contactsFaq} />
+    </div>
+
+  </div>
+</Layout>
