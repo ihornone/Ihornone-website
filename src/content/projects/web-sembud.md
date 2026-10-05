@@ -69,6 +69,10 @@ gallery:
   - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/sembud/img-6.png"
   - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/sembud/img-7.png"
   - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/sembud/img-8.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/sembud/img-9.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/sembud/img-10.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/sembud/img-11.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/sembud/img-12.png"
 ---
 
 ### Бізнес-завдання замовника

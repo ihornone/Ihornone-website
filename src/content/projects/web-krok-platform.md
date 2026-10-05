@@ -75,6 +75,12 @@ gallery:
   - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/krok-by-sandra/img-12.png"
   - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/krok-by-sandra/img-13.png"
   - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/krok-by-sandra/img-14.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/krok-by-sandra/img-15.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/krok-by-sandra/img-16.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/krok-by-sandra/img-17.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/krok-by-sandra/img-18.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/krok-by-sandra/img-19.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/krok-by-sandra/img-20.png"
 ---
 
 ### Бізнес-завдання замовника
