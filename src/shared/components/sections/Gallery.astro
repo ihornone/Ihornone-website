@@ -107,7 +107,7 @@ const remainingCount = photos.length - initialCount;
     const gallerySection = document.getElementById('project-gallery');
     if (!gallerySection) return;
 
-    let photos = [];
+    let photos: string[] = [];
     try {
       photos = JSON.parse(gallerySection.getAttribute('data-photos') || '[]');
     } catch {
