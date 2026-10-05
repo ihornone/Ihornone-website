@@ -13,10 +13,12 @@ interface Props {
 const {
   photos,
   title = 'Галерея проєкту',
+  format = '16:9',
   class: className = '',
 } = Astro.props;
 
-const initialCount = 3;
+const isVertical = format === '9:16';
+const initialCount = isVertical ? 4 : 3;
 const hasMore = photos.length > initialCount;
 const remainingCount = photos.length - initialCount;
 ---
@@ -39,13 +41,13 @@ const remainingCount = photos.length - initialCount;
         </div>
       </div>
 
-      {/* Clean, robust responsive grid to prevent columns breaking & misalignment */}
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" role="list">
+      {/* Responsive grid tailored to format (16:9 horizontal vs 9:16 vertical mobile screenshots) */}
+      <div class={`grid gap-4 ${isVertical ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'}`} role="list">
         {photos.map((photoUrl, index) => {
           const isHidden = index >= initialCount;
           return (
             <div
-              class={`rounded-[10px] overflow-hidden border border-[#623A2D]/10 bg-[#FAF1EC]/40 shadow-2xs hover:border-[#D09AFC] hover:shadow-md transition-all duration-300 group cursor-pointer relative gallery-item aspect-[16/10] flex items-center justify-center ${isHidden ? 'hidden gallery-hidden' : ''}`}
+              class={`rounded-[10px] overflow-hidden border border-[#623A2D]/10 bg-[#FAF1EC]/40 shadow-2xs hover:border-[#D09AFC] hover:shadow-md transition-all duration-300 group cursor-pointer relative gallery-item ${isVertical ? 'aspect-[9/16]' : 'aspect-[16/10]'} flex items-center justify-center ${isHidden ? 'hidden gallery-hidden' : ''}`}
               role="listitem"
               data-url={photoUrl}
               data-index={index}
