@@ -2,7 +2,7 @@
 title: "UsTogether — трекер стосунків"
 category: "Мобільні застосунки"
 icon: "fa-solid fa-heart"
-image: "https://raw.githubusercontent.com/ihornone/RNE-UsTogether/refs/heads/main/assets/screenshots/cover-image.png"
+image: "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/RNE-UsTogether/cover-image.png"
 description: "Авторський пет-проєкт для закоханих пар: спільний лічильник часу, таймер спогадів та інтерактивний календар дат."
 type: "Мобільний застосунок (Пет-проєкт)"
 platform: "iOS / Android (React Native & Expo)"
@@ -60,10 +60,10 @@ results:
   - value: "< 1.2 с"
     description: "миттєвий холодний запуск застосунку на смартфоні"
 gallery:
-  - "https://raw.githubusercontent.com/ihornone/UsTogetherRNE/refs/heads/master/assets/screenshots/OnBoarding.jpg"
-  - "https://raw.githubusercontent.com/ihornone/UsTogetherRNE/refs/heads/master/assets/screenshots/Home.jpg"
-  - "https://raw.githubusercontent.com/ihornone/UsTogetherRNE/refs/heads/master/assets/screenshots/Calendar.jpg"
-  - "https://raw.githubusercontent.com/ihornone/UsTogetherRNE/refs/heads/master/assets/screenshots/Settings.jpg"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/RNE-UsTogether/img-1.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/RNE-UsTogether/img-2.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/RNE-UsTogether/img-3.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/RNE-UsTogether/img-4.png"
 ---
 
 ### Завдання
