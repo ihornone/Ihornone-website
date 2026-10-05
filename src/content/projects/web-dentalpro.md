@@ -2,7 +2,7 @@
 title: "DentalPro — лендінг стоматологічної клініки"
 category: "Сайти"
 icon: "fa-solid fa-tooth"
-image: "https://raw.githubusercontent.com/ihornone/ASTRO-DentalClinic/refs/heads/main/public/screenshots/cover-image.png"
+image: "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/ASTRO-DentalClinic/cover-image.png"
 description: "Демонстраційний концепт сучасного медичного лендінгу з інтерактивним слайдером «до/після», прозорим прайсом та онлайн-записом."
 type: "Лендінг (Демо-концепт)"
 platform: "Web"
@@ -61,21 +61,24 @@ results:
   - value: "0 CLS"
     description: "ідеальна стабільність верстки без смикання екрана при завантаженні"
 gallery:
-  - "https://raw.githubusercontent.com/ihornone/ASTRO-DentalClinic/refs/heads/main/public/screenshots/img-1.png"
-  - "https://raw.githubusercontent.com/ihornone/ASTRO-DentalClinic/refs/heads/main/public/screenshots/img-2.png"
-  - "https://raw.githubusercontent.com/ihornone/ASTRO-DentalClinic/refs/heads/main/public/screenshots/img-3.png"
-  - "https://raw.githubusercontent.com/ihornone/ASTRO-DentalClinic/refs/heads/main/public/screenshots/img-4.png"
-  - "https://raw.githubusercontent.com/ihornone/ASTRO-DentalClinic/refs/heads/main/public/screenshots/img-5.png"
-  - "https://raw.githubusercontent.com/ihornone/ASTRO-DentalClinic/refs/heads/main/public/screenshots/img-6.png"
-  - "https://raw.githubusercontent.com/ihornone/ASTRO-DentalClinic/refs/heads/main/public/screenshots/img-7.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/ASTRO-DentalClinic/img-1.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/ASTRO-DentalClinic/img-2.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/ASTRO-DentalClinic/img-3.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/ASTRO-DentalClinic/img-4.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/ASTRO-DentalClinic/img-5.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/ASTRO-DentalClinic/img-6.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/ASTRO-DentalClinic/img-7.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/ASTRO-DentalClinic/img-8.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/ASTRO-DentalClinic/img-9.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/ASTRO-DentalClinic/img-10.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/ASTRO-DentalClinic/img-11.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/ASTRO-DentalClinic/img-12.png"
 ---
 
-### Концепція та мета демо-проєкту
-**DentalPro** — це демонстраційний концепт висококонверсійного медичного лендінгу, створений для демонстрації того, як має виглядати сучасний сайт приватної клініки або лікаря.
+### Завдання
+Створити концепт висококонверсійного сайту для приватної стоматологічної клініки з фокусом на візуальну довіру пацієнтів та надшвидке завантаження на смартфонах.
 
-У медичній тематиці типові сайти часто грішать перевантаженими текстами, стоковими фото та повільним завантаженням, через що пацієнт закриває сторінку, не дочекавшись відкриття.
-
-### Що було реалізовано для підвищення конверсії:
-1. **Інтерактивність замість слів:** Замість довгих описів якості пломб чи вінірів реалізовано інтерактивний touch-слайдер «до/після». Пацієнт власноруч рухає повзунок і бачить реальний візуальний результат.
-2. **Миттєва швидкість (PageSpeed 100/100):** Завдяки архітектурі **Astro** на сторінку не завантажується зайвий код, тому вона відкривається менш ніж за 1 секунду навіть при нестабільному мобільному інтернеті.
-3. **Легкий запис на прийом:** Форма розбита на зрозумілі кроки, не лякає довгими анкетами та адаптована під зручне введення великим пальцем на смартфоні.
+### Що реалізовано
+* **Слайдер «до/після»:** інтерактивне порівняння результатів лікування, що наочно демонструє якість робіт клініки.
+* **Миттєва швидкість (PageSpeed 100/100):** архітектура на Astro без зайвого JavaScript-навантаження для швидкого відкриття навіть на слабкому інтернеті.
+* **Зручний запис на прийом:** покрокова форма бронювання, оптимізована для швидкого заповнення однією рукою зі смартфона.

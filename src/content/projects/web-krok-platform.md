@@ -12,7 +12,6 @@ year: "2026"
 role: "Full-Stack розробка, Edge-інфраструктура, UI/UX, платіжні інтеграції"
 link: "https://krok-by-sandra.com.ua"
 statusBadge: "Реальний комерційний проєкт"
-clientName: "KROK by Sandra"
 pinned: true
 order: 1
 galleryFormat: "16:9"
@@ -52,14 +51,14 @@ process:
     title: "Тестування, безпековий аудит та реліз"
     description: "Провели стрес-тести бази тестів (10 000+ питань), налаштували кастомний домен krok-by-sandra.com.ua та захист Cloudflare."
 results:
-  - value: "< 0.8 с"
-    description: "швидкість генерації та завантаження тестового буклету на 200 питань"
-  - value: "10 000+"
-    description: "база медичних тестів та офіційних екзаменаційних буклетів у системі"
-  - value: "100%"
-    description: "автоматизація продажу курсів та відкриття доступу без участі менеджера"
-  - value: "0 грн"
-    description: "витрат на дорогі сервери завдяки serverless Edge-інфраструктурі Cloudflare"
+  - value: "24/7"
+    description: "автоматичний прийом оплат через Monobank та миттєва видача курсів студентам"
+  - value: "20+ год/тижд"
+    description: "економія часу викладача на ручній перевірці чеків та надсиланні конспектів"
+  - value: "$5 / міс"
+    description: "витрати на всю Edge-інфраструктуру та базу даних замість дорогих серверів"
+  - value: "< 1 с"
+    description: "миттєва генерація тестового буклету на 200 питань та швидкий пошук тестів"
 gallery:
   - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/krok-by-sandra/img-1.png"
   - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/krok-by-sandra/img-2.png"
@@ -75,38 +74,18 @@ gallery:
   - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/krok-by-sandra/img-12.png"
   - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/krok-by-sandra/img-13.png"
   - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/krok-by-sandra/img-14.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/krok-by-sandra/img-15.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/krok-by-sandra/img-16.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/krok-by-sandra/img-17.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/krok-by-sandra/img-18.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/krok-by-sandra/img-19.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/krok-by-sandra/img-20.png"
 ---
 
-### Бізнес-завдання замовника
-Авторські курси підготовки до медичних іспитів **«KROK by Sandra»** зіткнулися з проблемою масштабування: надсилання конспектів у месенджерах, ручна перевірка квитанцій про оплату та відсутність єдиної інтерактивної платформи для тренування тестів обмежували ріст навчального проєкту.
+### Завдання
+Створити єдину освітню платформу для підготовки медиків до іспитів КРОК, яка полегшить навчання студентам та повністю автоматизує рутинну роботу викладача.
 
-Потрібно було створити сучасну повнофункціональну LMS-платформу, яка об'єднає:
-1. **Інтерактивне тестування:** Зручний тренажер офіційних буклетів КРОК із миттєвим поясненням помилок.
-2. **Відео та конспекти:** Захищений онлайн-доступ до авторських лекцій та матеріалів без можливості їх зливу.
-3. **Повну комерційну автоматизацію:** Миттєву оплату через Monobank, відкриття доступу до підписок та зручну панель керування для викладача.
-
----
-
-### Архітектура та інженерні рішення
-
-#### 1. Новітній Edge-стек (Next.js 16 + Cloudflare Workers + D1)
-Платформа побудована на serverless-інфраструктурі **Cloudflare Edge**:
-* **Frontend:** **Next.js 16 (React 19)**, зібраний та розгорнутий за допомогою **@opennextjs/cloudflare** для глобальної доступності.
-* **Бекенд:** Високошвидкісний API Worker на базі **Hono**, що обробляє запити авторизації, тестування та білінгу з мінімальною затримкою.
-* **База даних:** **Cloudflare D1 (Serverless SQLite)** з типізованою схемою **Drizzle ORM** — забезпечує миттєві SQL-запити до тисяч запитань без очікування підключення до сервера.
-* **Медіа:** Захищене сховище **Cloudflare R2** для лекційних PDF-матеріалів та зображень.
-
-#### 2. Інтерактивний модуль тестування
-* **Режими навчання:** Тренування за конкретною темою, проходження офіційного буклету за вибраний рік або симуляція реального іспиту на час (200 питань / 200 хв).
-* **Миттєвий зворотний зв'язок:** Студент одразу бачить правильну відповідь, статистику складності запитання та пояснення від викладача або вбудованого **DeepSeek AI**.
-* **Робота над помилками:** Система автоматично формує пул запитань, на яких студент помилився, для повторного закріплення.
-
-#### 3. Монетизація та Monobank Acquiring
-* Реалізовано гнучку модель покупок: студент може придбати повний курс або окремі теми.
-* Безпечна інтеграція **Monobank API**: формування інвойсів, підтвердження через Monobank-додаток та автоматична верифікація вебхуків із відкриттям доступу в базі даних менш ніж за 1 секунду.
-
-#### 4. Панель адміністратора (CMS)
-Для власника розроблено зручну панель керування:
-* Додавання та редагування курсів, розділів, відеолекцій та PDF-матеріалів.
-* Імпорт та редагування бази тестів, маркування відповідей.
-* Моніторинг студентів, аналітика продажів та контроль доступу.
+### Що реалізовано
+* **Інтерактивний тренажер:** проходження офіційних буклетів і тем із таймером, миттєвою перевіркою відповідей та ШІ-поясненнями (DeepSeek AI).
+* **Захищений контент:** вбудований плеєр відеолекцій та рідер PDF-конспектів із захистом від копіювання.
+* **Автоматизація для викладача:** онлайн-оплата через Monobank з автоматичною видачею доступу 24/7 та зручна адмін-панель для завантаження тестів і курсів.

@@ -38,7 +38,6 @@ const {
   link,
   github,
   statusBadge,
-  clientName,
   features,
   process,
   results,
@@ -67,7 +66,6 @@ const nextProject = currentIndex < allProjects.length - 1 ? allProjects[currentI
 const passportFields = [
   { label: 'Категорія', value: category },
   { label: 'Статус', value: statusBadge || 'Демо-проєкт' },
-  ...(clientName ? [{ label: 'Замовник', value: clientName }] : []),
   { label: 'Платформа', value: platform },
   { label: 'Тип', value: type },
   { label: 'Технології', value: technologies },
@@ -121,13 +119,12 @@ const passportFields = [
       link={link}
       github={github}
       statusBadge={statusBadge}
-      clientName={clientName}
       passportFields={passportFields}
     />
 
     <div class="space-y-6 md:space-y-10 w-full">
       <Card padding="lg" class="space-y-4 sm:space-y-5 w-full" data-animate="fade-up">
-        <SectionHeader title="Завдання та концепція" />
+        <SectionHeader title="Завдання та реалізація" />
         <div class="prose prose-sm max-w-none text-[#2A1E1E]/80 font-medium leading-relaxed">
           <Content />
         </div>

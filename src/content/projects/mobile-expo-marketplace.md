@@ -2,7 +2,7 @@
 title: "Expo Marketplace — мобільний маркетплейс"
 category: "Мобільні застосунки"
 icon: "fa-solid fa-store"
-image: "https://raw.githubusercontent.com/ihornone/Expo-Marketplace/refs/heads/main/assets/screenshots/cover-image.png"
+image: "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/Expo-Marketplace/cover-image.png"
 description: "Практичний демонстраційний проєкт сучасного e-commerce маркетплейсу: каталог, живий кошик, авторизація та адаптивна тема."
 type: "Мобільний застосунок (Практичний кейс)"
 platform: "iOS / Android (React Native & Expo)"
@@ -60,23 +60,31 @@ results:
   - value: "100%"
     description: "збереження кошика при раптовому зникненні інтернету"
 gallery:
-  - "https://raw.githubusercontent.com/ihornone/Expo-Marketplace/refs/heads/main/assets/screenshots/IndexScreen-dark.jpg"
-  - "https://raw.githubusercontent.com/ihornone/Expo-Marketplace/refs/heads/main/assets/screenshots/IndexScreen-light.jpg"
-  - "https://raw.githubusercontent.com/ihornone/Expo-Marketplace/refs/heads/main/assets/screenshots/ProductDetailsScreen-dark.jpg"
-  - "https://raw.githubusercontent.com/ihornone/Expo-Marketplace/refs/heads/main/assets/screenshots/ProductDetailsScreen-light.jpg"
-  - "https://raw.githubusercontent.com/ihornone/Expo-Marketplace/refs/heads/main/assets/screenshots/searchScreen-dark.jpg"
-  - "https://raw.githubusercontent.com/ihornone/Expo-Marketplace/refs/heads/main/assets/screenshots/FilterSheet-light.jpg"
-  - "https://raw.githubusercontent.com/ihornone/Expo-Marketplace/refs/heads/main/assets/screenshots/ProfileScreen-dark.jpg"
-  - "https://raw.githubusercontent.com/ihornone/Expo-Marketplace/refs/heads/main/assets/screenshots/SettingsScreen-light.jpg"
-  - "https://raw.githubusercontent.com/ihornone/Expo-Marketplace/refs/heads/main/assets/screenshots/LoginScreen-dark.jpg"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/Expo-Marketplace/img-1.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/Expo-Marketplace/img-2.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/Expo-Marketplace/img-3.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/Expo-Marketplace/img-4.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/Expo-Marketplace/img-5.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/Expo-Marketplace/img-6.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/Expo-Marketplace/img-7.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/Expo-Marketplace/img-8.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/Expo-Marketplace/img-9.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/Expo-Marketplace/img-10.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/Expo-Marketplace/img-11.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/Expo-Marketplace/img-12.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/Expo-Marketplace/img-13.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/Expo-Marketplace/img-14.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/Expo-Marketplace/img-15.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/Expo-Marketplace/img-16.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/Expo-Marketplace/img-17.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/Expo-Marketplace/img-18.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/Expo-Marketplace/img-19.png"
 ---
 
-### Бізнес-завдання та мета розробки
-Створення повноцінного мобільного маркетплейсу традиційно вважається однією з найдорожчих задач: зазвичай потрібні дві окремі команди розробників (Swift для iOS та Kotlin для Android), що роздуває бюджет у рази та відкладає реліз на пів року.
+### Завдання
+Створити кросплатформний мобільний маркетплейс (iOS та Android) із єдиною кодовою базою для швидкого виходу на ринок та значної економії бюджету розробки.
 
-Цей проєкт був реалізований на практиці як демонстрація того, як за допомогою сучасного стеку **React Native + Expo** можна запустити повноцінний кросплатформний e-commerce MVP у стислі терміни та з економією до 50% бюджету.
-
-### Ключові продуктивні рішення:
-1. **Швидкість покупки:** Інтерфейс кошика та оформлення спроектований так, щоб клієнт міг здійснити покупку менш ніж за 40 секунд.
-2. **Офлайн-надійність:** Якщо користувач зайшов у ліфт або метро і зв'язок обірвався, товари в кошику не зникають, а додаток зберігає стабільну роботу.
-3. **Естетика та адаптивність:** Повна підтримка світлої та темної системних тем із плавною анімацією переходу та апаратним прискоренням жестів.
+### Що реалізовано
+* **Кросплатформний MVP на React Native + Expo:** повноцінний e-commerce функціонал для iOS та Android без подвійних витрат на нативну розробку.
+* **Швидке оформлення замовлень:** спрощений чекаут та збереження кошика локально, що працює навіть при тимчасовій втраті зв'язку.
+* **Сучасний UX/UI:** плавні анімації жестів, апаратне прискорення та адаптивна темна і світла теми інтерфейсу.

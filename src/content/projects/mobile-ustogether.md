@@ -2,7 +2,7 @@
 title: "UsTogether — трекер стосунків"
 category: "Мобільні застосунки"
 icon: "fa-solid fa-heart"
-image: "https://raw.githubusercontent.com/ihornone/RNE-UsTogether/refs/heads/main/assets/screenshots/cover-image.png"
+image: "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/RNE-UsTogether/cover-image.png"
 description: "Авторський пет-проєкт для закоханих пар: спільний лічильник часу, таймер спогадів та інтерактивний календар дат."
 type: "Мобільний застосунок (Пет-проєкт)"
 platform: "iOS / Android (React Native & Expo)"
@@ -60,19 +60,16 @@ results:
   - value: "< 1.2 с"
     description: "миттєвий холодний запуск застосунку на смартфоні"
 gallery:
-  - "https://raw.githubusercontent.com/ihornone/UsTogetherRNE/refs/heads/master/assets/screenshots/OnBoarding.jpg"
-  - "https://raw.githubusercontent.com/ihornone/UsTogetherRNE/refs/heads/master/assets/screenshots/Home.jpg"
-  - "https://raw.githubusercontent.com/ihornone/UsTogetherRNE/refs/heads/master/assets/screenshots/Calendar.jpg"
-  - "https://raw.githubusercontent.com/ihornone/UsTogetherRNE/refs/heads/master/assets/screenshots/Settings.jpg"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/RNE-UsTogether/img-1.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/RNE-UsTogether/img-2.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/RNE-UsTogether/img-3.png"
+  - "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/RNE-UsTogether/img-4.png"
 ---
 
-### Ідея та біль користувачів
-Більшість романтичних застосунків для пар у магазинах додатків страждають від трьох типових проблем:
-1. **Агресивна монетизація:** Вимагають щотижневу платну підписку ($5–$10) за найпростіші функції календаря.
-2. **Нав'язлива реклама:** Постійні банери та відеоролики, які руйнують теплу атмосферу стосунків.
-3. **Питання приватності:** Вимагають реєстрації, доступу до контактів та відправляють особисті дати на зовнішні сервери.
+### Завдання
+Створити затишний мобільний додаток для закоханих пар без нав'язливої реклами, підписок та з повною конфіденційністю персональних даних.
 
-### Як це вирішено в UsTogether
-**UsTogether** був створений як авторський некомерційний проєкт з акцентом на чисту естетику, повагу до приватності та швидкодію. 
-
-У застосунку немає жодного рекламного банера, а всі дати та налаштування зберігаються виключно локально на вашому пристрої. Головний екран зустрічає живим лічильником часу разом, а інтерактивний календар візуалізує кожен спільний місяць у вигляді червоних сердець.
+### Що реалізовано
+* **Повна приватність:** збереження всіх особистих дат, подій та нотаток виключно локально на пристрої без зовнішніх серверів.
+* **Інтерактивний календар та лічильник:** красивий підрахунок днів разом та візуалізація спільних пам'ятних моментів.
+* **Чистий досвід без реклами:** авторський естетичний дизайн, плавні відгуки на дотики та відсутність будь-яких банерів чи платежів.
