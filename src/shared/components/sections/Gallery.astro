@@ -22,7 +22,13 @@ const remainingCount = photos.length - initialCount;
 ---
 
 {photos.length > 0 && (
-  <section class:list={['w-full relative', className]} aria-label={title}>
+  <section
+    id="project-gallery"
+    class:list={['w-full relative', className]}
+    aria-label={title}
+    data-photos={JSON.stringify(photos)}
+    data-remaining={remainingCount}
+  >
     <Card class="space-y-6">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2.5">
@@ -96,109 +102,134 @@ const remainingCount = photos.length - initialCount;
   </section>
 )}
 
-<script define:vars={{ photos, remainingCount }}>
-  let currentIndex = 0;
-  const lightbox = document.getElementById('gallery-lightbox');
-  const lightboxImg = document.getElementById('lightbox-img');
-  const closeBtn = document.getElementById('lightbox-close');
-  const prevBtn = document.getElementById('lightbox-prev');
-  const nextBtn = document.getElementById('lightbox-next');
-  const toggleBtn = document.getElementById('gallery-toggle-btn');
-  const toggleText = document.getElementById('gallery-toggle-text');
-  const toggleIcon = document.getElementById('gallery-toggle-icon');
-  const hiddenItems = document.querySelectorAll('.gallery-hidden');
+<script>
+  function setupGallery() {
+    const gallerySection = document.getElementById('project-gallery');
+    if (!gallerySection) return;
 
-  let isExpanded = false;
+    let photos = [];
+    try {
+      photos = JSON.parse(gallerySection.getAttribute('data-photos') || '[]');
+    } catch {
+      photos = [];
+    }
+    const remainingCount = gallerySection.getAttribute('data-remaining') || '0';
 
-  if (toggleBtn) {
-    toggleBtn.addEventListener('click', () => {
-      isExpanded = !isExpanded;
-      hiddenItems.forEach(item => {
+    let currentIndex = 0;
+    const lightbox = document.getElementById('gallery-lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const closeBtn = document.getElementById('lightbox-close');
+    const prevBtn = document.getElementById('lightbox-prev');
+    const nextBtn = document.getElementById('lightbox-next');
+    const toggleBtn = document.getElementById('gallery-toggle-btn');
+    const toggleText = document.getElementById('gallery-toggle-text');
+    const toggleIcon = document.getElementById('gallery-toggle-icon');
+    const hiddenItems = gallerySection.querySelectorAll('.gallery-hidden');
+
+    let isExpanded = false;
+
+    if (toggleBtn) {
+      // Remove any existing clone listeners by cloning node or replacing listener
+      const newToggleBtn = toggleBtn.cloneNode(true);
+      toggleBtn.parentNode?.replaceChild(newToggleBtn, toggleBtn);
+
+      const currentToggleText = document.getElementById('gallery-toggle-text');
+      const currentToggleIcon = document.getElementById('gallery-toggle-icon');
+
+      newToggleBtn.addEventListener('click', () => {
+        isExpanded = !isExpanded;
+        hiddenItems.forEach((item) => {
+          const el = item as HTMLElement;
+          if (isExpanded) {
+            el.classList.remove('hidden');
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(10px)';
+            requestAnimationFrame(() => {
+              el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+              el.style.opacity = '1';
+              el.style.transform = 'translateY(0)';
+            });
+          } else {
+            el.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(10px)';
+            setTimeout(() => {
+              el.classList.add('hidden');
+              el.style.transition = '';
+              el.style.opacity = '';
+              el.style.transform = '';
+            }, 300);
+          }
+        });
+
         if (isExpanded) {
-          item.classList.remove('hidden');
-          // Add smooth transition effect
-          item.style.opacity = '0';
-          item.style.transform = 'translateY(10px)';
-          requestAnimationFrame(() => {
-            item.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-            item.style.opacity = '1';
-            item.style.transform = 'translateY(0)';
-          });
+          if (currentToggleText) currentToggleText.textContent = 'Згорнути назад';
+          if (currentToggleIcon) currentToggleIcon.classList.add('rotate-180');
         } else {
-          item.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-          item.style.opacity = '0';
-          item.style.transform = 'translateY(10px)';
-          setTimeout(() => {
-            item.classList.add('hidden');
-            item.style.transition = '';
-            item.style.opacity = '';
-            item.style.transform = '';
-          }, 300);
-          
-          // Scroll back slightly to the top of gallery if collapsing and user is far down
-          toggleBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          if (currentToggleText) currentToggleText.textContent = `Показати решту фото (${remainingCount})`;
+          if (currentToggleIcon) currentToggleIcon.classList.remove('rotate-180');
+          (newToggleBtn as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
       });
+    }
 
-      if (isExpanded) {
-        if (toggleText) toggleText.textContent = 'Згорнути назад';
-        if (toggleIcon) toggleIcon.classList.add('rotate-180');
-      } else {
-        if (toggleText) toggleText.textContent = `Показати решту фото (${remainingCount})`;
-        if (toggleIcon) toggleIcon.classList.remove('rotate-180');
+    function openLightbox(url: string, index: number) {
+      currentIndex = index;
+      if (lightbox && lightboxImg) {
+        (lightboxImg as HTMLImageElement).src = url;
+        lightbox.classList.remove('hidden');
+        lightbox.classList.add('flex');
+        document.body.style.overflow = 'hidden';
       }
-    });
-  }
-
-  document.querySelectorAll('.gallery-item[data-url]').forEach(item => {
-    item.addEventListener('click', () => {
-      const url = item.getAttribute('data-url');
-      const idx = parseInt(item.getAttribute('data-index') || '0', 10);
-      window.openLightbox(url, idx);
-    });
-  });
-
-  window.openLightbox = (url, index) => {
-    currentIndex = index;
-    if (lightbox && lightboxImg) {
-      lightboxImg.src = url;
-      lightbox.classList.remove('hidden');
-      lightbox.classList.add('flex');
-      document.body.style.overflow = 'hidden';
     }
-  };
 
-  function closeLightbox() {
+    function closeLightbox() {
+      if (lightbox) {
+        lightbox.classList.remove('flex');
+        lightbox.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+    }
+
+    function showPhoto(index: number) {
+      if (!photos.length) return;
+      if (index < 0) currentIndex = photos.length - 1;
+      else if (index >= photos.length) currentIndex = 0;
+      else currentIndex = index;
+
+      if (lightboxImg) {
+        (lightboxImg as HTMLImageElement).src = photos[currentIndex];
+      }
+    }
+
+    gallerySection.querySelectorAll('.gallery-item[data-url]').forEach((item) => {
+      item.addEventListener('click', () => {
+        const url = item.getAttribute('data-url') || '';
+        const idx = parseInt(item.getAttribute('data-index') || '0', 10);
+        openLightbox(url, idx);
+      });
+    });
+
+    if (closeBtn) closeBtn.onclick = closeLightbox;
     if (lightbox) {
-      lightbox.classList.remove('flex');
-      lightbox.classList.add('hidden');
-      document.body.style.overflow = '';
+      lightbox.onclick = (e) => {
+        if (e.target === lightbox) closeLightbox();
+      };
     }
+    if (prevBtn) prevBtn.onclick = (e) => { e.stopPropagation(); showPhoto(currentIndex - 1); };
+    if (nextBtn) nextBtn.onclick = (e) => { e.stopPropagation(); showPhoto(currentIndex + 1); };
+
+    // Keydown handler
+    const handleKeydown = (e: KeyboardEvent) => {
+      if (!lightbox || lightbox.classList.contains('hidden')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') showPhoto(currentIndex - 1);
+      if (e.key === 'ArrowRight') showPhoto(currentIndex + 1);
+    };
+    document.removeEventListener('keydown', handleKeydown);
+    document.addEventListener('keydown', handleKeydown);
   }
 
-  function showPhoto(index) {
-    if (index < 0) currentIndex = photos.length - 1;
-    else if (index >= photos.length) currentIndex = 0;
-    else currentIndex = index;
-    
-    if (lightboxImg) {
-      lightboxImg.src = photos[currentIndex];
-    }
-  }
-
-  if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
-  if (lightbox) {
-    lightbox.addEventListener('click', (e) => {
-      if (e.target === lightbox) closeLightbox();
-    });
-  }
-  if (prevBtn) prevBtn.addEventListener('click', (e) => { e.stopPropagation(); showPhoto(currentIndex - 1); });
-  if (nextBtn) nextBtn.addEventListener('click', (e) => { e.stopPropagation(); showPhoto(currentIndex + 1); });
-
-  document.addEventListener('keydown', (e) => {
-    if (!lightbox || lightbox.classList.contains('hidden')) return;
-    if (e.key === 'Escape') closeLightbox();
-    if (e.key === 'ArrowLeft') showPhoto(currentIndex - 1);
-    if (e.key === 'ArrowRight') showPhoto(currentIndex + 1);
-  });
+  document.addEventListener('astro:page-load', setupGallery);
+  setupGallery();
 </script>
