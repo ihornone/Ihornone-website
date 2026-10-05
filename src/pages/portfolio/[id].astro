@@ -38,7 +38,6 @@ const {
   link,
   github,
   statusBadge,
-  clientName,
   features,
   process,
   results,
@@ -67,7 +66,6 @@ const nextProject = currentIndex < allProjects.length - 1 ? allProjects[currentI
 const passportFields = [
   { label: 'Категорія', value: category },
   { label: 'Статус', value: statusBadge || 'Демо-проєкт' },
-  ...(clientName ? [{ label: 'Замовник', value: clientName }] : []),
   { label: 'Платформа', value: platform },
   { label: 'Тип', value: type },
   { label: 'Технології', value: technologies },
@@ -121,7 +119,6 @@ const passportFields = [
       link={link}
       github={github}
       statusBadge={statusBadge}
-      clientName={clientName}
       passportFields={passportFields}
     />
 

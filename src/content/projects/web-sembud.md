@@ -12,7 +12,6 @@ year: "2026"
 role: "Розробка, CMS, UI/UX дизайн"
 link: "https://www.sembud.com.ua/"
 statusBadge: "Реальний комерційний проєкт"
-clientName: "SEMBUD (Львів)"
 pinned: true
 order: 2
 galleryFormat: "16:9"

@@ -84,7 +84,6 @@ const projects = defineCollection({
     link: z.string().optional(),
     github: z.string().optional(),
     statusBadge: z.string().optional(),
-    clientName: z.string().optional(),
     pinned: z.union([z.boolean(), z.number()]).default(false),
     order: z.number().default(99),
     galleryFormat: z.enum(['16:9', '9:16']).optional(),

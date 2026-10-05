@@ -12,7 +12,6 @@ year: "2026"
 role: "Full-Stack розробка, Edge-інфраструктура, UI/UX, платіжні інтеграції"
 link: "https://krok-by-sandra.com.ua"
 statusBadge: "Реальний комерційний проєкт"
-clientName: "KROK by Sandra"
 pinned: true
 order: 1
 galleryFormat: "16:9"
