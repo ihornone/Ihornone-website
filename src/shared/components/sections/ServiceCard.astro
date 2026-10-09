@@ -1,18 +1,10 @@
 ---
-import Card from '../ui/Card.astro';
-import IconBox from '../ui/IconBox.astro';
-import Button from '../ui/Button.astro';
-
-interface ServiceInclude {
-  title: string;
-}
-
 interface Props {
   id: string;
-  icon: string;
+  icon?: string;
   title: string;
+  shortTitle?: string;
   description: string;
-  includes?: ServiceInclude[];
   isPopular?: boolean;
   class?: string;
   startingPrice?: string;
@@ -22,66 +14,98 @@ const {
   id,
   icon,
   title,
+  shortTitle = "",
   description,
-  includes = [],
   isPopular = false,
-  class: className = '',
-  startingPrice = '',
+  class: className = "",
+  startingPrice = "",
 } = Astro.props;
+
+// Specific brand color themes for each service from our palette
+const themeConfig: Record<string, { bg: string; line: string; hoverShadow: string }> = {
+  'telegram-bots': {
+    bg: 'bg-[#F4E8FC]',
+    line: 'bg-[#BF80FA]',
+    hoverShadow: 'hover:shadow-[0_20px_40px_rgba(208,154,252,0.25)]',
+  },
+  'websites': {
+    bg: 'bg-[#FDF0E7]',
+    line: 'bg-[#C28257]',
+    hoverShadow: 'hover:shadow-[0_20px_40px_rgba(232,186,152,0.25)]',
+  },
+  'mobile-apps': {
+    bg: 'bg-[#FDECEF]',
+    line: 'bg-[#E2959E]',
+    hoverShadow: 'hover:shadow-[0_20px_40px_rgba(250,195,200,0.28)]',
+  },
+};
+
+const currentTheme = themeConfig[id] || {
+  bg: 'bg-white',
+  line: 'bg-[#D09AFC]',
+  hoverShadow: 'hover:shadow-[0_20px_40px_rgba(42,30,30,0.08)]',
+};
 ---
 
-<article class:list={['relative h-full flex flex-col shrink-0 w-[85vw] sm:w-[320px] md:w-auto snap-center md:snap-align-none pt-4 overflow-visible', className]}>
-  <Card hover variant={isPopular ? 'highlight' : 'default'} class="h-full flex flex-col justify-between min-h-[460px] relative overflow-visible">
-    {isPopular && (
-      <div class="absolute -top-3.5 right-6 bg-[#D09AFC] text-[#2A1E1E] text-[10px] font-black uppercase tracking-wider px-3.5 py-1 rounded-[10px] shadow-2xs z-30 whitespace-nowrap" role="status">
-        Популярний напрямок
+<article
+  class:list={[
+    "group relative flex flex-col justify-between rounded-[22px] p-6 sm:p-7 border border-[#623A2D]/10 transition-all duration-300 hover:-translate-y-1.5 select-none w-full h-full overflow-visible",
+    currentTheme.bg,
+    currentTheme.hoverShadow,
+    className,
+  ]}
+>
+  <!-- Centered Popular Badge on the top border line without dots -->
+  {
+    isPopular && (
+      <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 z-20 bg-[#2A1E1E] text-white text-[10px] sm:text-[11px] font-black uppercase tracking-wider px-3.5 py-1 rounded-full border border-white/20 shadow-xs whitespace-nowrap">
+        <span>Популярне</span>
       </div>
-    )}
+    )
+  }
 
-    <div class="flex-1 flex flex-col">
-      <!-- Icon -->
-      <div class="mb-4">
-        <IconBox icon={icon} size="lg" />
-      </div>
+  <!-- Top bar: decorative accent line -->
+  <div class="flex items-center justify-between gap-3 mb-5">
+    <div class:list={["h-[5px] w-14 rounded-full opacity-85 transition-all duration-300 group-hover:w-20", currentTheme.line]}></div>
+  </div>
 
-      <!-- Title & Description with Fixed Equal Heights -->
-      <div class="space-y-2 mb-4">
-        <h3 class="text-xl font-black text-[#2A1E1E] m-0 min-h-[3.25rem] flex items-center">
-          {title}
-        </h3>
-        <p class="text-sm text-[#623A2D]/80 font-medium leading-relaxed m-0 min-h-[2.5rem]">
-          {description}
-        </p>
-      </div>
+  <!-- Upper Content Block -->
+  <div class="space-y-3 flex-1">
+    <!-- Large Bold Title -->
+    <h3 class="text-xl sm:text-2xl font-black text-[#2A1E1E] tracking-tight leading-[1.2] m-0">
+      {title}
+    </h3>
 
-      <!-- Starting Price Badge -->
-      {startingPrice && (
-        <div class="mb-4 inline-flex items-center justify-between w-full px-3.5 py-2 rounded-[8px] bg-[#FAF1EC] border border-[#623A2D]/10">
-          <span class="text-xs font-semibold text-[#623A2D]/70">Орієнтовна вартість:</span>
-          <span class="text-xs font-black text-[#2A1E1E] bg-white px-2 py-0.5 rounded-[6px] border border-[#623A2D]/10 shadow-2xs">
+    <!-- Description -->
+    <p class="text-xs sm:text-sm text-[#623A2D]/85 font-medium leading-relaxed m-0">
+      {description}
+    </p>
+  </div>
+
+  <!-- Bottom: Fully responsive Price & Action Button (Never overflows) -->
+  <div class="mt-6 pt-4 border-t border-[#623A2D]/10 flex flex-col 2xl:flex-row 2xl:items-center justify-between gap-3">
+    {
+      startingPrice ? (
+        <div class="flex items-baseline justify-between 2xl:flex-col 2xl:justify-start">
+          <span class="text-[10px] font-black uppercase tracking-wider text-[#623A2D]/60 leading-none">
+            Орієнтовно
+          </span>
+          <span class="text-base sm:text-lg font-black text-[#2A1E1E] leading-tight 2xl:mt-1 whitespace-nowrap">
             {startingPrice}
           </span>
         </div>
-      )}
+      ) : (
+        <div></div>
+      )
+    }
 
-      <!-- Included Features List -->
-      {includes.length > 0 && (
-        <ul class="space-y-2.5 pt-4 border-t border-[#623A2D]/10 list-none p-0 m-0 flex-1 flex flex-col justify-start" role="list" aria-label={`Що входить у послугу: ${title}`}>
-          {includes.slice(0, 4).map((item) => (
-            <li class="flex items-center gap-2.5 text-xs font-bold text-[#2A1E1E]/90">
-              <i class="fa-solid fa-circle-check text-[#D09AFC] text-xs shrink-0" aria-hidden="true"></i>
-              <span>{item.title}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-
-    <!-- Bottom Action Button Always Aligned at Bottom -->
-    <div class="pt-5 mt-auto">
-      <Button href={`/services/${id}`} variant="primary" class="w-full text-center justify-center" ariaLabel={`Детальніше про ${title}`}>
-        Детальніше <i class="fa-solid fa-arrow-right text-xs ml-1" aria-hidden="true"></i>
-      </Button>
-    </div>
-  </Card>
+    <a
+      href={`/services/${id}`}
+      class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-[#2A1E1E] text-white hover:bg-[#3D2C2C] text-xs font-black shadow-sm hover:shadow-md transition-all duration-300 no-underline shrink-0 text-center w-full 2xl:w-auto"
+      aria-label={`Детальніше про ${title}`}
+    >
+      <span>Детальніше</span>
+      <i class="fa-solid fa-arrow-right text-[10px]" aria-hidden="true" />
+    </a>
+  </div>
 </article>
