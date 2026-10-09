@@ -1,5 +1,4 @@
 ---
-import Card from '../ui/Card.astro';
 import SectionHeader from '../ui/SectionHeader.astro';
 
 export interface FaqItem {
@@ -33,7 +32,7 @@ const defaultItems: FaqItem[] = [
   },
   {
     question: 'Як відбувається процес оплати та співпраці?',
-    answer: 'Робота розбивається на етапи. Ззвичайний порядок: 50% передоплата на початку робіт, та 50% після демонстрації готового проєкту та вашого схвалення.',
+    answer: 'Робота розбивається на етапи. Звичайний порядок: 50% передоплата на початку робіт, та 50% після демонстрації готового проєкту та вашого схвалення.',
     badge: 'Оплата',
   },
 ];
@@ -51,16 +50,22 @@ const {
     <SectionHeader title={title} align="center" />
   )}
 
-  <div class="space-y-3 w-full faq-container" data-animate="fade-up" data-stagger>
+  <div class="space-y-4 w-full faq-container" data-animate="fade-up" data-stagger>
     {items.map((item) => (
-      <details name="faq-accordion" class="bg-white border border-[#623A2D]/10 rounded-[10px] p-4 sm:p-5 shadow-2xs group [&[open]]:border-[#FAC3C8] hover:border-[#FAC3C8]/60 transition-all cursor-pointer">
-        <summary class="font-bold text-sm sm:text-base text-[#2A1E1E] flex items-center justify-between gap-4 select-none list-none">
-          <span>{item.question}</span>
-          <div class="w-7 h-7 rounded-[10px] bg-[#FAC3C8]/25 group-hover:bg-[#FAC3C8]/50 flex items-center justify-center shrink-0 transition-colors text-[#2A1E1E]">
-            <i class="fa-solid fa-plus text-xs group-open:rotate-45 transition-transform duration-200"></i>
+      <details
+        name="faq-accordion"
+        class="group bg-white border border-[#623A2D]/10 rounded-[20px] p-6 sm:p-7 shadow-[0_12px_28px_rgba(42,30,30,0.04)] [&[open]]:border-[#FAC3C8] hover:border-[#FAC3C8]/80 hover:shadow-[0_16px_36px_rgba(42,30,30,0.08)] transition-all duration-300 cursor-pointer"
+      >
+        <summary class="font-black text-base sm:text-xl text-[#2A1E1E] flex items-center justify-between gap-4 select-none list-none leading-snug">
+          <span class="group-hover:text-[#95553C] transition-colors">{item.question}</span>
+          <div class="w-10 h-10 rounded-full bg-[#FAF1EC] border border-[#623A2D]/8 group-hover:bg-[#FAC3C8]/40 flex items-center justify-center shrink-0 transition-colors text-[#2A1E1E] shadow-2xs">
+            <i class="fa-solid fa-plus text-sm group-open:rotate-45 transition-transform duration-300"></i>
           </div>
         </summary>
-        <div class="text-xs sm:text-sm text-[#623A2D]/80 font-medium leading-relaxed m-0 mt-3 pt-3 border-t border-[#623A2D]/10" set:html={item.answer} />
+        <div
+          class="text-sm sm:text-base text-[#623A2D]/85 font-medium leading-relaxed m-0 mt-4 pt-4 border-t border-[#623A2D]/10"
+          set:html={item.answer}
+        />
       </details>
     ))}
   </div>

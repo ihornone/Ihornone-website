@@ -1,5 +1,4 @@
 ---
-import Card from '../ui/Card.astro';
 import IconBox from '../ui/IconBox.astro';
 import { getCollection } from 'astro:content';
 
@@ -12,26 +11,43 @@ const {
 } = Astro.props;
 
 const allItems = (await getCollection('specializations')).sort((a, b) => a.data.order - b.data.order);
+
+// Group into 2 items per column for 100% reliable 2-row mobile horizontal scroll & desktop grid
+const itemPairs: (typeof allItems)[] = [];
+for (let i = 0; i < allItems.length; i += 2) {
+  itemPairs.push(allItems.slice(i, i + 2));
+}
 ---
 
-<div class={`w-full ${className}`}>
-  <div class="grid grid-rows-2 grid-flow-col auto-cols-[82vw] sm:auto-cols-auto sm:grid-rows-none sm:grid-flow-row sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-3.5 overflow-x-auto sm:overflow-visible snap-x snap-mandatory sm:snap-none -mx-4 px-4 sm:mx-0 sm:px-0 pt-1 pb-3 sm:pb-0 scrollbar-none scroll-pl-4 sm:scroll-pl-0 items-stretch" data-animate="fade-up" data-stagger>
-    {allItems.map((item) => (
-      <button
-        type="button"
-        class="spec-item bg-white border border-[#623A2D]/10 rounded-[10px] p-3.5 sm:p-4 flex items-center gap-3.5 text-left transition-all hover:border-[#D09AFC] hover:shadow-md hover:-translate-y-0.5 cursor-pointer snap-start w-full"
-        data-title={item.data.title}
-        data-desc={item.data.fullDescription || item.data.desc}
-        data-icon={item.data.icon}
-      >
-        <div class="shrink-0">
-          <IconBox icon={item.data.icon} size="md" variant="accent" />
-        </div>
-        <div class="min-w-0 flex-1">
-          <strong class="text-sm sm:text-base font-black text-[#2A1E1E] block leading-tight">{item.data.title}</strong>
-          <span class="text-xs text-[#623A2D]/70 block leading-tight mt-1">{item.data.desc}</span>
-        </div>
-      </button>
+<div class={`w-full relative ${className}`}>
+  <!-- 2-Row Horizontal Scroll Container with Clean Padding -->
+  <div
+    id="spec-scroll-container"
+    class="flex lg:grid lg:grid-cols-4 gap-3.5 sm:gap-4 overflow-x-auto lg:overflow-visible snap-x snap-mandatory lg:snap-none pt-1 pb-4 lg:pb-0 scrollbar-none touch-pan-x"
+    style="-webkit-overflow-scrolling: touch; overscroll-behavior-x: contain;"
+    data-animate="fade-up"
+    data-stagger
+  >
+    {itemPairs.map((pair) => (
+      <div class="flex flex-col gap-3.5 sm:gap-4 w-[78vw] sm:w-[310px] lg:w-auto shrink-0 snap-start">
+        {pair.map((item) => (
+          <button
+            type="button"
+            class="spec-item bg-white border border-[#623A2D]/10 rounded-[18px] p-4 sm:p-5 flex items-center gap-4 text-left transition-all duration-300 hover:border-[#D09AFC] hover:shadow-[0_14px_30px_rgba(42,30,30,0.07)] hover:-translate-y-0.5 cursor-pointer w-full flex-1 group"
+            data-title={item.data.title}
+            data-desc={item.data.fullDescription || item.data.desc}
+            data-icon={item.data.icon}
+          >
+            <div class="w-12 h-12 rounded-[14px] bg-[#FAF1EC] border border-[#623A2D]/8 flex items-center justify-center shrink-0 text-[#2A1E1E] group-hover:bg-[#D09AFC]/30 transition-colors shadow-2xs">
+              <i class:list={[item.data.icon, "text-lg text-[#2A1E1E]"]}></i>
+            </div>
+            <div class="min-w-0 flex-1">
+              <strong class="text-sm sm:text-base font-black text-[#2A1E1E] block leading-snug group-hover:text-[#95553C] transition-colors">{item.data.title}</strong>
+              <span class="text-xs text-[#623A2D]/70 block leading-tight mt-1 truncate font-medium">{item.data.desc}</span>
+            </div>
+          </button>
+        ))}
+      </div>
     ))}
   </div>
 </div>
@@ -42,22 +58,22 @@ const allItems = (await getCollection('specializations')).sort((a, b) => a.data.
 >
   <div class="drawer-content h-full flex flex-col md:flex-row justify-end">
     <div class="drawer-backdrop absolute inset-0" aria-hidden="true"></div>
-    <div class="drawer-panel relative bg-paper-white h-full w-full max-w-md flex flex-col shadow-2xl overflow-hidden">
-      <div class="flex items-center justify-between px-6 py-4 border-b border-black/5 shrink-0">
+    <div class="drawer-panel relative bg-white h-full w-full max-w-md flex flex-col shadow-2xl overflow-hidden md:rounded-l-[24px]">
+      <div class="flex items-center justify-between px-6 py-5 border-b border-[#623A2D]/10 shrink-0">
         <div class="flex items-center gap-3">
           <div id="spec-drawer-icon"></div>
-          <h3 id="spec-drawer-title" class="text-lg font-bold text-ink-black m-0"></h3>
+          <h3 id="spec-drawer-title" class="text-lg font-black text-[#2A1E1E] m-0"></h3>
         </div>
         <button
           type="button"
-          class="js-close-spec w-9 h-9 rounded-full bg-morning-fog flex items-center justify-center text-ink-black/60 hover:text-ink-black transition-colors cursor-pointer border-none"
+          class="js-close-spec w-9 h-9 rounded-full bg-[#FAF1EC] flex items-center justify-center text-[#2A1E1E]/70 hover:text-[#2A1E1E] transition-colors cursor-pointer border-none"
           aria-label="Закрити"
         >
           <i class="fa-solid fa-xmark" aria-hidden="true"></i>
         </button>
       </div>
-      <div class="flex-1 overflow-y-auto overscroll-contain px-6 py-5">
-        <p id="spec-drawer-desc" class="text-sm sm:text-base text-black/70 leading-relaxed m-0"></p>
+      <div class="flex-1 overflow-y-auto overscroll-contain px-6 py-6">
+        <p id="spec-drawer-desc" class="text-sm sm:text-base text-[#623A2D]/85 leading-relaxed font-medium m-0"></p>
       </div>
     </div>
   </div>
@@ -111,7 +127,7 @@ const allItems = (await getCollection('specializations')).sort((a, b) => a.data.
     .drawer-panel {
       transform: translateY(100%);
       max-height: 70vh;
-      border-radius: 1rem 1rem 0 0;
+      border-radius: 24px 24px 0 0;
       margin-top: auto;
     }
 
@@ -129,8 +145,8 @@ const allItems = (await getCollection('specializations')).sort((a, b) => a.data.
   @media (min-width: 768px) {
     .drawer-panel {
       max-height: none;
-      border-top-left-radius: 1rem;
-      border-bottom-left-radius: 1rem;
+      border-top-left-radius: 24px;
+      border-bottom-left-radius: 24px;
     }
   }
 </style>
@@ -144,12 +160,53 @@ const allItems = (await getCollection('specializations')).sort((a, b) => a.data.
     const items = document.querySelectorAll('.spec-item');
     const closeBtns = document.querySelectorAll('.js-close-spec');
     const backdrop = dialog?.querySelector('.drawer-backdrop');
+    const container = document.getElementById('spec-scroll-container');
+
+    // Drag-to-scroll support for mouse/trackpad swipe simulation
+    if (container) {
+      let isDown = false;
+      let startX = 0;
+      let scrollLeft = 0;
+      let isDragging = false;
+
+      container.addEventListener('mousedown', (e) => {
+        isDown = true;
+        isDragging = false;
+        startX = e.pageX - container.offsetLeft;
+        scrollLeft = container.scrollLeft;
+      });
+
+      window.addEventListener('mouseup', () => {
+        isDown = false;
+      });
+
+      container.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        const x = e.pageX - container.offsetLeft;
+        const walk = (x - startX);
+        if (Math.abs(walk) > 5) {
+          isDragging = true;
+        }
+        container.scrollLeft = scrollLeft - walk;
+      });
+
+      // Prevent click triggering drawer when dragging
+      items.forEach((item) => {
+        item.addEventListener('click', (e) => {
+          if (isDragging) {
+            e.stopImmediatePropagation();
+            e.preventDefault();
+            isDragging = false;
+          }
+        }, true);
+      });
+    }
 
     function open(title: string, desc: string, icon: string) {
       if (!dialog || !titleEl || !descEl || !iconEl) return;
       titleEl.textContent = title;
       descEl.textContent = desc;
-      iconEl.innerHTML = `<div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background-color: var(--color-kofi-blue, #e8e4d8);"><i class="${icon} text-base" style="color: var(--color-cobalt-pop, #3b5bdb);"></i></div>`;
+      iconEl.innerHTML = `<div class="w-11 h-11 rounded-[12px] flex items-center justify-center shrink-0 bg-[#D09AFC]/30 text-[#2A1E1E]"><i class="${icon} text-base"></i></div>`;
       dialog.showModal();
       dialog.style.opacity = '1';
       dialog.style.pointerEvents = 'auto';

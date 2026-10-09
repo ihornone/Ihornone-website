@@ -5,31 +5,29 @@ import ServiceCard from './ServiceCard.astro';
 const allServices = (await getCollection('services')).sort((a, b) => a.data.order - b.data.order);
 ---
 
-<section id="services" class="space-y-8 sm:space-y-12 w-full" data-animate="fade-up">
+<section id="services" class="w-full space-y-8 sm:space-y-10" data-animate="fade-up">
   
-  <!-- Section Title -->
-  <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
-    <div class="space-y-2">
-      <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-[10px] text-xs font-black uppercase tracking-wider bg-[#D09AFC] text-[#2A1E1E] shadow-2xs">
-        <i class="fa-solid fa-wand-magic-sparkles text-xs"></i>
-        Напрямки розробки
-      </span>
-      <h2 class="text-2xl sm:text-4xl font-black text-[#2A1E1E] tracking-tight m-0">
-        Рішення для масштабування бізнесу
-      </h2>
-      <p class="text-sm sm:text-base text-[#623A2D]/80 max-w-xl m-0 font-medium">
-        Оберіть напрямок, що закриє ваші бізнес-завдання з першого дня релізу.
-      </p>
-    </div>
-    
-    <a href="/services" class="pill-btn-outline !py-2.5 !px-5 text-xs font-bold self-start md:self-auto shrink-0 flex items-center gap-2">
+  <!-- Left-aligned Section Header without badge or subtitle -->
+  <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-[#2A1E1E] tracking-tight leading-[1.15] m-0 text-left">
+      Рішення для масштабування бізнесу
+    </h2>
+
+    <a
+      href="/services"
+      class="inline-flex items-center gap-2 text-xs sm:text-sm font-black text-[#2A1E1E] hover:text-[#95553C] transition-colors group no-underline self-start sm:self-auto shrink-0 pb-1"
+    >
       <span>Усі послуги</span>
-      <i class="fa-solid fa-arrow-right text-xs"></i>
+      <i class="fa-solid fa-arrow-right text-xs transition-transform duration-200 group-hover:translate-x-1"></i>
     </a>
   </div>
 
-  <!-- Cards: Horizontal scroll with snap on mobile/tablet, 3-col grid on desktop (Identical to /services) -->
-  <div class="flex md:grid items-stretch overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none md:grid-cols-3 gap-5 md:gap-6 -mx-4 px-4 sm:-mx-6 sm:px-6 md:mx-0 md:px-0 pt-4 pb-4 md:pb-0 scrollbar-none" data-animate="fade-up" data-stagger>
+  <!-- Cards Grid -->
+  <div
+    class="w-full grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-7 items-stretch"
+    data-animate="fade-up"
+    data-stagger
+  >
     {allServices.map((service) => {
       const firstPlan = service.data.pricing?.[0];
       const startingPrice = firstPlan ? `${firstPlan.price}` : '';
@@ -38,8 +36,8 @@ const allServices = (await getCollection('services')).sort((a, b) => a.data.orde
           id={service.id}
           icon={service.data.icon}
           title={service.data.title}
+          shortTitle={service.data.shortTitle}
           description={service.data.description}
-          includes={service.data.includes}
           isPopular={service.data.isPopular}
           startingPrice={startingPrice}
         />
