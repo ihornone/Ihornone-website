@@ -3,7 +3,7 @@ title: "KROK by Sandra — освітня платформа для медикі
 category: "Сайти"
 icon: "fa-solid fa-stethoscope"
 image: "https://raw.githubusercontent.com/ihornone-client-repos/portfolio-media/refs/heads/main/krok-by-sandra/cover-image.png"
-description: "Повноцінна EdTech LMS-платформа для підготовки студентів-медиків до іспитів КРОК-1, 2, 3 та ЄДКІ з інтерактивними тестами, відеокурсами, Monobank еквайрингом та ШІ-асистентом."
+description: "Повноцінна EdTech LMS-платформа для підготовки студентів-медиків до іспитів КРОК-1, 2, 3 з інтерактивними тестами, відеокурсами, Monobank еквайрингом та ШІ-асистентом."
 type: "EdTech LMS Платформа"
 platform: "Web (Cloudflare Edge & Next.js)"
 technologies: "Next.js 16, React 19, Cloudflare Workers, Hono, Drizzle ORM, D1, R2, Monobank API, DeepSeek AI"
@@ -37,7 +37,7 @@ features:
 process:
   - step: 1
     title: "Аналіз специфіки медичної освіти"
-    description: "Вивчили стандарти тестування Центру тестування МОЗ України (КРОК-1, КРОК-2, КРОК-3, ЄДКІ) та сценарії підготовки студентів."
+    description: "Вивчили стандарти тестування Центру тестування МОЗ України (КРОК-1, КРОК-2, КРОК-3) та сценарії підготовки студентів."
   - step: 2
     title: "Проектування Serverless Edge-архітектури"
     description: "Створили схему бази даних на Drizzle ORM під Cloudflare D1 та розробили REST API на мікрофреймворку Hono для бекенд-воркера."

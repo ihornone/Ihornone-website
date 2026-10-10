@@ -47,37 +47,37 @@ const { class: className = "" } = Astro.props;
     </h1>
   </div>
 
-  <!-- Bottom-Right Carved Buttons Pocket (Immediate 100% visibility on load) -->
+  <!-- Bottom-Right Carved Buttons Pocket (Seamless Organic Curves matching site design system) -->
   <div class="absolute bottom-0 right-0 z-20 pointer-events-auto">
     <div
-      class="relative bg-[#FAF1EC] rounded-tl-[10px] px-4 sm:px-5 py-3 sm:py-3.5 shadow-md flex items-center gap-3"
+      class="relative bg-[#FAF1EC] rounded-tl-[24px] sm:rounded-tl-[28px] px-5 sm:px-6 py-3.5 sm:py-4 shadow-md flex items-center gap-3 sm:gap-3.5"
     >
-      <!-- Inverted Scoop Curve (Above the plate along the right edge: curves smoothly inwards) -->
+      <!-- Inverted Scoop Curve (Above the plate along the right edge: curves smoothly inwards R=24) -->
       <svg
-        class="absolute -top-[10px] right-0 w-[10px] h-[10px] pointer-events-none"
-        viewBox="0 0 10 10"
+        class="absolute -top-[24px] right-0 w-[24px] h-[24px] pointer-events-none"
+        viewBox="0 0 24 24"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <path d="M10 10 V0 A 10 10 0 0 1 0 10 H10 Z" fill="#FAF1EC"></path>
+        <path d="M24 24 V0 A 24 24 0 0 1 0 24 H24 Z" fill="#FAF1EC"></path>
       </svg>
 
-      <!-- Inverted Scoop Curve (To the left of the plate along the bottom edge: curves smoothly inwards) -->
+      <!-- Inverted Scoop Curve (To the left of the plate along the bottom edge: curves smoothly inwards R=24) -->
       <svg
-        class="absolute bottom-0 -left-[10px] w-[10px] h-[10px] pointer-events-none"
-        viewBox="0 0 10 10"
+        class="absolute bottom-0 -left-[24px] w-[24px] h-[24px] pointer-events-none"
+        viewBox="0 0 24 24"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <path d="M10 10 H0 A 10 10 0 0 0 10 0 V10 Z" fill="#FAF1EC"></path>
+        <path d="M24 24 H0 A 24 24 0 0 0 24 0 V24 Z" fill="#FAF1EC"></path>
       </svg>
 
-      <!-- Lavender Primary Button with Pulse Glow (10px rounded) -->
+      <!-- Lavender Primary Button with Pulse Glow (Capsule rounded-full) -->
       <a
         href="https://t.me/ihornone"
         target="_blank"
         rel="noopener noreferrer"
-        class="inline-flex items-center justify-center gap-2 rounded-[10px] font-black text-xs sm:text-sm px-5 py-2.5 bg-[#D09AFC] text-[#2A1E1E] animate-pulse-glow hover:bg-[#BF80FA] hover:-translate-y-0.5 active:translate-y-0 transition-all no-underline group"
+        class="inline-flex items-center justify-center gap-2 rounded-full font-black text-xs sm:text-sm px-6 sm:px-7 py-3 bg-[#D09AFC] text-[#2A1E1E] animate-pulse-glow hover:bg-[#BF80FA] hover:-translate-y-0.5 active:translate-y-0 transition-all no-underline group shadow-xs"
       >
         <i
           class="fa-brands fa-telegram text-[#2A1E1E] text-base group-hover:scale-110 transition-transform"
@@ -86,10 +86,10 @@ const { class: className = "" } = Astro.props;
         <i class="fa-solid fa-arrow-right text-[10px] text-[#2A1E1E]"></i>
       </a>
 
-      <!-- Dark Contrast Button (10px rounded) -->
+      <!-- Dark Contrast Button (Capsule rounded-full) -->
       <a
         href="/portfolio"
-        class="inline-flex items-center justify-center gap-2 rounded-[10px] font-bold text-xs sm:text-sm px-5 py-2.5 bg-[#2A1E1E] hover:bg-[#3D2C2C] text-white shadow-xs hover:-translate-y-0.5 active:translate-y-0 transition-all no-underline"
+        class="inline-flex items-center justify-center gap-2 rounded-full font-bold text-xs sm:text-sm px-6 sm:px-7 py-3 bg-[#2A1E1E] hover:bg-[#3D2C2C] text-white shadow-xs hover:-translate-y-0.5 active:translate-y-0 transition-all no-underline"
       >
         <span>Дивитися кейси</span>
         <i class="fa-solid fa-arrow-up-right-from-square text-[10px] opacity-75"
@@ -98,12 +98,13 @@ const { class: className = "" } = Astro.props;
     </div>
   </div>
 
-  <!-- Subtle Scroll Down Indicator in Lavender Accent -->
+  <!-- Subtle Scroll Down Indicator in Glass Pill -->
   <a
     href="#services"
-    class="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-1 text-[#D09AFC]/80 hover:text-white transition-colors no-underline text-[10px] font-black uppercase tracking-widest"
+    class="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-10 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/25 hover:bg-black/45 backdrop-blur-md border border-white/20 text-[#FAF1EC] hover:text-white transition-all no-underline text-xs font-bold shadow-xs"
     aria-label="Гортати вниз"
   >
-    <i class="fa-solid fa-chevron-down text-xs animate-bounce"></i>
+    <span>Гортати вниз</span>
+    <i class="fa-solid fa-chevron-down text-[10px] animate-bounce"></i>
   </a>
 </section>

@@ -45,10 +45,10 @@ const {
   {contacts.map((contact) => (
     <a
       href={contact.href}
-      class="bg-white border border-[#623A2D]/10 rounded-[10px] p-5 sm:p-6 shadow-2xs flex items-center gap-4 hover:-translate-y-1 hover:border-[#D09AFC] hover:shadow-xl transition-all no-underline group"
+      class="bg-white border border-[#623A2D]/10 rounded-[24px] sm:rounded-[32px] p-5 sm:p-6 shadow-[0_12px_36px_rgba(42,30,30,0.05)] flex items-center gap-4 hover:-translate-y-1 hover:border-[#D09AFC] hover:shadow-[0_22px_48px_rgba(42,30,30,0.12)] transition-all no-underline group"
       {...(contact.external ? { target: '_blank', rel: 'noopener' } : {})}
     >
-      <div class="w-12 h-12 bg-[#FAF1EC] border border-[#623A2D]/10 rounded-[10px] flex items-center justify-center shrink-0 group-hover:border-[#D09AFC] transition-colors">
+      <div class="w-12 h-12 bg-[#FAF1EC] border border-[#623A2D]/10 rounded-full flex items-center justify-center shrink-0 group-hover:border-[#D09AFC] transition-colors">
         <img src={contact.icon} alt="" class="w-6 h-6" loading="lazy" />
       </div>
       <div class="flex-grow min-w-0">

@@ -30,11 +30,9 @@ const allServices = (await getCollection('services')).sort((a, b) => a.data.orde
     }
   }}
 >
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-2 sm:pt-4 pb-16 sm:pb-24 space-y-16 sm:space-y-24">
+  <div class="w-full max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20 pt-2 sm:pt-4 pb-16 sm:pb-24 space-y-16 sm:space-y-24">
     <Hero
-      badge={{ text: 'Напрямки розробки', icon: 'fa-solid fa-code' }}
       title="Послуги та рішення для вашого бізнесу"
-      subtitle="Розробка Telegram-ботів, мобільних додатків та веб-сайтів будь-якої складності."
       buttons={[
         { label: 'Обговорити проєкт', href: '/contacts', variant: 'dark', icon: 'fa-solid fa-arrow-right' },
         { label: 'Переглянути роботи', href: '/portfolio', variant: 'outline' },

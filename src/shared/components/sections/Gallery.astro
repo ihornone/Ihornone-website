@@ -35,7 +35,7 @@ const remainingCount = photos.length - initialCount;
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2.5">
           <SectionHeader title={title} class="m-0" />
-          <span class="px-3 py-1 bg-[#FAF1EC] border border-[#623A2D]/10 text-[#2A1E1E] rounded-[10px] text-xs font-black" role="status">
+          <span class="px-3.5 py-1 bg-[#FAF1EC] border border-[#623A2D]/10 text-[#2A1E1E] rounded-full text-xs font-black" role="status">
             {photos.length} фото
           </span>
         </div>
@@ -47,7 +47,7 @@ const remainingCount = photos.length - initialCount;
           const isHidden = index >= initialCount;
           return (
             <div
-              class={`rounded-[10px] overflow-hidden border border-[#623A2D]/10 bg-[#FAF1EC]/40 shadow-2xs hover:border-[#D09AFC] hover:shadow-md transition-all duration-300 group cursor-pointer relative gallery-item ${isVertical ? 'aspect-[9/16]' : 'aspect-[16/10]'} flex items-center justify-center ${isHidden ? 'hidden gallery-hidden' : ''}`}
+              class={`rounded-[18px] sm:rounded-[22px] overflow-hidden border border-[#623A2D]/10 bg-[#FAF1EC]/40 shadow-[0_8px_24px_rgba(42,30,30,0.04)] hover:border-[#D09AFC] hover:shadow-[0_16px_36px_rgba(42,30,30,0.1)] transition-all duration-300 group cursor-pointer relative gallery-item ${isVertical ? 'aspect-[9/16]' : 'aspect-[16/10]'} flex items-center justify-center ${isHidden ? 'hidden gallery-hidden' : ''}`}
               role="listitem"
               data-url={photoUrl}
               data-index={index}
@@ -60,7 +60,7 @@ const remainingCount = photos.length - initialCount;
                 decoding="async"
               />
               <div class="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors duration-300 flex items-end p-3 pointer-events-none">
-                <span class="opacity-0 group-hover:opacity-100 transition-opacity bg-white/95 backdrop-blur-xs text-[#2A1E1E] text-[10px] font-black px-2.5 py-1 rounded-[10px] shadow-xs">
+                <span class="opacity-0 group-hover:opacity-100 transition-opacity bg-white/95 backdrop-blur-xs text-[#2A1E1E] text-[10px] font-black px-2.5 py-1 rounded-full shadow-xs">
                   Збільшити <i class="fa-solid fa-expand ml-1" aria-hidden="true"></i>
                 </span>
               </div>
@@ -74,7 +74,7 @@ const remainingCount = photos.length - initialCount;
           <button
             id="gallery-toggle-btn"
             type="button"
-            class="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-morning-fog hover:bg-black/5 border border-black/10 text-ink-black text-sm font-bold transition-all duration-300 cursor-pointer shadow-2xs"
+            class="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-[#FAF1EC] hover:bg-[#F4E8E3] border border-[#623A2D]/15 text-[#2A1E1E] text-sm font-bold transition-all duration-300 cursor-pointer shadow-2xs"
           >
             <span id="gallery-toggle-text">Показати решту фото ({remainingCount})</span>
             <i id="gallery-toggle-icon" class="fa-solid fa-chevron-down text-xs transition-transform duration-300"></i>

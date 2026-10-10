@@ -43,23 +43,16 @@ const allServices = (await getCollection('services')).sort((a, b) => a.data.orde
 
 <section class:list={['grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start w-full', className]} aria-labelledby="contact-form-heading">
   <div class="space-y-6">
-    <div class="space-y-2">
-      <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-[10px] text-xs font-black uppercase tracking-wider bg-[#E8BA98] text-[#2A1E1E] shadow-2xs">
-        <i class="fa-solid fa-paper-plane text-xs"></i>
-        Зв'язок
-      </span>
+    <div>
       <h2 id="contact-form-heading" class="text-2xl sm:text-4xl font-black text-[#2A1E1E] tracking-tight m-0">
         Напишіть мені
       </h2>
-      <p class="text-sm sm:text-base text-[#623A2D]/80 font-medium leading-relaxed m-0">
-        Опишіть ваш проєкт, і я відповім протягом 24 годин з пропозицією щодо термінів та вартості.
-      </p>
     </div>
 
     <div class="space-y-3.5" role="list" aria-label="Переваги співпраці">
       {benefits.map((benefit) => (
-        <div class="bg-white border border-[#623A2D]/10 rounded-[10px] p-4 sm:p-5 flex items-center gap-4 shadow-2xs hover:border-[#D09AFC] hover:shadow-md transition-all" role="listitem">
-          <div class="w-10 h-10 rounded-[10px] bg-[#FAF1EC] border border-[#623A2D]/10 flex items-center justify-center text-[#2A1E1E] shrink-0">
+        <div class="bg-white border border-[#623A2D]/10 rounded-[20px] sm:rounded-[24px] p-4 sm:p-5 flex items-center gap-4 shadow-2xs hover:border-[#D09AFC] hover:shadow-md transition-all" role="listitem">
+          <div class="w-10 h-10 rounded-full bg-[#FAF1EC] border border-[#623A2D]/10 flex items-center justify-center text-[#2A1E1E] shrink-0">
             <i class={benefit.icon}></i>
           </div>
           <div>
@@ -80,7 +73,7 @@ const allServices = (await getCollection('services')).sort((a, b) => a.data.orde
           Ім'я <span class="text-red-500" aria-hidden="true">*</span>
         </label>
         <input
-          class="w-full bg-[#FAF1EC]/30 border border-[#623A2D]/15 rounded-[10px] px-4 py-3 text-sm text-[#2A1E1E] outline-none focus:bg-white focus:border-[#D09AFC] focus:ring-2 focus:ring-[#D09AFC]/20 transition-all"
+          class="w-full bg-[#FAF1EC]/30 border border-[#623A2D]/15 rounded-full px-5 py-3 text-sm text-[#2A1E1E] outline-none focus:bg-white focus:border-[#D09AFC] focus:ring-2 focus:ring-[#D09AFC]/20 transition-all"
           type="text"
           id="name"
           name="name"
@@ -96,7 +89,7 @@ const allServices = (await getCollection('services')).sort((a, b) => a.data.orde
           Зручний зв'язок <span class="text-red-500" aria-hidden="true">*</span>
         </label>
         <input
-          class="w-full bg-[#FAF1EC]/30 border border-[#623A2D]/15 rounded-[10px] px-4 py-3 text-sm text-[#2A1E1E] outline-none focus:bg-white focus:border-[#D09AFC] focus:ring-2 focus:ring-[#D09AFC]/20 transition-all"
+          class="w-full bg-[#FAF1EC]/30 border border-[#623A2D]/15 rounded-full px-5 py-3 text-sm text-[#2A1E1E] outline-none focus:bg-white focus:border-[#D09AFC] focus:ring-2 focus:ring-[#D09AFC]/20 transition-all"
           type="text"
           id="contact"
           name="contact"
@@ -115,7 +108,7 @@ const allServices = (await getCollection('services')).sort((a, b) => a.data.orde
         <div class="relative" id="service-dropdown">
           <button
             type="button"
-            class="w-full bg-[#FAF1EC]/30 border border-[#623A2D]/15 rounded-[10px] px-4 py-3 text-sm text-left outline-none focus:bg-white focus:border-[#D09AFC] focus:ring-2 focus:ring-[#D09AFC]/20 transition-all cursor-pointer flex items-center justify-between gap-2 text-[#2A1E1E]"
+            class="w-full bg-[#FAF1EC]/30 border border-[#623A2D]/15 rounded-full px-5 py-3 text-sm text-left outline-none focus:bg-white focus:border-[#D09AFC] focus:ring-2 focus:ring-[#D09AFC]/20 transition-all cursor-pointer flex items-center justify-between gap-2 text-[#2A1E1E]"
             id="service-trigger"
             aria-haspopup="listbox"
             aria-expanded="false"
@@ -127,23 +120,23 @@ const allServices = (await getCollection('services')).sort((a, b) => a.data.orde
             <i class="fa-solid fa-chevron-down text-xs text-[#623A2D]/50 transition-transform duration-200" id="service-arrow"></i>
           </button>
           <div
-            class="absolute top-full left-0 right-0 mt-1.5 bg-white border border-[#623A2D]/10 rounded-[10px] shadow-xl overflow-hidden z-50 hidden"
+            class="absolute top-full left-0 right-0 mt-1.5 bg-white border border-[#623A2D]/10 rounded-[20px] shadow-xl overflow-hidden z-50 hidden"
             id="service-options"
             role="listbox"
             aria-labelledby="service-label"
           >
-            <div class="p-1.5">
+            <div class="p-2 space-y-1">
               {allServices.map((service) => (
                 <button
                   type="button"
-                  class="service-option w-full flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-sm text-left hover:bg-[#FAF1EC] transition-colors cursor-pointer"
+                  class="service-option w-full flex items-center gap-3 px-3.5 py-2.5 rounded-full text-sm text-left hover:bg-[#FAF1EC] transition-colors cursor-pointer"
                   data-value={service.id}
                   data-icon={service.data.icon}
                   data-title={service.data.title}
                   role="option"
                   aria-selected="false"
                 >
-                  <div class="w-8 h-8 rounded-[8px] bg-[#FAF1EC] border border-[#623A2D]/10 flex items-center justify-center shrink-0">
+                  <div class="w-8 h-8 rounded-full bg-[#FAF1EC] border border-[#623A2D]/10 flex items-center justify-center shrink-0">
                     <i class={`${service.data.icon} text-sm text-[#2A1E1E]`}></i>
                   </div>
                   <span class="font-bold text-[#2A1E1E]">{service.data.title}</span>
@@ -151,14 +144,14 @@ const allServices = (await getCollection('services')).sort((a, b) => a.data.orde
               ))}
               <button
                 type="button"
-                class="service-option w-full flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-sm text-left hover:bg-[#FAF1EC] transition-colors cursor-pointer"
+                class="service-option w-full flex items-center gap-3 px-3.5 py-2.5 rounded-full text-sm text-left hover:bg-[#FAF1EC] transition-colors cursor-pointer"
                 data-value="other"
                 data-icon="fa-solid fa-ellipsis"
                 data-title="Інше"
                 role="option"
                 aria-selected="false"
               >
-                <div class="w-8 h-8 rounded-[8px] bg-[#FAF1EC] border border-[#623A2D]/10 flex items-center justify-center shrink-0">
+                <div class="w-8 h-8 rounded-full bg-[#FAF1EC] border border-[#623A2D]/10 flex items-center justify-center shrink-0">
                   <i class="fa-solid fa-ellipsis text-sm text-[#2A1E1E]/60"></i>
                 </div>
                 <span class="font-bold text-[#2A1E1E]">Інше</span>
@@ -173,7 +166,7 @@ const allServices = (await getCollection('services')).sort((a, b) => a.data.orde
           Опишіть проєкт <span class="text-red-500" aria-hidden="true">*</span>
         </label>
         <textarea
-          class="w-full bg-[#FAF1EC]/30 border border-[#623A2D]/15 rounded-[10px] px-4 py-3 text-sm text-[#2A1E1E] outline-none focus:bg-white focus:border-[#D09AFC] focus:ring-2 focus:ring-[#D09AFC]/20 transition-all min-h-[110px] resize-y"
+          class="w-full bg-[#FAF1EC]/30 border border-[#623A2D]/15 rounded-[20px] px-5 py-3 text-sm text-[#2A1E1E] outline-none focus:bg-white focus:border-[#D09AFC] focus:ring-2 focus:ring-[#D09AFC]/20 transition-all min-h-[110px] resize-y"
           id="message"
           name="message"
           placeholder="Коротко опишіть вашу ідею або задачу..."
