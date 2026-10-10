@@ -1,8 +1,4 @@
 ---
-import Card from '../../../shared/components/ui/Card.astro';
-import SectionHeader from '../../../shared/components/ui/SectionHeader.astro';
-import Button from '../../../shared/components/ui/Button.astro';
-
 interface PricingPlan {
   name: string;
   price: string;
@@ -21,80 +17,55 @@ const { pricing } = Astro.props;
 ---
 
 {pricing && pricing.length > 0 && (
-  <section class="space-y-6 w-full" data-animate="fade-up">
-    <SectionHeader
-      title="Вартість та терміни розробки"
-      subtitle="Прозорі діапазони бюджету без прихованих доплат. Ціна та терміни фіксуються в технічному завданні до старту."
-    />
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-6" data-animate="fade-up" data-stagger>
-      {pricing.map((plan, index) => {
-        const isHighlight = index === 1;
-        return (
-          <Card
-            hover
-            variant={isHighlight ? 'highlight' : 'default'}
-            class="flex flex-col justify-between space-y-5 p-6 relative overflow-visible"
-          >
-            {isHighlight && (
-              <div class="absolute -top-3.5 right-6 bg-[#D09AFC] text-[#2A1E1E] text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-[10px] shadow-2xs z-20">
-                Оптимальний вибір
-              </div>
-            )}
+  <section class="space-y-6 sm:space-y-8 w-full" data-animate="fade-up">
+    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-[#2A1E1E] tracking-tight m-0 text-left">
+      Тарифи та вартість
+    </h2>
 
-            <div class="space-y-4">
-              <!-- Plan Header -->
-              <div class="space-y-1.5">
-                <strong class="text-lg sm:text-xl font-black text-[#2A1E1E] block">
-                  {plan.name}
-                </strong>
-                <p class="text-xs sm:text-sm text-[#623A2D]/80 font-medium m-0 min-h-[2.25rem]">
-                  {plan.description}
-                </p>
-              </div>
-
-              <!-- Price & Range Block (Ceiling included!) -->
-              <div class="p-3.5 rounded-[10px] bg-[#FAF1EC] border border-[#623A2D]/10 space-y-1.5">
-                <div class="flex items-baseline justify-between flex-wrap gap-1">
-                  <span class="text-[11px] font-bold text-[#623A2D]/70 uppercase tracking-wider">Діапазон бюджету:</span>
-                </div>
-                <div class="text-xl sm:text-2xl font-black text-[#2A1E1E] tracking-tight m-0">
-                  {plan.range || plan.price}
-                </div>
-                {plan.timeline && (
-                  <div class="pt-1.5 border-t border-[#623A2D]/10 flex items-center gap-1.5 text-xs font-bold text-[#95553C]">
-                    <i class="fa-solid fa-clock text-xs"></i>
-                    <span>Термін: <strong>{plan.timeline}</strong></span>
-                  </div>
-                )}
-              </div>
-
-              <!-- Features List -->
-              <ul class="space-y-2 pt-2 border-t border-[#623A2D]/10 list-none p-0 m-0">
-                {plan.features.slice(0, 4).map((f) => (
-                  <li class="flex items-center gap-2 text-xs font-bold text-[#2A1E1E]/90">
-                    <i class="fa-solid fa-circle-check text-[#D09AFC] text-xs shrink-0"></i>
-                    <span>{f}</span>
-                  </li>
-                ))}
-              </ul>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 items-stretch">
+      {pricing.map((plan) => (
+        <div class="bg-white rounded-[24px] sm:rounded-[32px] p-6 sm:p-7 border border-[#623A2D]/10 shadow-[0_12px_36px_rgba(42,30,30,0.05)] hover:shadow-[0_20px_48px_rgba(42,30,30,0.1)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+          <div class="space-y-4">
+            <div>
+              <h3 class="text-xl sm:text-2xl font-black text-[#2A1E1E] m-0 tracking-tight">
+                {plan.name}
+              </h3>
             </div>
 
-            <!-- CTA Action Button -->
-            <div class="pt-4 border-t border-[#623A2D]/10">
-              <Button
-                href={`https://t.me/ihornone?text=${encodeURIComponent(`Привіт! Мене цікавить тариф "${plan.name}". Хочу дізнатися деталі.`)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                variant={isHighlight ? 'primary' : 'outline'}
-                class="w-full text-center justify-center text-xs font-black"
-              >
-                <span>Обрати {plan.name}</span>
-                <i class="fa-solid fa-arrow-right text-[10px]"></i>
-              </Button>
+            <div class="pt-1">
+              <div class="text-2xl sm:text-3xl font-black text-[#2A1E1E] tracking-tight">
+                {plan.range || plan.price}
+              </div>
+              {plan.timeline && (
+                <span class="text-xs text-[#623A2D]/60 font-medium block mt-1">
+                  Термін: {plan.timeline}
+                </span>
+              )}
             </div>
-          </Card>
-        );
-      })}
+
+            <ul class="space-y-2 pt-4 border-t border-[#623A2D]/10 list-none p-0 m-0">
+              {plan.features.map((feature) => (
+                <li class="flex items-start gap-2 text-xs font-medium text-[#2A1E1E]/80 leading-relaxed">
+                  <span class="text-[#623A2D]/40 text-xs select-none">•</span>
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div class="pt-6 mt-auto">
+            <a
+              href={`https://t.me/ihornone?text=${encodeURIComponent(`Привіт! Мене цікавить тариф "${plan.name}".`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="w-full inline-flex items-center justify-center gap-2 py-3 px-5 rounded-full bg-[#2A1E1E] text-white hover:bg-[#3D2C2C] text-xs font-black transition-all duration-200 no-underline"
+            >
+              <span>Обрати {plan.name}</span>
+              <i class="fa-solid fa-arrow-right text-[10px]" />
+            </a>
+          </div>
+        </div>
+      ))}
     </div>
   </section>
 )}

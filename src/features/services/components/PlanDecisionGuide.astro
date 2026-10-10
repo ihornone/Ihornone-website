@@ -1,7 +1,4 @@
 ---
-import Card from '../../../shared/components/ui/Card.astro';
-import SectionHeader from '../../../shared/components/ui/SectionHeader.astro';
-
 export interface GuideItem {
   planName: string;
   badge?: string;
@@ -17,36 +14,46 @@ const { guide = [] } = Astro.props;
 ---
 
 {guide && guide.length > 0 && (
-  <section class="space-y-6 w-full" data-animate="fade-up">
-    <SectionHeader
-      title="Як обрати потрібний тариф?"
-      subtitle="Орієнтири, що допоможуть швидко підібрати рішення під вашу ціль."
-    />
+  <section class="space-y-6 sm:space-y-8 w-full" data-animate="fade-up">
+    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-[#2A1E1E] tracking-tight leading-[1.15] m-0 text-left">
+      Як обрати потрібний тариф?
+    </h2>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6" data-animate="fade-up" data-stagger>
-      {guide.map((item) => (
-        <Card class="p-6 space-y-4 bg-white border border-[#623A2D]/10">
-          <div class="space-y-1 pb-3 border-b border-[#623A2D]/10">
-            <h3 class="text-base font-black text-[#2A1E1E] m-0">
-              {item.planName}
-            </h3>
-            {item.recommendation && (
-              <p class="text-xs text-[#623A2D]/80 font-medium m-0 leading-relaxed">
-                {item.recommendation}
-              </p>
-            )}
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-7" data-animate="fade-up" data-stagger>
+      {guide.map((item, index) => {
+        const isHighlight = index === 1;
+        return (
+          <div class:list={[
+            "rounded-[24px] sm:rounded-[32px] p-6 sm:p-7 space-y-4 border transition-all duration-300 flex flex-col justify-between",
+            isHighlight
+              ? "bg-[#FAF1EC] border-[#623A2D]/15 shadow-sm"
+              : "bg-white border-[#623A2D]/10 shadow-[0_10px_30px_rgba(42,30,30,0.03)]"
+          ]}>
+            <div class="space-y-2">
+              <span class="inline-flex items-center px-3.5 py-1 rounded-full bg-white border border-[#623A2D]/10 text-xs font-black text-[#2A1E1E]">
+                {item.badge || `Варіант 0${index + 1}`}
+              </span>
+              <h3 class="text-xl font-black text-[#2A1E1E] m-0 tracking-tight">
+                {item.planName}
+              </h3>
+              {item.recommendation && (
+                <p class="text-xs sm:text-sm text-[#623A2D]/80 font-medium m-0 leading-relaxed">
+                  {item.recommendation}
+                </p>
+              )}
+            </div>
+
+            <ul class="space-y-2.5 list-none p-0 m-0 pt-3 border-t border-[#623A2D]/10">
+              {item.reasons.map((reason) => (
+                <li class="flex items-start gap-2.5 text-xs font-bold text-[#2A1E1E] leading-snug">
+                  <i class="fa-solid fa-circle-check text-[#D09AFC] text-xs mt-0.5 shrink-0" />
+                  <span>{reason}</span>
+                </li>
+              ))}
+            </ul>
           </div>
-
-          <ul class="space-y-2.5 list-none p-0 m-0">
-            {item.reasons.map((reason) => (
-              <li class="flex items-start gap-2.5 text-xs font-bold text-[#2A1E1E]/90 leading-snug">
-                <i class="fa-solid fa-arrow-right text-[#95553C] text-[10px] mt-1 shrink-0"></i>
-                <span>{reason}</span>
-              </li>
-            ))}
-          </ul>
-        </Card>
-      ))}
+        );
+      })}
     </div>
   </section>
 )}

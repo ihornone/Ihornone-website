@@ -16,9 +16,9 @@ const {
 } = Astro.props;
 
 const variantClasses = {
-  default: 'bg-white border border-[#623A2D]/10 shadow-2xs',
-  highlight: 'bg-white border-2 border-[#D09AFC] shadow-md',
-  flat: 'bg-[#FAF1EC] border border-[#623A2D]/10',
+  default: 'bg-white border border-[#623A2D]/10 shadow-[0_12px_36px_rgba(42,30,30,0.06)]',
+  highlight: 'bg-white border-2 border-[#D09AFC] shadow-[0_16px_40px_rgba(208,154,252,0.18)]',
+  flat: 'bg-[#FAF1EC] border border-[#623A2D]/10 shadow-[0_10px_30px_rgba(42,30,30,0.05)]',
 };
 
 const paddingClasses = {
@@ -27,8 +27,8 @@ const paddingClasses = {
   lg: 'p-6 sm:p-8 md:p-10',
 };
 
-const baseClasses = 'rounded-[10px] transition-all duration-300';
-const hoverClasses = hover ? 'hover:border-[#D09AFC] hover:shadow-xl hover:-translate-y-1' : '';
+const baseClasses = 'rounded-[24px] sm:rounded-[32px] transition-all duration-300';
+const hoverClasses = hover ? 'hover:border-[#D09AFC] hover:shadow-[0_22px_48px_rgba(42,30,30,0.12)] hover:-translate-y-1' : '';
 ---
 
 <Tag class:list={[baseClasses, variantClasses[variant], paddingClasses[padding], hoverClasses, className]}>

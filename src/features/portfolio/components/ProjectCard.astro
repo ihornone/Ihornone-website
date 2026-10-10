@@ -9,63 +9,55 @@ interface Props {
 const { project, class: className = '' } = Astro.props;
 ---
 
-<a
-  href={`/portfolio/${project.id}`}
+<article
   class:list={[
-    'project-card group flex flex-col justify-between rounded-[24px] overflow-hidden border border-[#623A2D]/10 bg-white shadow-[0_16px_36px_rgba(42,30,30,0.06)] hover:border-[#D09AFC] hover:shadow-[0_24px_52px_rgba(42,30,30,0.12)] hover:-translate-y-1.5 transition-all duration-300 no-underline text-[#2A1E1E]',
+    'project-card group flex flex-col justify-between rounded-[24px] sm:rounded-[32px] overflow-hidden border border-[#623A2D]/10 bg-white p-4 sm:p-5 shadow-[0_12px_36px_rgba(42,30,30,0.04)] hover:border-[#D09AFC] hover:shadow-[0_22px_48px_rgba(42,30,30,0.1)] hover:-translate-y-1.5 transition-all duration-300 text-[#2A1E1E]',
     className
   ]}
   data-category={project.category}
 >
-  <!-- Card Image Header with soft rounded frame -->
-  <div class="relative aspect-[16/10] w-full overflow-hidden bg-[#FAF1EC]">
+  <!-- 1. Велика картка фото (3:2, без обрізань, без зайвих бейджів) -->
+  <a
+    href={`/portfolio/${project.id}`}
+    class="block aspect-[3/2] w-full rounded-[18px] sm:rounded-[22px] overflow-hidden bg-[#2A1E1E] relative border border-[#623A2D]/8 shadow-xs no-underline group/media"
+    aria-label={project.title}
+  >
     <img
       src={project.image}
       alt={project.title}
-      class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+      class="w-full h-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
       loading="lazy"
     />
-    <div class="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+  </a>
 
-    <div class="absolute top-4 left-4 z-10 flex flex-wrap items-center gap-2 max-w-[80%]">
-      <span class="bg-[#2A1E1E]/90 backdrop-blur-md text-white text-[11px] font-black uppercase tracking-wider px-3 py-1 rounded-full shadow-xs">
-        {project.category}
-      </span>
-      {project.statusBadge && (
-        <span class="bg-white/95 backdrop-blur-md text-[#623A2D] border border-[#623A2D]/15 text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-xs">
-          {project.statusBadge}
+  <!-- Тіло картки під фото: Категорія, Назва, Кнопка -->
+  <div class="pt-5 pb-1 px-1 flex flex-col flex-1 justify-between space-y-4">
+    <div class="space-y-3">
+      <!-- 2. Категорія -->
+      <div>
+        <span class="inline-flex items-center px-3.5 py-1 rounded-full bg-[#FAF1EC] border border-[#623A2D]/12 text-[#623A2D] text-[11px] sm:text-xs font-black uppercase tracking-wider">
+          {project.category}
         </span>
-      )}
-    </div>
-  </div>
-
-  <!-- Content Body -->
-  <div class="p-6 sm:p-7 flex flex-col flex-1 justify-between space-y-4">
-    <div class="space-y-2.5">
-      <h3 class="text-lg sm:text-xl font-black text-[#2A1E1E] m-0 tracking-tight leading-snug group-hover:text-[#95553C] transition-colors">
-        {project.title}
-      </h3>
-      <p class="text-xs sm:text-sm text-[#623A2D]/75 leading-relaxed font-medium m-0 line-clamp-2">
-        {project.description}
-      </p>
-    </div>
-
-    <!-- Technologies & Action -->
-    <div class="pt-4 border-t border-[#623A2D]/10 flex items-center justify-between gap-2">
-      <div class="flex flex-wrap gap-1.5">
-        {project.meta?.technologies && (
-          project.meta.technologies.split(',').slice(0, 2).map((tech) => (
-            <span class="bg-[#FAF1EC] text-[#2A1E1E] border border-[#623A2D]/10 text-[10px] font-bold px-2.5 py-1 rounded-full">
-              {tech.trim()}
-            </span>
-          ))
-        )}
       </div>
 
-      <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#FAF1EC] group-hover:bg-[#2A1E1E] group-hover:text-white text-xs font-black text-[#2A1E1E] transition-all duration-300">
-        <span>Кейс</span>
-        <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-0.5"></i>
-      </span>
+      <!-- 3. Назва -->
+      <h3 class="text-lg sm:text-xl font-black text-[#2A1E1E] m-0 tracking-tight leading-snug group-hover:text-[#95553C] transition-colors">
+        <a href={`/portfolio/${project.id}`} class="text-[#2A1E1E] hover:text-[#95553C] transition-colors no-underline">
+          {project.title}
+        </a>
+      </h3>
+    </div>
+
+    <!-- 4. Кнопка -->
+    <div class="pt-2 mt-auto w-full">
+      <a
+        href={`/portfolio/${project.id}`}
+        class="w-full inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full bg-[#2A1E1E] text-white hover:bg-[#3D2C2C] text-xs sm:text-sm font-black shadow-xs hover:shadow-md transition-all duration-300 no-underline group/btn"
+        aria-label={`Детальніше про проєкт ${project.title}`}
+      >
+        <span>Детальніше про проєкт</span>
+        <i class="fa-solid fa-arrow-right text-[11px] transition-transform duration-300 group-hover/btn:translate-x-1" aria-hidden="true" />
+      </a>
     </div>
   </div>
-</a>
+</article>

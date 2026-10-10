@@ -20,11 +20,9 @@ const images = Object.values(imageModules) as string[];
     "url": "https://ihornone.site/reviews"
   }}
 >
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-2 sm:pt-4 pb-16 sm:pb-24 space-y-16 sm:space-y-24">
+  <div class="w-full max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20 pt-2 sm:pt-4 pb-16 sm:pb-24 space-y-16 sm:space-y-24">
     <Hero
-      badge={{ text: 'Відгуки клієнтів', icon: 'fa-solid fa-star' }}
       title="Що кажуть мої клієнти"
-      subtitle="Реальні відгуки від людей, з якими я мав задоволення працювати над їхніми проєктами."
     />
 
     <ReviewsMasonry images={images} />

@@ -21,7 +21,7 @@ const variantClasses = {
   muted: 'bg-[#FAF1EC] text-[#623A2D] border border-[#623A2D]/10',
 };
 
-const baseClasses = 'inline-flex items-center gap-1.5 px-3.5 py-1 rounded-[10px] text-xs font-black uppercase tracking-wider';
+const baseClasses = 'inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider';
 ---
 
 <span class:list={[baseClasses, variantClasses[variant], className]} role={ariaLabel ? 'status' : undefined} aria-label={ariaLabel}>

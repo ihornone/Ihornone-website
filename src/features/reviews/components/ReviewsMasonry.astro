@@ -14,7 +14,7 @@ const { images } = Astro.props;
           <img
             src={src}
             alt="Відгук клієнта"
-            class="w-full rounded-[10px] border border-[#623A2D]/10 object-cover cursor-pointer hover:border-[#D09AFC] hover:shadow-xl hover:scale-[1.01] transition-all duration-300"
+            class="w-full rounded-[20px] sm:rounded-[24px] border border-[#623A2D]/10 object-cover cursor-pointer shadow-[0_12px_36px_rgba(42,30,30,0.06)] hover:border-[#D09AFC] hover:shadow-[0_22px_48px_rgba(42,30,30,0.12)] hover:scale-[1.01] transition-all duration-300"
             loading="lazy"
             data-lightbox
           />
@@ -29,7 +29,7 @@ const { images } = Astro.props;
     <button id="lightbox-close" class="fixed top-4 right-4 z-[201] w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white text-xl flex items-center justify-center cursor-pointer border-none transition-colors" aria-label="Закрити">
       <i class="fa-solid fa-xmark"></i>
     </button>
-    <img id="lightbox-img" src="" alt="" class="max-w-[90vw] max-h-[90vh] object-contain rounded-lg mx-auto my-auto" />
+    <img id="lightbox-img" src="" alt="" class="max-w-[90vw] max-h-[90vh] object-contain rounded-[24px] mx-auto my-auto" />
   </dialog>
 </section>
 

@@ -59,11 +59,9 @@ const categories = ['Усі проєкти', ...new Set(allProjects.map((p) => p
     }
   }}
 >
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-2 sm:pt-4 pb-16 sm:pb-24 space-y-16 sm:space-y-24">
+  <div class="w-full max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20 pt-2 sm:pt-4 pb-16 sm:pb-24 space-y-16 sm:space-y-24">
     <Hero
-      badge={{ text: 'Портфоліо робіт', icon: 'fa-solid fa-briefcase' }}
       title="Реалізовані проєкти та кейси"
-      subtitle="Приклади розроблених Telegram-ботів, мобільних додатків та веб-сайтів. Кожен проєкт реалізовано під конкретні бізнес-завдання."
     />
 
     <PortfolioFilterGrid categories={categories} projects={allProjects} />

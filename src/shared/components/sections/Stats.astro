@@ -28,8 +28,8 @@ const {
 } = Astro.props;
 
 const variantClasses = {
-  default: 'bg-white border border-[#623A2D]/10 shadow-2xs',
-  accent: 'bg-[#FAF1EC] border border-[#623A2D]/10 shadow-2xs',
+  default: 'bg-white border border-[#623A2D]/10 shadow-[0_12px_36px_rgba(42,30,30,0.05)]',
+  accent: 'bg-[#FAF1EC] border border-[#623A2D]/10 shadow-[0_12px_36px_rgba(42,30,30,0.05)]',
 };
 
 const columnsClasses = {
@@ -40,7 +40,7 @@ const columnsClasses = {
 };
 ---
 
-<section class={`rounded-[10px] p-6 sm:p-8 md:p-10 w-full ${variantClasses[variant]} ${className}`} data-animate="fade-up">
+<section class={`rounded-[24px] sm:rounded-[32px] p-6 sm:p-8 md:p-10 w-full ${variantClasses[variant]} ${className}`} data-animate="fade-up">
   <div class={`grid ${columnsClasses[columns]} gap-6 text-center`} data-animate="fade-up" data-stagger>
     {items.map((item) => (
       <div class="space-y-1 flex flex-col items-center justify-center">

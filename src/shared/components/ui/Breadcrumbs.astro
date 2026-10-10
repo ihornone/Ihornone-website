@@ -12,20 +12,20 @@ interface Props {
 const { items, class: className = '' } = Astro.props;
 ---
 
-<nav aria-label="Breadcrumb" class={`flex items-center gap-2.5 flex-wrap ${className}`}>
+<nav aria-label="Breadcrumb" class={`flex items-center gap-2 flex-wrap ${className}`}>
   {items.map((item, index) => (
-    <span class="flex items-center gap-2.5">
-      {index > 0 && <span class="text-black/30 text-xs">/</span>}
+    <span class="flex items-center gap-2">
+      {index > 0 && <span class="text-[#623A2D]/30 text-xs">/</span>}
       {item.href ? (
         <a
           href={item.href}
-          class="inline-flex items-center gap-2 text-xs md:text-sm font-black text-[#2A1E1E] hover:text-[#95553C] transition-colors no-underline bg-white px-3.5 py-1.5 rounded-[10px] border border-[#623A2D]/10 shadow-2xs hover:border-[#D09AFC]"
+          class="inline-flex items-center gap-2 text-xs md:text-sm font-black text-[#2A1E1E] hover:text-[#95553C] transition-colors no-underline bg-white px-4 py-1.5 rounded-full border border-[#623A2D]/10 shadow-2xs hover:border-[#D09AFC]"
         >
           <i class="fa-solid fa-arrow-left text-[10px]"></i>
           {item.label}
         </a>
       ) : (
-        <span class="text-xs md:text-sm font-black text-[#2A1E1E] bg-[#FAF1EC] px-3.5 py-1.5 rounded-[10px] border border-[#623A2D]/10">
+        <span class="text-xs md:text-sm font-bold text-[#623A2D]/75 bg-[#FAF1EC] px-4 py-1.5 rounded-full border border-[#623A2D]/10">
           {item.label}
         </span>
       )}

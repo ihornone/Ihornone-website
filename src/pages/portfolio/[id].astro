@@ -103,24 +103,26 @@ const passportFields = [
     "dateCreated": year
   }}
 >
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-4 pb-16 sm:pb-24 space-y-6 sm:space-y-8">
-    <Breadcrumbs
-      items={[
-        { label: 'Портфоліо', href: '/portfolio' },
-        { label: title },
-      ]}
-    />
+  <div class="w-full max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20 pt-1 sm:pt-2 pb-16 sm:pb-24 space-y-8 sm:space-y-12">
+    <div class="space-y-4 sm:space-y-5">
+      <Breadcrumbs
+        items={[
+          { label: 'Портфоліо', href: '/portfolio' },
+          { label: title },
+        ]}
+      />
 
-    <ProjectHero
-      title={title}
-      category={category}
-      icon={icon}
-      description={description}
-      link={link}
-      github={github}
-      statusBadge={statusBadge}
-      passportFields={passportFields}
-    />
+      <ProjectHero
+        title={title}
+        category={category}
+        icon={icon}
+        description={description}
+        link={link}
+        github={github}
+        statusBadge={statusBadge}
+        passportFields={passportFields}
+      />
+    </div>
 
     <div class="space-y-6 md:space-y-10 w-full">
       <Card padding="lg" class="space-y-4 sm:space-y-5 w-full" data-animate="fade-up">
