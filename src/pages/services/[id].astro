@@ -45,6 +45,7 @@ const serviceProjects = allProjects
     const orderB = b.data.order ?? (typeof b.data.pinned === 'number' ? b.data.pinned : 99);
     return orderA - orderB;
   })
+  .slice(0, 3)
   .map((p) => ({
     id: p.id,
     title: p.data.title,
