@@ -11,7 +11,7 @@ const { project, class: className = '' } = Astro.props;
 
 <article
   class:list={[
-    'project-card group flex flex-col justify-between rounded-[24px] sm:rounded-[32px] overflow-hidden border border-[#623A2D]/10 bg-white p-4 sm:p-5 shadow-[0_12px_36px_rgba(42,30,30,0.04)] hover:border-[#D09AFC] hover:shadow-[0_22px_48px_rgba(42,30,30,0.1)] hover:-translate-y-1.5 transition-all duration-300 text-[#2A1E1E]',
+    'project-card spotlight-card tilt-card group flex flex-col justify-between rounded-[24px] sm:rounded-[32px] overflow-hidden border border-[#623A2D]/10 bg-white p-4 sm:p-5 shadow-[0_12px_36px_rgba(42,30,30,0.04)] hover:border-[#D09AFC] hover:shadow-[0_22px_48px_rgba(42,30,30,0.1)] hover:-translate-y-1.5 transition-all duration-300 text-[#2A1E1E]',
     className
   ]}
   data-category={project.category}
