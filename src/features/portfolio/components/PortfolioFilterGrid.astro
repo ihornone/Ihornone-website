@@ -31,7 +31,7 @@ const { categories, projects } = Astro.props;
 <script>
   document.addEventListener('astro:page-load', () => {
     const filterTabs = document.querySelectorAll('.filter-tab');
-    const projectCards = document.querySelectorAll('#projects-grid .project-card');
+    const projectCards = document.querySelectorAll<HTMLElement>('#projects-grid .project-card');
 
     filterTabs.forEach((tab) => {
       tab.addEventListener('click', function (this: HTMLElement) {
@@ -45,14 +45,37 @@ const { categories, projects } = Astro.props;
         this.classList.remove('bg-white', 'text-[#2A1E1E]', 'border-[#623A2D]/10');
         this.classList.add('bg-[#2A1E1E]', 'text-white', 'border-[#2A1E1E]', 'shadow-sm');
 
+        // Smooth transition out for all cards
         projectCards.forEach((card) => {
-          const cardCategory = card.getAttribute('data-category');
-          if (selectedCategory === 'Усі проєкти' || cardCategory === selectedCategory) {
-            (card as HTMLElement).style.display = 'block';
-          } else {
-            (card as HTMLElement).style.display = 'none';
-          }
+          card.classList.add('is-hidden');
         });
+
+        setTimeout(() => {
+          let visibleCount = 0;
+          projectCards.forEach((card) => {
+            const cardCategory = card.getAttribute('data-category');
+            const shouldShow = selectedCategory === 'Усі проєкти' || cardCategory === selectedCategory;
+
+            if (shouldShow) {
+              card.style.display = 'flex';
+              // Stagger the fade-in of matching cards
+              card.style.transitionDelay = `${visibleCount * 45}ms`;
+              visibleCount++;
+            } else {
+              card.style.display = 'none';
+              card.style.transitionDelay = '0ms';
+            }
+          });
+
+          // Trigger smooth cascade in
+          requestAnimationFrame(() => {
+            projectCards.forEach((card) => {
+              if (card.style.display !== 'none') {
+                card.classList.remove('is-hidden');
+              }
+            });
+          });
+        }, 200);
       });
     });
   });

@@ -157,11 +157,25 @@ html {
   scrollbar-width: none;
 }
 
+/* Interactive Top Scroll Progress Indicator */
+#scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, #D09AFC 0%, #FAC3C8 50%, #E8BA98 100%);
+  z-index: 1000;
+  pointer-events: none;
+  transition: width 0.08s ease-out;
+  box-shadow: 0 0 12px rgba(208, 154, 252, 0.6);
+}
+
 /* Fast, GPU-friendly Scroll Animations without filter overhead or permanent will-change memory leaks */
 [data-animate] {
   opacity: 0;
-  transition: opacity 0.35s ease-out,
-              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 [data-animate].is-visible {
@@ -170,48 +184,263 @@ html {
 }
 
 [data-animate="fade-up"] {
-  transform: translate3d(0, 14px, 0);
+  transform: translate3d(0, 20px, 0);
+}
+
+[data-animate="fade-in"] {
+  transform: translate3d(0, 0, 0);
 }
 
 [data-animate="zoom-in"] {
-  transform: scale3d(0.98, 0.98, 1);
+  transform: scale3d(0.96, 0.96, 1);
+}
+
+[data-animate="slide-left"] {
+  transform: translate3d(24px, 0, 0);
+}
+
+[data-animate="slide-right"] {
+  transform: translate3d(-24px, 0, 0);
 }
 
 /* Staggered entry for grids */
 [data-animate].is-visible [data-stagger] > *:nth-child(1),
 [data-animate][data-stagger].is-visible > *:nth-child(1) {
-  animation: staggerFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both 0.04s;
+  animation: staggerFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both 0.04s;
 }
 [data-animate].is-visible [data-stagger] > *:nth-child(2),
 [data-animate][data-stagger].is-visible > *:nth-child(2) {
-  animation: staggerFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both 0.08s;
+  animation: staggerFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both 0.08s;
 }
 [data-animate].is-visible [data-stagger] > *:nth-child(3),
 [data-animate][data-stagger].is-visible > *:nth-child(3) {
-  animation: staggerFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both 0.12s;
+  animation: staggerFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both 0.12s;
 }
 [data-animate].is-visible [data-stagger] > *:nth-child(4),
 [data-animate][data-stagger].is-visible > *:nth-child(4) {
-  animation: staggerFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both 0.16s;
+  animation: staggerFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both 0.16s;
 }
 [data-animate].is-visible [data-stagger] > *:nth-child(5),
 [data-animate][data-stagger].is-visible > *:nth-child(5) {
-  animation: staggerFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both 0.20s;
+  animation: staggerFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both 0.20s;
 }
 [data-animate].is-visible [data-stagger] > *:nth-child(6),
 [data-animate][data-stagger].is-visible > *:nth-child(6) {
-  animation: staggerFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both 0.24s;
+  animation: staggerFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both 0.24s;
+}
+[data-animate].is-visible [data-stagger] > *:nth-child(7),
+[data-animate][data-stagger].is-visible > *:nth-child(7) {
+  animation: staggerFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both 0.28s;
+}
+[data-animate].is-visible [data-stagger] > *:nth-child(8),
+[data-animate][data-stagger].is-visible > *:nth-child(8) {
+  animation: staggerFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both 0.32s;
 }
 
 @keyframes staggerFadeIn {
   from {
     opacity: 0;
-    transform: translate3d(0, 12px, 0);
+    transform: translate3d(0, 16px, 0);
   }
   to {
     opacity: 1;
     transform: translate3d(0, 0, 0);
   }
+}
+
+/* Dynamic Interactive Spotlight on Cards (Stripe / Linear specular glow) */
+.spotlight-card,
+.bento-card {
+  position: relative;
+  isolation: isolate;
+}
+
+.spotlight-card::before,
+.bento-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(
+    450px circle at var(--mouse-x, -999px) var(--mouse-y, -999px),
+    rgba(208, 154, 252, 0.4),
+    rgba(232, 186, 152, 0.15) 30%,
+    transparent 65%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 15;
+}
+
+.spotlight-card::after,
+.bento-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    500px circle at var(--mouse-x, -999px) var(--mouse-y, -999px),
+    rgba(208, 154, 252, 0.05),
+    transparent 60%
+  );
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1;
+}
+
+.spotlight-card:hover::before,
+.spotlight-card:hover::after,
+.bento-card:hover::before,
+.bento-card:hover::after {
+  opacity: 1;
+}
+
+/* 3D Tilt Card Physics */
+.tilt-card {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+/* Liquid Button Shimmer Sheen */
+@keyframes shimmerSweep {
+  0% {
+    transform: translateX(-160%) skewX(-20deg);
+  }
+  100% {
+    transform: translateX(260%) skewX(-20deg);
+  }
+}
+
+.btn-shimmer,
+.pill-btn,
+.pill-btn-primary,
+.pill-btn-lilac,
+.pill-btn-sand,
+.pill-btn-outline,
+.pill-btn-dark {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shimmer::after,
+.pill-btn::after,
+.pill-btn-primary::after,
+.pill-btn-lilac::after,
+.pill-btn-sand::after,
+.pill-btn-outline::after,
+.pill-btn-dark::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 45%;
+  height: 200%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.38) 50%,
+    transparent 100%
+  );
+  transform: translateX(-160%) skewX(-20deg);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.btn-shimmer:hover::after,
+.pill-btn:hover::after,
+.pill-btn-primary:hover::after,
+.pill-btn-lilac:hover::after,
+.pill-btn-sand:hover::after,
+.pill-btn-outline:hover::after,
+.pill-btn-dark:hover::after {
+  animation: shimmerSweep 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Chromatic Text Shimmer for key keywords */
+@keyframes textShimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.text-shimmer-lilac {
+  background: linear-gradient(
+    115deg,
+    #D09AFC 0%,
+    #FAC3C8 25%,
+    #BF80FA 50%,
+    #FAF1EC 75%,
+    #D09AFC 100%
+  );
+  background-size: 240% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textShimmer 6s ease-in-out infinite;
+  display: inline-block;
+}
+
+/* Floating animation for mascots / icons */
+@keyframes gentleFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.animate-float {
+  animation: gentleFloat 4.2s ease-in-out infinite;
+}
+
+/* Smooth Accordion Body Grid Transition */
+.faq-item-grid {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+details[open] .faq-item-grid {
+  grid-template-rows: 1fr;
+}
+
+.faq-item-inner {
+  overflow: hidden;
+  min-height: 0;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+details[open] .faq-item-inner {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Portfolio Filter Transition */
+.project-card {
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.project-card.is-hidden {
+  opacity: 0;
+  transform: scale(0.96) translateY(8px);
+  pointer-events: none;
 }
 
 /* Button arrow nudge on hover */
@@ -221,8 +450,8 @@ html {
 .pill-btn-dark:hover .fa-arrow-right,
 .pill-btn-sand:hover .fa-arrow-right,
 .pill-btn-outline:hover .fa-arrow-right {
-  transform: translateX(3px);
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateX(4px);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Telegram CTA Pulse Glow */

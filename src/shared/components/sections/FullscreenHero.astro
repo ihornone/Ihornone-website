@@ -8,16 +8,16 @@ const { class: className = "" } = Astro.props;
 
 <section
   class:list={[
-    "relative w-full h-[100dvh] min-h-[640px] overflow-hidden",
+    "hero-interactive-container relative w-full h-[100dvh] min-h-[640px] overflow-hidden",
     className,
   ]}
 >
   <!-- Fullscreen Edge-to-Edge Background Image -->
-  <div class="absolute inset-0 w-full h-full z-0">
+  <div class="absolute inset-0 w-full h-full z-0 overflow-hidden">
     <img
       src="/images/mascot/hero-cat.webp"
       alt="Dev-кіт ihornone у чорному худі за макбуком"
-      class="w-full h-full object-cover object-center sm:object-[center_35%] scale-100 hero-ambient-zoom"
+      class="hero-parallax-image w-full h-full object-cover object-center sm:object-[center_35%] scale-100 hero-ambient-zoom transition-transform duration-300 ease-out"
       loading="eager"
       fetchpriority="high"
     />
@@ -43,7 +43,7 @@ const { class: className = "" } = Astro.props;
     <h1
       class="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.08] m-0 drop-shadow-md"
     >
-      Сайти, боти та сервіси, які <span class="text-[#D09AFC]">приносять заявки</span> й автоматизують бізнес
+      Сайти, боти та сервіси, які <span class="text-[#D09AFC] text-shimmer-lilac">приносять заявки</span> й автоматизують бізнес
     </h1>
   </div>
 
