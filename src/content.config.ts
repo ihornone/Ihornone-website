@@ -135,4 +135,18 @@ const specializations = defineCollection({
   }),
 });
 
-export const collections = { projects, services, specializations, faqs };
+const blog = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/blog' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    pubDate: z.coerce.date(),
+    category: z.string().default('SEO & AI'),
+    readTime: z.string().default('5 хв'),
+    author: z.string().default('ihornone'),
+    featured: z.boolean().default(false),
+    tags: z.array(z.string()).default([]),
+  }),
+});
+
+export const collections = { projects, services, specializations, faqs, blog };

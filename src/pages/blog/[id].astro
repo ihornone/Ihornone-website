@@ -1,0 +1,252 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../../shared/components/ui/Breadcrumbs.astro';
+import Card from '../../shared/components/ui/Card.astro';
+import Button from '../../shared/components/ui/Button.astro';
+import BentoCta from '../../shared/components/sections/BentoCta.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog');
+  return allPosts.map((entry) => ({
+    params: { id: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { title, description, pubDate, category, readTime, author, tags = [] } = entry.data;
+
+const { Content } = await render(entry);
+
+const formatDate = (date: Date) => {
+  return new Intl.DateTimeFormat('uk-UA', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(date);
+};
+
+const fullUrl = `https://ihornone.site/blog/${entry.id}`;
+---
+
+<Layout
+  title={`${title} — Блог ihornone`}
+  description={description}
+  url={`/blog/${entry.id}`}
+  type="article"
+  structuredData={{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": title,
+    "description": description,
+    "datePublished": pubDate.toISOString(),
+    "author": {
+      "@type": "Person",
+      "name": author || "ihornone",
+      "url": "https://ihornone.site"
+    },
+    "publisher": {
+      "@type": "Person",
+      "name": "ihornone",
+      "url": "https://ihornone.site"
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": fullUrl
+    }
+  }}
+>
+  <div class="w-full max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20 pt-2 sm:pt-4 pb-16 sm:pb-24 space-y-10 sm:space-y-14">
+    <!-- Breadcrumbs -->
+    <Breadcrumbs
+      items={[
+        { label: 'Головна', href: '/' },
+        { label: 'Блог', href: '/blog' },
+        { label: title },
+      ]}
+    />
+
+    <!-- Article Header -->
+    <header class="space-y-4 sm:space-y-5" data-animate="fade-up">
+      <div class="flex items-center gap-2.5 text-xs sm:text-sm font-semibold text-[#623A2D]/60 flex-wrap">
+        <span class="text-[#95553C] font-black uppercase tracking-wider">{category}</span>
+        <span>•</span>
+        <span>{formatDate(pubDate)}</span>
+        <span>•</span>
+        <span>{readTime}</span>
+      </div>
+
+      <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-[#2A1E1E] tracking-tight leading-[1.2]">
+        {title}
+      </h1>
+
+      <p class="text-base sm:text-lg text-[#623A2D]/75 leading-relaxed font-normal w-full">
+        {description}
+      </p>
+    </header>
+
+    <!-- Article Content Body -->
+    <Card
+      as="article"
+      class="p-6 sm:p-10 md:p-14 bg-white/90 backdrop-blur-sm border border-[#623A2D]/10 shadow-[0_16px_40px_rgba(42,30,30,0.06)] w-full"
+      data-animate="fade-up"
+    >
+      <div class="blog-prose font-medium text-[#2A1E1E] text-base sm:text-lg leading-relaxed">
+        <Content />
+      </div>
+
+      {tags && tags.length > 0 && (
+        <div class="pt-8 sm:pt-10 mt-8 sm:mt-10 border-t border-[#623A2D]/10 flex flex-wrap gap-2 items-center">
+          <span class="text-xs font-bold text-[#623A2D]/50 mr-1">Теги:</span>
+          {tags.map((tag) => (
+            <span class="text-xs font-bold text-[#623A2D]/70 bg-[#FAF1EC] px-3 py-1 rounded-full border border-[#623A2D]/10">
+              #{tag}
+            </span>
+          ))}
+        </div>
+      )}
+    </Card>
+
+    <!-- Navigation & Discuss -->
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2" data-animate="fade-up">
+      <Button
+        href="/blog"
+        variant="outline"
+        class="w-full sm:w-auto font-black text-xs px-6 py-3"
+      >
+        <i class="fa-solid fa-arrow-left mr-2"></i>
+        Всі статті блогу
+      </Button>
+      <Button
+        href="https://t.me/ihornone"
+        target="_blank"
+        variant="dark"
+        class="w-full sm:w-auto font-black text-xs px-6 py-3"
+      >
+        Обговорити статтю в Telegram
+      </Button>
+    </div>
+
+    <!-- Lead generation CTA -->
+    <BentoCta />
+  </div>
+</Layout>
+
+<style is:global>
+  /* Blog article markdown typography */
+  .blog-prose h2 {
+    font-size: 1.625rem;
+    line-height: 1.3;
+    font-weight: 900;
+    color: #2A1E1E;
+    letter-spacing: -0.02em;
+    margin-top: 2.25rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(98, 58, 45, 0.1);
+  }
+  @media (min-width: 640px) {
+    .blog-prose h2 {
+      font-size: 1.875rem;
+    }
+  }
+
+  .blog-prose h3 {
+    font-size: 1.25rem;
+    line-height: 1.4;
+    font-weight: 900;
+    color: #2A1E1E;
+    margin-top: 1.75rem;
+    margin-bottom: 0.75rem;
+  }
+  @media (min-width: 640px) {
+    .blog-prose h3 {
+      font-size: 1.4rem;
+    }
+  }
+
+  .blog-prose p {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    color: rgba(42, 30, 30, 0.9);
+    line-height: 1.75;
+  }
+
+  .blog-prose strong {
+    font-weight: 900;
+    color: #2A1E1E;
+  }
+
+  .blog-prose ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    margin-top: 1rem;
+    margin-bottom: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  .blog-prose ol {
+    list-style-type: decimal;
+    padding-left: 1.5rem;
+    margin-top: 1rem;
+    margin-bottom: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  .blog-prose li {
+    line-height: 1.65;
+    color: rgba(42, 30, 30, 0.9);
+  }
+
+  .blog-prose li strong {
+    color: #2A1E1E;
+  }
+
+  .blog-prose blockquote {
+    margin: 2rem 0;
+    padding: 1.25rem 1.5rem;
+    background-color: #FAF1EC;
+    border-left: 4px solid #D09AFC;
+    border-radius: 0 16px 16px 0;
+    color: #2A1E1E;
+  }
+  .blog-prose blockquote p {
+    margin: 0;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    line-height: 1.6;
+    color: #2A1E1E;
+  }
+
+  .blog-prose hr {
+    border: none;
+    border-top: 1px solid rgba(98, 58, 45, 0.12);
+    margin: 2.5rem 0;
+  }
+
+  .blog-prose a {
+    color: #95553C;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    font-weight: 700;
+    transition: color 0.15s ease;
+  }
+  .blog-prose a:hover {
+    color: #D09AFC;
+  }
+
+  .blog-prose code {
+    background-color: #FAF1EC;
+    padding: 0.2rem 0.45rem;
+    border-radius: 6px;
+    font-size: 0.9em;
+    font-weight: 700;
+    color: #2A1E1E;
+    border: 1px solid rgba(98, 58, 45, 0.12);
+  }
+</style>
