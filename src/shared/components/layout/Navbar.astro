@@ -107,6 +107,52 @@ const allServices = (await getCollection("services")).sort(
           </div>
         </div>
 
+        <!-- Products Dropdown (10px rounded) -->
+        <div class="relative group">
+          <button
+            type="button"
+            class:list={[
+              "nav-item flex items-center gap-1.5 cursor-pointer bg-transparent border-0",
+              {
+                active:
+                  currentPath.startsWith("/my-services") ||
+                  currentPath.startsWith("/templates"),
+              },
+            ]}
+          >
+            Продукти
+            <i
+              class="fa-solid fa-chevron-down text-[9px] group-hover:rotate-180 transition-transform duration-200"
+            ></i>
+          </button>
+          <div
+            class="hidden group-hover:block absolute top-full left-0 pt-2 z-50"
+          >
+            <div
+              class="bg-[#FAF1EC] border border-[#623A2D]/15 rounded-[18px] p-2 min-w-[190px] shadow-xl space-y-1"
+            >
+              <a
+                href="/my-services"
+                class:list={[
+                  "dropdown-item",
+                  { active: currentPath.startsWith("/my-services") },
+                ]}
+              >
+                <span>Мої сервіси</span>
+              </a>
+              <a
+                href="/templates"
+                class:list={[
+                  "dropdown-item",
+                  { active: currentPath.startsWith("/templates") },
+                ]}
+              >
+                <span>Шаблони</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
         <a
           href="/portfolio"
           class:list={[
@@ -117,22 +163,25 @@ const allServices = (await getCollection("services")).sort(
           Портфоліо
         </a>
         <a
-          href="/about"
-          class:list={["nav-item", { active: currentPath === "/about" }]}
-        >
-          Про мене
-        </a>
-        <a
           href="/reviews"
           class:list={["nav-item", { active: currentPath === "/reviews" }]}
         >
           Відгуки
         </a>
         <a
-          href="/contacts"
-          class:list={["nav-item", { active: currentPath === "/contacts" }]}
+          href="/about"
+          class:list={["nav-item", { active: currentPath === "/about" }]}
         >
-          Контакти
+          Про мене
+        </a>
+        <a
+          href="/blog"
+          class:list={[
+            "nav-item",
+            { active: currentPath.startsWith("/blog") },
+          ]}
+        >
+          Блог
         </a>
       </div>
 
@@ -197,17 +246,45 @@ const allServices = (await getCollection("services")).sort(
             }
           </div>
         </div>
+
+        <!-- Products Accordion on Mobile -->
+        <div>
+          <button
+            type="button"
+            id="mobile-products-toggle"
+            class="mobile-item w-full flex items-center justify-between text-left cursor-pointer border-0 bg-transparent"
+            aria-expanded="false"
+          >
+            <span>Продукти</span>
+            <i
+              class="fa-solid fa-chevron-down text-[10px] text-[#623A2D]/60 transition-transform duration-200"
+              id="mobile-products-chevron"></i>
+          </button>
+
+          <div
+            id="mobile-products-menu"
+            class="hidden pl-4 pr-1 py-1 space-y-0.5 bg-[#623A2D]/5 rounded-[12px] my-1"
+          >
+            <a href="/my-services" class="mobile-subitem">
+              <span>Мої сервіси</span>
+            </a>
+            <a href="/templates" class="mobile-subitem">
+              <span>Шаблони</span>
+            </a>
+          </div>
+        </div>
+
         <a href="/portfolio" class="mobile-item">
           <span>Портфоліо</span>
-        </a>
-        <a href="/about" class="mobile-item">
-          <span>Про мене</span>
         </a>
         <a href="/reviews" class="mobile-item">
           <span>Відгуки</span>
         </a>
-        <a href="/contacts" class="mobile-item">
-          <span>Контакти</span>
+        <a href="/about" class="mobile-item">
+          <span>Про мене</span>
+        </a>
+        <a href="/blog" class="mobile-item">
+          <span>Блог</span>
         </a>
       </nav>
 
@@ -309,6 +386,10 @@ const allServices = (await getCollection("services")).sort(
     const servicesMenu = document.getElementById("mobile-services-menu");
     const servicesChevron = document.getElementById("mobile-services-chevron");
 
+    const productsToggle = document.getElementById("mobile-products-toggle");
+    const productsMenu = document.getElementById("mobile-products-menu");
+    const productsChevron = document.getElementById("mobile-products-chevron");
+
     // Handle Scroll for Full-Width Glass Blur
     function handleScroll() {
       if (window.scrollY > 15) {
@@ -360,6 +441,20 @@ const allServices = (await getCollection("services")).sort(
         servicesMenu?.classList.add("hidden");
         servicesChevron?.classList.remove("rotate-180");
         servicesToggle?.setAttribute("aria-expanded", "false");
+      }
+    });
+
+    productsToggle?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isSubmenuHidden = productsMenu?.classList.contains("hidden");
+      if (isSubmenuHidden) {
+        productsMenu?.classList.remove("hidden");
+        productsChevron?.classList.add("rotate-180");
+        productsToggle?.setAttribute("aria-expanded", "true");
+      } else {
+        productsMenu?.classList.add("hidden");
+        productsChevron?.classList.remove("rotate-180");
+        productsToggle?.setAttribute("aria-expanded", "false");
       }
     });
 

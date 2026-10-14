@@ -4,15 +4,17 @@ import type { APIRoute } from 'astro';
 export const GET: APIRoute = async () => {
   const siteUrl = 'https://ihornone.site';
   
-  const staticPages = ['', '/about', '/contacts', '/services', '/portfolio'];
+  const staticPages = ['', '/about', '/services', '/my-services', '/templates', '/portfolio', '/blog', '/reviews'];
   
   const services = await getCollection('services');
   const projects = await getCollection('projects');
+  const blog = await getCollection('blog');
   
   const serviceUrls = services.map(s => `/services/${s.id}`);
   const projectUrls = projects.map(p => `/portfolio/${p.id}`);
+  const blogUrls = blog.map(b => `/blog/${b.id}`);
   
-  const allUrls = [...staticPages, ...serviceUrls, ...projectUrls];
+  const allUrls = [...staticPages, ...serviceUrls, ...projectUrls, ...blogUrls];
   
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

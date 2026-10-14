@@ -1,0 +1,109 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../shared/components/sections/Hero.astro';
+import BentoCta from '../shared/components/sections/BentoCta.astro';
+import Badge from '../shared/components/ui/Badge.astro';
+import Card from '../shared/components/ui/Card.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+const formatDate = (date: Date) => {
+  return new Intl.DateTimeFormat('uk-UA', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(date);
+};
+---
+
+<Layout
+  title="Блог — ihornone | Статті про SEO, GEO, AI та розробку"
+  description="Практичні статті, інсайти та гайди про розробку Telegram-ботів, веб-сервісів, оптимізацію під Google та відповіді штучного інтелекту від ihornone."
+  url="/blog"
+  structuredData={{
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "Блог ihornone",
+    "description": "Практичні статті про веб-розробку, Telegram-боти, SEO та GEO",
+    "url": "https://ihornone.site/blog",
+    "author": {
+      "@type": "Person",
+      "name": "ihornone"
+    }
+  }}
+>
+  <div class="w-full max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20 pt-2 sm:pt-4 pb-16 sm:pb-24 space-y-16 sm:space-y-24">
+    <Hero
+      title="Практичні статті, кейси та думки про технології"
+    />
+
+    <!-- Articles Grid / List -->
+    <div class="space-y-8" data-animate="fade-up">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        {posts.map((post) => (
+          <a
+            href={`/blog/${post.id}`}
+            class="group no-underline block h-full"
+          >
+            <Card
+              as="article"
+              hover={true}
+              class="h-full flex flex-col justify-between overflow-hidden relative border border-[#623A2D]/10 hover:border-[#D09AFC] transition-all duration-300"
+            >
+              <div class="space-y-4">
+                <!-- Meta Row: Category + ReadTime -->
+                <div class="flex items-center justify-between gap-2 flex-wrap">
+                  <Badge variant="accent">
+                    {post.data.category}
+                  </Badge>
+                  <span class="text-xs font-bold text-[#623A2D]/60 flex items-center gap-1.5">
+                    <i class="fa-regular fa-clock text-[11px]"></i>
+                    {post.data.readTime}
+                  </span>
+                </div>
+
+                <!-- Title -->
+                <h2 class="text-xl sm:text-2xl font-black text-[#2A1E1E] tracking-tight group-hover:text-[#95553C] transition-colors leading-snug">
+                  {post.data.title}
+                </h2>
+
+                <!-- Description -->
+                <p class="text-sm text-[#623A2D]/80 leading-relaxed font-medium line-clamp-3">
+                  {post.data.description}
+                </p>
+
+                <!-- Tags -->
+                {post.data.tags && post.data.tags.length > 0 && (
+                  <div class="flex flex-wrap gap-1.5 pt-2">
+                    {post.data.tags.map((tag) => (
+                      <span class="text-[11px] font-bold text-[#623A2D]/70 bg-[#FAF1EC] px-2.5 py-0.5 rounded-full border border-[#623A2D]/10">
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <!-- Bottom Row: Date & Action Link -->
+              <div class="pt-6 mt-6 border-t border-[#623A2D]/10 flex items-center justify-between">
+                <span class="text-xs font-bold text-[#623A2D]/60">
+                  {formatDate(post.data.pubDate)}
+                </span>
+                <span class="inline-flex items-center gap-2 text-xs font-black text-[#2A1E1E] group-hover:text-[#D09AFC] group-hover:translate-x-1 transition-all">
+                  <span>Читати</span>
+                  <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                </span>
+              </div>
+            </Card>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <!-- Bento CTA Banner -->
+    <BentoCta />
+  </div>
+</Layout>
