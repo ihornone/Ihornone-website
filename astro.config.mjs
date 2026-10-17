@@ -14,10 +14,7 @@ export default defineConfig({
   adapter: cloudflare(),
   integrations: [
     react(), 
-    sitemap({
-      // Генерація єдиного файлу sitemap.xml замість індексу
-      entryLimit: 50000,
-    })
+    sitemap()
   ],
   vite: {
     plugins: [tailwindcss()],
