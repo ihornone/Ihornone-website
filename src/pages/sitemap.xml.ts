@@ -16,10 +16,16 @@ export const GET: APIRoute = async () => {
   
   const allUrls = [...staticPages, ...serviceUrls, ...projectUrls, ...blogUrls];
   
+  const formatUrl = (path: string) => {
+    if (!path || path === '/') return `${siteUrl}/`;
+    const cleanPath = path.startsWith('/') ? path : `/${path}`;
+    return cleanPath.endsWith('/') ? `${siteUrl}${cleanPath}` : `${siteUrl}${cleanPath}/`;
+  };
+
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${allUrls.map(url => `  <url>
-    <loc>${siteUrl}${url}</loc>
+    <loc>${formatUrl(url)}</loc>
   </url>`).join('\n')}
 </urlset>`;
 

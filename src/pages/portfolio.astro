@@ -46,14 +46,14 @@ const categories = ['Усі проєкти', ...new Set(allProjects.map((p) => p
     "@type": "CollectionPage",
     "name": "Портфоліо проєктів ihornone",
     "description": "Кейси розробки веб-сайтів, Telegram-ботів та мобільних додатків",
-    "url": "https://www.ihornone.site/portfolio",
+    "url": "https://www.ihornone.site/portfolio/",
     "mainEntity": {
       "@type": "ItemList",
       "itemListElement": allProjects.map((p, index) => ({
         "@type": "ListItem",
         "position": index + 1,
         "name": p.title,
-        "url": `https://www.ihornone.site/portfolio/${p.id}`,
+        "url": `https://www.ihornone.site/portfolio/${p.id}/`,
         "description": p.description
       }))
     }
