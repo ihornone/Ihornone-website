@@ -3,7 +3,7 @@ import { z } from 'astro/zod';
 const envSchema = z.object({
   TELEGRAM_BOT_TOKEN: z.string().min(1, 'TELEGRAM_BOT_TOKEN is required'),
   TELEGRAM_CHAT_ID: z.string().min(1, 'TELEGRAM_CHAT_ID is required'),
-  SITE_URL: z.string().url().optional().default('https://ihornone.site'),
+  SITE_URL: z.string().url().optional().default('https://www.ihornone.site'),
 });
 
 function loadEnv() {

@@ -17,14 +17,14 @@ const {
   title = 'ihornone — Telegram-боти, Веб-сайти, Мобільні додатки',
   description = 'Розробка Telegram-ботів, мобільних додатків та веб-сайтів будь-якої складності. Повний цикл від ідеї до запуску з високою конверсією.',
   image = '/og-image.png',
-  url = 'https://ihornone.site',
+  url = 'https://www.ihornone.site',
   type = 'website',
   structuredData,
 } = Astro.props;
 
 const siteName = 'ihornone';
-const fullUrl = url.startsWith('http') ? url : `https://ihornone.site${url}`;
-const fullImageUrl = image.startsWith('http') ? image : `https://ihornone.site${image}`;
+const fullUrl = url.startsWith('http') ? url : `https://www.ihornone.site${url}`;
+const fullImageUrl = image.startsWith('http') ? image : `https://www.ihornone.site${image}`;
 const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '';
 ---
 
@@ -90,10 +90,10 @@ const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '';
       "@graph": [
         {
           "@type": "Person",
-          "@id": "https://ihornone.site/#person",
+          "@id": "https://www.ihornone.site/#person",
           "name": "ihornone",
-          "url": "https://ihornone.site",
-          "image": "https://ihornone.site/favicon.svg",
+          "url": "https://www.ihornone.site",
+          "image": "https://www.ihornone.site/favicon.svg",
           "jobTitle": "Full-Stack Software Engineer & AI Integrator",
           "knowsAbout": [
             "Telegram Bots Architecture",
@@ -115,11 +115,11 @@ const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '';
         },
         {
           "@type": "WebSite",
-          "@id": "https://ihornone.site/#website",
-          "url": "https://ihornone.site",
+          "@id": "https://www.ihornone.site/#website",
+          "url": "https://www.ihornone.site",
           "name": "ihornone — Розробка Telegram-ботів, веб-сайтів та мобільних додатків",
           "description": "Індивідуальна розробка Telegram-ботів, сучасних веб-сервісів та мобільних додатків з гарантією та підтримкою.",
-          "publisher": { "@id": "https://ihornone.site/#person" },
+          "publisher": { "@id": "https://www.ihornone.site/#person" },
           "inLanguage": "uk-UA"
         }
       ]
