@@ -2,9 +2,9 @@ import { getCollection } from 'astro:content';
 import type { APIRoute } from 'astro';
 
 export const GET: APIRoute = async () => {
-  const siteUrl = 'https://ihornone.site';
+  const siteUrl = 'https://www.ihornone.site';
   
-  const staticPages = ['', '/about', '/services', '/my-services', '/templates', '/portfolio', '/blog', '/reviews'];
+  const staticPages = ['', '/about', '/services', '/my-services', '/templates', '/portfolio', '/blog', '/reviews', '/privacy'];
   
   const services = await getCollection('services');
   const projects = await getCollection('projects');

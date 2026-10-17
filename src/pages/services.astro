@@ -17,14 +17,14 @@ const allServices = (await getCollection('services')).sort((a, b) => a.data.orde
     "@type": "CollectionPage",
     "name": "Послуги розробки ihornone",
     "description": "Повний перелік послуг з розробки Telegram-ботів, сайтів та додатків",
-    "url": "https://ihornone.site/services",
+    "url": "https://www.ihornone.site/services",
     "mainEntity": {
       "@type": "ItemList",
       "itemListElement": allServices.map((s, index) => ({
         "@type": "ListItem",
         "position": index + 1,
         "name": s.data.title,
-        "url": `https://ihornone.site/services/${s.id}`,
+        "url": `https://www.ihornone.site/services/${s.id}`,
         "description": s.data.description
       }))
     }

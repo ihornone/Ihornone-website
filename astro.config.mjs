@@ -5,7 +5,7 @@ import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import cloudflare from "@astrojs/cloudflare";
 
-const siteUrl = 'https://ihornone.site';
+const siteUrl = 'https://www.ihornone.site';
 
 export default defineConfig({
   site: siteUrl,

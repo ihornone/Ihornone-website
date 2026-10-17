@@ -14,6 +14,6 @@ export const Routes = {
 
 export const SITE = {
   NAME: 'ihornone',
-  URL: 'https://ihornone.site',
+  URL: 'https://www.ihornone.site',
   LOCALE: 'uk_UA',
 } as const;

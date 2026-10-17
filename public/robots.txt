@@ -32,4 +32,5 @@ Allow: /
 User-agent: cohere-ai
 Allow: /
 
-Sitemap: https://ihornone.site/sitemap-index.xml
+Sitemap: https://www.ihornone.site/sitemap.xml
+Sitemap: https://www.ihornone.site/sitemap-index.xml
