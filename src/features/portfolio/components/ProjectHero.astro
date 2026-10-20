@@ -2,7 +2,7 @@
 import Badge from '../../../shared/components/ui/Badge.astro';
 import Button from '../../../shared/components/ui/Button.astro';
 import Passport from '../../../shared/components/sections/Passport.astro';
-import { QuickContactModal } from '../../../shared/components/ui/QuickContactModal';
+import QuickContactModal from '../../../shared/components/ui/QuickContactModal.astro';
 
 interface Props {
   title: string;
@@ -50,7 +50,6 @@ const { title, category, icon, description, link, github, statusBadge, passportF
       )}
 
       <QuickContactModal
-        client:load
         triggerText="Замовити схожий проєкт"
         triggerClass="pill-btn-lilac !py-3 !px-6 !text-sm w-full sm:w-auto flex items-center justify-center gap-2 cursor-pointer shadow-sm hover:shadow-md"
       />

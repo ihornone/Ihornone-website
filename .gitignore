@@ -36,3 +36,7 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# zcode folder
+.zcode/
+

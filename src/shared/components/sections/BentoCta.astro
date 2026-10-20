@@ -1,5 +1,5 @@
 ---
-import { QuickContactModal } from '../ui/QuickContactModal';
+import QuickContactModal from '../ui/QuickContactModal.astro';
 
 interface Props {
   title?: string;
@@ -52,9 +52,8 @@ const {
             <i class="fa-solid fa-arrow-right text-xs text-[#2A1E1E]"></i>
           </a>
 
-          <!-- Quick Contact Modal with Vaul Drawer (matching identical rounded-full pill button) -->
+          <!-- Quick Contact Modal (matching identical rounded-full pill button) -->
           <QuickContactModal
-            client:load
             triggerClass="pill-btn-outline !rounded-full !text-sm sm:!text-base !px-8 !py-3.5 w-full sm:w-auto flex items-center justify-center gap-2.5 cursor-pointer shadow-2xs hover:shadow-sm"
           />
         </div>

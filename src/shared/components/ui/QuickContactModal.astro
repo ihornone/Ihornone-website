@@ -1,0 +1,191 @@
+---
+export interface Props {
+  triggerText?: string;
+  triggerClass?: string;
+  id?: string;
+}
+
+const {
+  triggerText = 'Форма заявки',
+  triggerClass = 'pill-btn-outline !text-sm sm:!text-base w-full sm:w-auto flex items-center justify-center gap-2 cursor-pointer',
+  id = 'quick-contact-drawer',
+} = Astro.props;
+
+const socials = [
+  { name: 'Telegram', href: 'https://t.me/ihornone', icon: 'fa-brands fa-telegram text-[#2AABEE]' },
+  { name: 'GitHub', href: 'https://github.com/ihornone', icon: 'fa-brands fa-github text-[#181717]' },
+  { name: 'Instagram', href: 'https://instagram.com/ihornone', icon: 'fa-brands fa-instagram text-[#E4405F]' },
+  { name: 'Threads', href: 'https://threads.net/@ihornone', icon: 'fa-brands fa-threads text-[#000000]' },
+  { name: 'Email', href: 'mailto:hello@ihornone.site', icon: 'fa-solid fa-envelope text-[#EA4335]' },
+];
+
+const inp = 'w-full px-4 py-3 bg-[#FAF1EC] rounded-2xl border border-[#623A2D]/10 text-sm text-[#2A1E1E] placeholder:text-[#623A2D]/40 focus:border-[#D09AFC] focus:bg-white outline-none transition-all shadow-xs';
+---
+
+<button type="button" class={triggerClass} data-open-modal={id} aria-label="Відкрити швидку заявку">
+  <i class="fa-solid fa-envelope text-xs opacity-75"></i>
+  <span>{triggerText}</span>
+</button>
+
+<dialog id={id} class="fixed inset-0 z-[100] m-0 p-0 w-full h-full max-w-none max-h-none bg-transparent outline-none">
+  <div class="h-full w-full flex flex-col justify-end sm:flex-row sm:justify-end relative">
+    <div class="drawer-backdrop fixed inset-0 cursor-pointer" aria-hidden="true"></div>
+
+    <div class="drawer-panel relative z-10 bg-white flex flex-col shadow-[0_20px_60px_rgba(42,30,30,0.18)] overflow-hidden w-full max-h-[92vh] rounded-t-[28px] sm:max-h-full sm:h-full sm:w-[480px] sm:rounded-none sm:rounded-l-[32px] border-t sm:border-t-0 sm:border-l border-[#623A2D]/10">
+      <div class="pt-3 pb-1 flex justify-center sm:hidden shrink-0">
+        <div class="w-12 h-1.5 bg-[#623A2D]/20 rounded-full"></div>
+      </div>
+
+      <div class="p-6 sm:p-8 overflow-y-auto space-y-6 flex-grow font-sans">
+        <div class="flex items-center justify-between gap-4 pb-3 border-b border-[#623A2D]/10">
+          <h2 class="text-xl sm:text-2xl font-black text-[#2A1E1E] tracking-tight m-0">Зв'язатися зі мною</h2>
+          <button type="button" class="js-close w-10 h-10 rounded-full bg-[#FAF1EC] hover:bg-[#F2E5DC] border border-[#623A2D]/10 flex items-center justify-center text-[#2A1E1E] text-sm cursor-pointer transition-colors shrink-0" aria-label="Закрити">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- Success screen -->
+        <div class="js-success hidden text-center py-10 space-y-4">
+          <div class="w-14 h-14 rounded-full bg-[#FAF1EC] border border-[#623A2D]/10 text-emerald-600 flex items-center justify-center text-2xl mx-auto shadow-xs">
+            <i class="fa-solid fa-check"></i>
+          </div>
+          <h3 class="text-xl font-black text-[#2A1E1E]">Дякую за звернення!</h3>
+          <p class="text-xs sm:text-sm text-[#623A2D]/80 font-medium">Я вже отримав ваше повідомлення та зв'яжусь з вами найближчим часом.</p>
+          <button type="button" class="js-confirm w-full py-3.5 px-6 rounded-full bg-[#2A1E1E] hover:bg-[#3D2C2C] text-white text-xs font-black mt-4 cursor-pointer transition-colors shadow-xs">
+            Зрозуміло
+          </button>
+        </div>
+
+        <!-- Form and socials -->
+        <div class="js-body space-y-6">
+          <form class="js-form space-y-4">
+            <div class="space-y-1.5">
+              <label class="text-[11px] font-black tracking-wider uppercase text-[#2A1E1E]">ІМ'Я <span class="text-rose-500">*</span></label>
+              <input type="text" name="name" required placeholder="Ваше ім'я" class={inp} />
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="text-[11px] font-black tracking-wider uppercase text-[#2A1E1E]">ЗРУЧНИЙ ЗВ'ЯЗОК <span class="text-rose-500">*</span></label>
+              <input type="text" name="contact" required placeholder="Telegram, email або телефон" class={inp} />
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="text-[11px] font-black tracking-wider uppercase text-[#2A1E1E]">ПОВІДОМЛЕННЯ <span class="text-rose-500">*</span></label>
+              <textarea name="message" rows="3" required placeholder="Коротко опишіть вашу ідею..." class={`${inp} resize-none`}></textarea>
+            </div>
+
+            <button type="submit" class="w-full py-3.5 px-6 rounded-full bg-[#2A1E1E] hover:bg-[#3D2C2C] active:scale-[0.99] text-white text-xs sm:text-sm font-black flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all disabled:opacity-50">
+              <span>Надіслати</span>
+              <i class="fa-solid fa-arrow-right text-[11px]"></i>
+            </button>
+          </form>
+
+          <div class="pt-2 space-y-3">
+            <div class="text-center">
+              <span class="text-[11px] font-black text-[#623A2D]/60 uppercase tracking-widest">СОЦМЕРЕЖІ</span>
+            </div>
+            <div class="space-y-2">
+              {socials.map((s) => (
+                <a href={s.href} target="_blank" rel="noopener noreferrer" class="flex items-center justify-between p-3 px-4 rounded-2xl bg-[#FAF1EC] border border-[#623A2D]/10 hover:border-[#D09AFC] hover:bg-white hover:shadow-sm hover:-translate-y-0.5 transition-all text-[#2A1E1E] no-underline group">
+                  <div class="flex items-center gap-3">
+                    <div class="w-7 h-7 rounded-full bg-white border border-[#623A2D]/10 flex items-center justify-center text-sm shadow-2xs group-hover:border-[#D09AFC] transition-colors">
+                      <i class={s.icon}></i>
+                    </div>
+                    <span class="text-xs sm:text-sm font-bold text-[#2A1E1E]">{s.name}</span>
+                  </div>
+                  <i class="fa-solid fa-arrow-up-right-from-square text-xs text-[#623A2D]/40 group-hover:text-[#95553C] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all"></i>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<style>
+  dialog {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  dialog::backdrop {
+    background: rgba(0, 0, 0, 0);
+    backdrop-filter: blur(4px);
+    transition: background 0.25s ease;
+  }
+  dialog.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  dialog.is-open::backdrop {
+    background: rgba(0, 0, 0, 0.6);
+  }
+  .drawer-panel {
+    transform: translateX(100%);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  dialog.is-open .drawer-panel {
+    transform: translate(0, 0);
+  }
+  @media (max-width: 639px) {
+    .drawer-panel {
+      transform: translateY(100%);
+    }
+  }
+</style>
+
+<script>
+  function initModals() {
+    document.querySelectorAll<HTMLElement>('[data-open-modal]').forEach((btn) => {
+      const dialog = document.getElementById(btn.dataset.openModal || '') as HTMLDialogElement | null;
+      if (!dialog || btn.dataset.bound) return;
+      btn.dataset.bound = 'true';
+
+      const [body, success, form] = ['.js-body', '.js-success', '.js-form'].map((s) => dialog.querySelector<HTMLElement>(s));
+      const toggle = (open: boolean) => {
+        if (open) {
+          dialog.showModal();
+          requestAnimationFrame(() => dialog.classList.add('is-open'));
+          document.body.style.overflow = 'hidden';
+        } else {
+          dialog.classList.remove('is-open');
+          setTimeout(() => {
+            dialog.close();
+            document.body.style.overflow = '';
+            body?.classList.remove('hidden');
+            success?.classList.add('hidden');
+          }, 250);
+        }
+      };
+
+      btn.onclick = () => toggle(true);
+      dialog.querySelector<HTMLElement>('.drawer-backdrop')!.onclick = () => toggle(false);
+      dialog.querySelectorAll<HTMLElement>('.js-close, .js-confirm').forEach((el) => (el.onclick = () => toggle(false)));
+      dialog.oncancel = (e) => { e.preventDefault(); toggle(false); };
+
+      (form as HTMLFormElement)?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const submitBtn = (form as HTMLFormElement).querySelector<HTMLButtonElement>('button[type="submit"]');
+        if (submitBtn) submitBtn.disabled = true;
+
+        const data = new FormData(form as HTMLFormElement);
+        const res = await fetch('/api/contact', { method: 'POST', body: data }).catch(() => null);
+
+        if (!res?.ok) {
+          const text = encodeURIComponent(`Привіт! Мене звати ${data.get('name')}. Контакт: ${data.get('contact')}. Повідомлення: ${data.get('message')}`);
+          window.open(`https://t.me/ihornone?text=${text}`, '_blank');
+        }
+
+        (form as HTMLFormElement).reset();
+        body?.classList.add('hidden');
+        success?.classList.remove('hidden');
+        if (submitBtn) submitBtn.disabled = false;
+      });
+    });
+  }
+
+  initModals();
+  document.addEventListener('astro:page-load', initModals);
+</script>
