@@ -30,52 +30,86 @@ const { categories, projects } = Astro.props;
 
 <script>
   document.addEventListener('astro:page-load', () => {
-    const filterTabs = document.querySelectorAll('.filter-tab');
-    const projectCards = document.querySelectorAll<HTMLElement>('#projects-grid .project-card');
+    const filterTabs = document.querySelectorAll<HTMLElement>('.filter-tab');
+    const projectCards = Array.from(document.querySelectorAll<HTMLElement>('#projects-grid .project-card'));
+
+    const ACTIVE = ['bg-[#2A1E1E]', 'text-white', 'border-[#2A1E1E]', 'shadow-sm'];
+    const IDLE = ['bg-white', 'text-[#2A1E1E]', 'border-[#623A2D]/10'];
+
+    function applyFilter(selected: string) {
+      // First — remember where every visible card currently sits
+      const first = new Map<HTMLElement, DOMRect>();
+      projectCards.forEach((card) => {
+        if (card.style.display !== 'none') first.set(card, card.getBoundingClientRect());
+      });
+
+      // Last — switch visibility and let the grid reflow
+      const shown: HTMLElement[] = [];
+      projectCards.forEach((card) => {
+        const category = card.getAttribute('data-category');
+        const shouldShow = selected === 'Усі проєкти' || category === selected;
+
+        if (shouldShow) {
+          card.style.display = '';
+          card.classList.remove('is-hidden');
+          shown.push(card);
+        } else {
+          card.style.display = 'none';
+          card.classList.remove('is-hidden');
+        }
+      });
+
+      // Invert + Play — cards glide from their old slot into the new one
+      shown.forEach((card, index) => {
+        const previous = first.get(card);
+        const next = card.getBoundingClientRect();
+
+        if (!previous) {
+          // Newly revealed card: fade and scale in
+          card.classList.add('is-hidden');
+          requestAnimationFrame(() => {
+            card.style.transitionDelay = `${index * 45}ms`;
+            card.classList.remove('is-hidden');
+          });
+          return;
+        }
+
+        const dx = previous.left - next.left;
+        const dy = previous.top - next.top;
+        if (dx === 0 && dy === 0) return;
+
+        card.style.setProperty('--flip-x', `${dx.toFixed(1)}px`);
+        card.style.setProperty('--flip-y', `${dy.toFixed(1)}px`);
+
+        requestAnimationFrame(() => {
+          card.style.transitionDelay = `${index * 45}ms`;
+          card.style.setProperty('--flip-x', '0px');
+          card.style.setProperty('--flip-y', '0px');
+        });
+      });
+
+      // Clean up the inline delay once the choreography finished
+      window.setTimeout(() => {
+        projectCards.forEach((card) => {
+          card.style.transitionDelay = '';
+          card.style.removeProperty('--flip-x');
+          card.style.removeProperty('--flip-y');
+        });
+      }, 800);
+    }
 
     filterTabs.forEach((tab) => {
-      tab.addEventListener('click', function (this: HTMLElement) {
-        const selectedCategory = this.getAttribute('data-category');
+      tab.addEventListener('click', () => {
+        const selected = tab.getAttribute('data-category') ?? '';
 
         filterTabs.forEach((t) => {
-          t.classList.remove('bg-[#2A1E1E]', 'text-white', 'border-[#2A1E1E]', 'shadow-sm');
-          t.classList.add('bg-white', 'text-[#2A1E1E]', 'border-[#623A2D]/10');
+          t.classList.remove(...ACTIVE);
+          t.classList.add(...IDLE);
         });
+        tab.classList.remove(...IDLE);
+        tab.classList.add(...ACTIVE);
 
-        this.classList.remove('bg-white', 'text-[#2A1E1E]', 'border-[#623A2D]/10');
-        this.classList.add('bg-[#2A1E1E]', 'text-white', 'border-[#2A1E1E]', 'shadow-sm');
-
-        // Smooth transition out for all cards
-        projectCards.forEach((card) => {
-          card.classList.add('is-hidden');
-        });
-
-        setTimeout(() => {
-          let visibleCount = 0;
-          projectCards.forEach((card) => {
-            const cardCategory = card.getAttribute('data-category');
-            const shouldShow = selectedCategory === 'Усі проєкти' || cardCategory === selectedCategory;
-
-            if (shouldShow) {
-              card.style.display = 'flex';
-              // Stagger the fade-in of matching cards
-              card.style.transitionDelay = `${visibleCount * 45}ms`;
-              visibleCount++;
-            } else {
-              card.style.display = 'none';
-              card.style.transitionDelay = '0ms';
-            }
-          });
-
-          // Trigger smooth cascade in
-          requestAnimationFrame(() => {
-            projectCards.forEach((card) => {
-              if (card.style.display !== 'none') {
-                card.classList.remove('is-hidden');
-              }
-            });
-          });
-        }, 200);
+        applyFilter(selected);
       });
     });
   });

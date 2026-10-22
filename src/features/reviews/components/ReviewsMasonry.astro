@@ -1,6 +1,12 @@
 ---
+export interface ReviewImage {
+  src: string;
+  width: number;
+  height: number;
+}
+
 interface Props {
-  images: string[];
+  images: ReviewImage[];
 }
 
 const { images } = Astro.props;
@@ -9,13 +15,16 @@ const { images } = Astro.props;
 <section class="w-full">
   {images.length > 0 ? (
     <div class="masonry-grid" data-animate="fade-up" data-stagger>
-      {images.map((src) => (
+      {images.map((image) => (
         <div class="masonry-item break-inside-avoid mb-4">
           <img
-            src={src}
+            src={image.src}
             alt="Відгук клієнта"
-            class="w-full rounded-[20px] sm:rounded-[24px] border border-[#623A2D]/10 object-cover cursor-pointer shadow-[0_12px_36px_rgba(42,30,30,0.06)] hover:border-[#D09AFC] hover:shadow-[0_22px_48px_rgba(42,30,30,0.12)] hover:scale-[1.01] transition-all duration-300"
+            width={image.width}
+            height={image.height}
+            class="w-full h-auto rounded-[20px] sm:rounded-[24px] border border-[#623A2D]/10 object-cover cursor-pointer shadow-[0_12px_36px_rgba(42,30,30,0.06)] hover:border-[#D09AFC] hover:shadow-[0_22px_48px_rgba(42,30,30,0.12)] hover:scale-[1.01] transition-all duration-300"
             loading="lazy"
+            decoding="async"
             data-lightbox
           />
         </div>

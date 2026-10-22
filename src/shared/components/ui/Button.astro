@@ -53,7 +53,8 @@ const baseClasses = 'inline-flex items-center justify-center gap-2 rounded-full 
     href={href}
     target={target}
     rel={rel || (target === '_blank' ? 'noopener noreferrer' : undefined)}
-    class={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${isDisabled ? 'opacity-50 pointer-events-none' : ''} ${className}`}
+    data-magnetic={isDisabled ? undefined : '6'}
+    class={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${isDisabled ? 'opacity-50 pointer-events-none' : ''} press-feedback ${className}`}
     aria-label={ariaLabel}
     aria-disabled={isDisabled}
     tabindex={isDisabled ? -1 : 0}
@@ -64,16 +65,17 @@ const baseClasses = 'inline-flex items-center justify-center gap-2 rounded-full 
         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
       </svg>
     ) : (
-      icon && iconPosition === 'left' && <i class={`${icon} text-xs`} aria-hidden="true"></i>
+      icon && iconPosition === 'left' && <i class={`${icon} text-xs btn-icon`} aria-hidden="true"></i>
     )}
     <slot />
-    {!loading && icon && iconPosition === 'right' && <i class={`${icon} text-xs`} aria-hidden="true"></i>}
+    {!loading && icon && iconPosition === 'right' && <i class={`${icon} text-xs btn-icon`} aria-hidden="true"></i>}
   </a>
 ) : (
   <button
     type={type}
     disabled={isDisabled}
-    class={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
+    data-magnetic={isDisabled ? undefined : '6'}
+    class={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''} press-feedback ${className}`}
     aria-label={ariaLabel}
     aria-busy={loading}
     aria-disabled={isDisabled}
@@ -84,9 +86,9 @@ const baseClasses = 'inline-flex items-center justify-center gap-2 rounded-full 
         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
       </svg>
     ) : (
-      icon && iconPosition === 'left' && <i class={`${icon} text-xs`} aria-hidden="true"></i>
+      icon && iconPosition === 'left' && <i class={`${icon} text-xs btn-icon`} aria-hidden="true"></i>
     )}
     <slot />
-    {!loading && icon && iconPosition === 'right' && <i class={`${icon} text-xs`} aria-hidden="true"></i>}
+    {!loading && icon && iconPosition === 'right' && <i class={`${icon} text-xs btn-icon`} aria-hidden="true"></i>}
   </button>
 )}

@@ -14,7 +14,9 @@ export default defineConfig({
   adapter: cloudflare(),
   integrations: [
     react(), 
-    sitemap()
+    sitemap({
+      filter: (page) => !page.endsWith('/email/'),
+    })
   ],
   vite: {
     plugins: [tailwindcss()],

@@ -14,13 +14,16 @@ const { class: className = "" } = Astro.props;
 >
   <!-- Fullscreen Edge-to-Edge Background Image -->
   <div class="absolute inset-0 w-full h-full z-0 overflow-hidden">
-    <img
-      src="/images/mascot/hero-cat.webp"
-      alt="Dev-кіт ihornone у чорному худі за макбуком"
-      class="hero-parallax-image w-full h-full object-cover object-center sm:object-[center_35%] scale-100 hero-ambient-zoom transition-transform duration-300 ease-out"
-      loading="eager"
-      fetchpriority="high"
-    />
+    <!-- Ambient zoom lives on the wrapper, pointer parallax on the image itself -->
+    <div class="hero-ambient-zoom absolute inset-0 w-full h-full">
+      <img
+        src="/images/mascot/hero-cat.webp"
+        alt="Dev-кіт ihornone у чорному худі за макбуком"
+        class="hero-parallax-layer w-full h-full object-cover object-center sm:object-[center_35%]"
+        loading="eager"
+        fetchpriority="high"
+      />
+    </div>
 
     <!-- Subtle overall cinematic vignette -->
     <div
@@ -77,6 +80,7 @@ const { class: className = "" } = Astro.props;
         href="https://t.me/ihornone"
         target="_blank"
         rel="noopener noreferrer"
+        data-magnetic="8"
         class="inline-flex items-center justify-center gap-2 rounded-full font-black text-xs sm:text-sm px-6 sm:px-7 py-3 bg-[#D09AFC] text-[#2A1E1E] animate-pulse-glow hover:bg-[#BF80FA] hover:-translate-y-0.5 active:translate-y-0 transition-all no-underline group shadow-xs"
       >
         <i
@@ -89,6 +93,7 @@ const { class: className = "" } = Astro.props;
       <!-- Dark Contrast Button (Capsule rounded-full) -->
       <a
         href="/portfolio"
+        data-magnetic="6"
         class="inline-flex items-center justify-center gap-2 rounded-full font-bold text-xs sm:text-sm px-6 sm:px-7 py-3 bg-[#2A1E1E] hover:bg-[#3D2C2C] text-white shadow-xs hover:-translate-y-0.5 active:translate-y-0 transition-all no-underline"
       >
         <span>Дивитися кейси</span>

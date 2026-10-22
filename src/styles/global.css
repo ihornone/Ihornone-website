@@ -37,6 +37,18 @@
   --color-cat-lilac: #D09AFC;
 
   --font-comfortaa: 'Comfortaa', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* ── Motion tokens: single source of truth for every animation on the site ── */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --dur-fast: 180ms;
+  --dur-base: 320ms;
+  --dur-slow: 560ms;
+  --dur-reveal: 700ms;
+  --dur-stagger-step: 60ms;
 }
 
 @layer components {
@@ -71,8 +83,9 @@
 
 /* Global html/body defaults */
 html {
-  /* Native scrolling responsiveness */
-  scroll-behavior: auto;
+  /* Smooth, GPU-friendly scrolling with offset so anchor targets never hide under the fixed navbar */
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
 }
 
 body {
@@ -203,95 +216,137 @@ html {
   height: 0;
 }
 
-/* Interactive Top Scroll Progress Indicator */
+/* Interactive Top Scroll Progress Indicator.
+   Scales on the compositor — animating `width` here would force a layout
+   on every single scroll frame and make the scroll feel stuttery. */
 #scroll-progress-bar {
   position: fixed;
   top: 0;
   left: 0;
   height: 3px;
-  width: 0%;
+  width: 100%;
   background: linear-gradient(90deg, #D09AFC 0%, #FAC3C8 50%, #E8BA98 100%);
+  transform: scaleX(0);
+  transform-origin: left center;
+  will-change: transform;
   z-index: 1000;
   pointer-events: none;
-  transition: width 0.08s ease-out;
+  transition: transform 0.08s linear;
   box-shadow: 0 0 12px rgba(208, 154, 252, 0.6);
 }
 
-/* Fast, GPU-friendly Scroll Animations without filter overhead or permanent will-change memory leaks */
+/* ═══════════════════════════════════════════════════════════════════════════
+   Scroll reveal — built on TRANSITIONS, never on `animation`.
+
+   Why transitions and not keyframes: a CSS `animation` with fill-mode
+   `forwards` outranks inline styles, which silently killed the 3D tilt
+   and the hero parallax (the JS transform was overwritten mid-flight).
+   With transitions the JS owns the transform through CSS variables and
+   everything composes instead of fighting.
+
+   Stagger index arrives from the animation engine as `--i` on each child,
+   so grids are no longer capped at eight items.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* One shared transform composition for reveal offsets + interactive tilt */
+[data-animate],
+.tilt-card,
+[data-stagger] > * {
+  --reveal-x: 0px;
+  --reveal-y: 0px;
+  --reveal-scale: 1;
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  --tilt-perspective: 1000px;
+  transform:
+    perspective(var(--tilt-perspective))
+    rotateX(var(--tilt-x))
+    rotateY(var(--tilt-y))
+    translate3d(var(--flip-x, 0px), var(--flip-y, 0px), 0)
+    translate3d(var(--reveal-x), var(--reveal-y), 0)
+    scale(var(--reveal-scale));
+}
+
+/* One shared transition contract: reveal owns opacity/transform/clip-path,
+   everything else keeps a short, snappy hover response. */
+[data-animate],
+.tilt-card,
+[data-stagger] > * {
+  --reveal-delay: 0ms;
+  transition:
+    opacity var(--dur-reveal) var(--ease-out-expo) var(--reveal-delay),
+    transform var(--dur-reveal) var(--ease-out-expo) var(--reveal-delay),
+    clip-path var(--dur-reveal) var(--ease-out-expo) var(--reveal-delay),
+    translate var(--dur-base) var(--ease-out-expo) 0ms,
+    scale var(--dur-base) var(--ease-out-expo) 0ms,
+    border-color var(--dur-base) var(--ease-out-expo) 0ms,
+    box-shadow var(--dur-base) var(--ease-out-expo) 0ms,
+    background-color var(--dur-base) var(--ease-out-expo) 0ms,
+    color var(--dur-base) var(--ease-out-expo) 0ms,
+    filter var(--dur-base) var(--ease-out-expo) 0ms;
+}
+
 [data-animate] {
   opacity: 0;
-  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* Reveal variants — they only seed the offset variables */
+[data-animate="fade-up"] { --reveal-y: 20px; }
+[data-animate="fade-down"] { --reveal-y: -20px; }
+[data-animate="fade-in"] { --reveal-y: 0px; }
+[data-animate="zoom-in"] { --reveal-scale: 0.96; }
+[data-animate="slide-left"] { --reveal-x: 24px; }
+[data-animate="slide-right"] { --reveal-x: -24px; }
+
+[data-animate="blur-in"] {
+  --reveal-scale: 0.94;
+  --reveal-blur: 8px;
+  filter: blur(var(--reveal-blur));
+}
+
+[data-animate="mask-up"] {
+  clip-path: inset(0 0 100% 0);
+}
+
+/* Visible state — offsets reset, opacity lands on 1 */
 [data-animate].is-visible {
   opacity: 1;
-  transform: translate3d(0, 0, 0);
+  --reveal-x: 0px;
+  --reveal-y: 0px;
+  --reveal-scale: 1;
 }
 
-[data-animate="fade-up"] {
-  transform: translate3d(0, 20px, 0);
+[data-animate="blur-in"].is-visible {
+  --reveal-blur: 0px;
 }
 
-[data-animate="fade-in"] {
-  transform: translate3d(0, 0, 0);
+[data-animate="mask-up"].is-visible {
+  clip-path: inset(0 0 0 0);
 }
 
-[data-animate="zoom-in"] {
-  transform: scale3d(0.96, 0.96, 1);
+/* Staggered entry for grids — delay comes from the `--i` index set by JS */
+[data-stagger] > * {
+  --reveal-y: 16px;
+  --reveal-delay: calc(var(--i, 0) * var(--dur-stagger-step));
+  opacity: 0;
 }
 
-[data-animate="slide-left"] {
-  transform: translate3d(24px, 0, 0);
+[data-animate].is-visible [data-stagger] > *,
+[data-animate][data-stagger].is-visible > * {
+  opacity: 1;
+  --reveal-x: 0px;
+  --reveal-y: 0px;
+  --reveal-scale: 1;
 }
 
-[data-animate="slide-right"] {
-  transform: translate3d(-24px, 0, 0);
-}
-
-/* Staggered entry for grids */
-[data-animate].is-visible [data-stagger] > *:nth-child(1),
-[data-animate][data-stagger].is-visible > *:nth-child(1) {
-  animation: staggerFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both 0.04s;
-}
-[data-animate].is-visible [data-stagger] > *:nth-child(2),
-[data-animate][data-stagger].is-visible > *:nth-child(2) {
-  animation: staggerFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both 0.08s;
-}
-[data-animate].is-visible [data-stagger] > *:nth-child(3),
-[data-animate][data-stagger].is-visible > *:nth-child(3) {
-  animation: staggerFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both 0.12s;
-}
-[data-animate].is-visible [data-stagger] > *:nth-child(4),
-[data-animate][data-stagger].is-visible > *:nth-child(4) {
-  animation: staggerFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both 0.16s;
-}
-[data-animate].is-visible [data-stagger] > *:nth-child(5),
-[data-animate][data-stagger].is-visible > *:nth-child(5) {
-  animation: staggerFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both 0.20s;
-}
-[data-animate].is-visible [data-stagger] > *:nth-child(6),
-[data-animate][data-stagger].is-visible > *:nth-child(6) {
-  animation: staggerFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both 0.24s;
-}
-[data-animate].is-visible [data-stagger] > *:nth-child(7),
-[data-animate][data-stagger].is-visible > *:nth-child(7) {
-  animation: staggerFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both 0.28s;
-}
-[data-animate].is-visible [data-stagger] > *:nth-child(8),
-[data-animate][data-stagger].is-visible > *:nth-child(8) {
-  animation: staggerFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both 0.32s;
-}
-
-@keyframes staggerFadeIn {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 16px, 0);
-  }
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
+/* A container that staggers its own children must not animate itself as
+   well — otherwise the whole block slides while its items fade in, and the
+   two motions together read as a jump. The children carry the entrance. */
+[data-animate][data-stagger] {
+  opacity: 1;
+  --reveal-x: 0px;
+  --reveal-y: 0px;
+  --reveal-scale: 1;
 }
 
 /* Dynamic Interactive Spotlight on Cards (Stripe / Linear specular glow) */
@@ -347,12 +402,10 @@ html {
   opacity: 1;
 }
 
-/* 3D Tilt Card Physics */
+/* 3D Tilt Card Physics — the transform itself is composed in the shared
+   reveal/tilt rule above, so JS only drives --tilt-x / --tilt-y. */
 .tilt-card {
   transform-style: preserve-3d;
-  perspective: 1000px;
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform;
 }
 
 /* Liquid Button Shimmer Sheen */
@@ -457,7 +510,7 @@ html {
 .faq-item-grid {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: grid-template-rows 0.4s var(--ease-out-expo);
 }
 
 details[open] .faq-item-grid {
@@ -468,24 +521,37 @@ details[open] .faq-item-grid {
   overflow: hidden;
   min-height: 0;
   opacity: 0;
-  transform: translateY(-6px);
-  transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: blur(4px);
+  transform: translateY(-8px);
+  transition:
+    opacity var(--dur-base) var(--ease-out-expo),
+    filter var(--dur-base) var(--ease-out-expo),
+    transform var(--dur-base) var(--ease-out-expo);
 }
 
 details[open] .faq-item-inner {
   opacity: 1;
+  filter: blur(0);
   transform: translateY(0);
 }
 
-/* Portfolio Filter Transition */
+/* Portfolio Filter Transition — FLIP reflow driven by --flip-x / --flip-y */
 .project-card {
-  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    opacity var(--dur-base) var(--ease-out-expo),
+    transform 0.45s var(--ease-out-expo),
+    translate var(--dur-base) var(--ease-out-expo),
+    scale var(--dur-base) var(--ease-out-expo),
+    border-color var(--dur-base) var(--ease-out-expo),
+    box-shadow var(--dur-base) var(--ease-out-expo),
+    background-color var(--dur-base) var(--ease-out-expo),
+    color var(--dur-base) var(--ease-out-expo);
 }
 
 .project-card.is-hidden {
   opacity: 0;
-  transform: scale(0.96) translateY(8px);
+  --reveal-scale: 0.96;
+  --reveal-y: 8px;
   pointer-events: none;
 }
 
@@ -500,17 +566,30 @@ details[open] .faq-item-inner {
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Telegram CTA Pulse Glow */
+/* Telegram CTA Pulse Glow.
+   The glow lives on a pseudo-element whose opacity is animated — animating
+   `box-shadow` directly would repaint the button on every frame of an
+   endless animation, which is exactly what makes a page feel janky. */
 @keyframes pulseGlow {
   0%, 100% {
-    box-shadow: 0 4px 14px 0 rgba(208, 154, 252, 0.35);
+    opacity: 0.3;
   }
   50% {
-    box-shadow: 0 6px 20px 0 rgba(208, 154, 252, 0.65);
+    opacity: 0.85;
   }
 }
 .animate-pulse-glow {
+  position: relative;
+}
+.animate-pulse-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 4px 16px 0 rgba(208, 154, 252, 0.6);
+  opacity: 0;
   animation: pulseGlow 3s ease-in-out infinite;
+  pointer-events: none;
 }
 
 /* Mascot peek breathing animation */
@@ -524,7 +603,6 @@ details[open] .faq-item-inner {
 }
 .animate-cat-peek {
   animation: catPeek 3.8s ease-in-out infinite;
-  will-change: transform;
 }
 
 /* Mascot cat brand logo wiggle */
@@ -551,6 +629,13 @@ details[open] .faq-item-inner {
 }
 .hero-ambient-zoom {
   animation: heroAmbientZoom 18s ease-in-out infinite alternate;
+}
+
+/* Hero parallax layer — driven by --px / --py from the animation engine.
+   Lives on its own element so the ambient zoom animation above never
+   overwrites the pointer-driven transform. */
+.hero-parallax-layer {
+  transform: translate3d(var(--px, 0px), var(--py, 0px), 0) scale(1.04);
   will-change: transform;
 }
 
@@ -569,15 +654,256 @@ details[open] .faq-item-inner {
   animation: heroFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   New motion primitives
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Per-word text reveal — the engine splits headings into word spans and
+   stamps each one with `--i`, so lines rise one word at a time. */
+.reveal-text .reveal-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translate3d(0, 0.6em, 0) rotate(2deg);
+  transition:
+    opacity var(--dur-reveal) var(--ease-out-expo) calc(var(--i, 0) * 45ms),
+    transform var(--dur-reveal) var(--ease-out-expo) calc(var(--i, 0) * 45ms);
+  will-change: transform, opacity;
+}
+
+.reveal-text.is-visible .reveal-word {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) rotate(0deg);
+}
+
+/* Animated underline that draws itself under a heading */
+.underline-draw {
+  position: relative;
+}
+
+.underline-draw::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.12em;
+  width: 100%;
+  height: 0.12em;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #D09AFC, #FAC3C8, #E8BA98);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--dur-slow) var(--ease-out-expo) var(--underline-delay, 120ms);
+}
+
+.underline-draw.is-visible::after,
+.is-visible .underline-draw::after {
+  transform: scaleX(1);
+}
+
+/* Animated gradient border for hero cards */
+.gradient-border {
+  position: relative;
+  border-radius: inherit;
+}
+
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--angle, 0deg),
+    transparent 0deg,
+    #D09AFC 60deg,
+    #FAC3C8 140deg,
+    #E8BA98 220deg,
+    transparent 300deg
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity var(--dur-base) var(--ease-out-expo);
+  pointer-events: none;
+}
+
+.gradient-border:hover::before {
+  opacity: 1;
+  animation: spinBorder 4s linear infinite;
+}
+
+@property --angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes spinBorder {
+  to {
+    --angle: 360deg;
+  }
+}
+
+/* Micro press feedback — uses the standalone `scale` property so it composes
+   with the magnetic `transform` instead of overwriting it */
+.press-feedback {
+  transition:
+    transform var(--dur-fast) var(--ease-out-expo),
+    scale var(--dur-fast) var(--ease-out-expo);
+}
+
+.press-feedback:active {
+  scale: 0.96;
+}
+
+/* Magnetic buttons — the engine translates the element toward the cursor */
+[data-magnetic] {
+  transform: translate3d(var(--mag-x, 0px), var(--mag-y, 0px), 0);
+  transition:
+    transform var(--dur-base) var(--ease-out-expo),
+    scale var(--dur-fast) var(--ease-out-expo),
+    translate var(--dur-base) var(--ease-out-expo),
+    box-shadow var(--dur-base) var(--ease-out-expo),
+    background-color var(--dur-base) var(--ease-out-expo),
+    border-color var(--dur-base) var(--ease-out-expo);
+  will-change: transform;
+}
+
+/* Icon slide inside buttons on hover */
+.btn-icon {
+  transition: transform var(--dur-base) var(--ease-out-expo);
+}
+
+a:hover > .btn-icon,
+button:hover > .btn-icon,
+.btn-group:hover .btn-icon {
+  transform: translateX(3px);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   View Transitions — navigation between pages
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+::view-transition-old(root) {
+  animation: vtOut var(--dur-base) var(--ease-out-expo) both;
+}
+
+::view-transition-new(root) {
+  animation: vtIn var(--dur-slow) var(--ease-out-expo) both;
+}
+
+@keyframes vtOut {
+  to {
+    opacity: 0;
+    transform: translate3d(0, -12px, 0) scale(0.985);
+  }
+}
+
+@keyframes vtIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0) scale(0.99);
+  }
+}
+
+/* Backward navigation flips the direction (Astro sets data-astro-transition) */
+:root[data-astro-transition="back"] ::view-transition-old(root) {
+  animation-name: vtOutBack;
+}
+
+:root[data-astro-transition="back"] ::view-transition-new(root) {
+  animation-name: vtInBack;
+}
+
+@keyframes vtOutBack {
+  to {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0) scale(0.985);
+  }
+}
+
+@keyframes vtInBack {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -16px, 0) scale(0.99);
+  }
+}
+
+/* Shared element (brand logo) travels between pages */
+::view-transition-group(brand-logo) {
+  animation-duration: var(--dur-slow);
+  animation-timing-function: var(--ease-out-expo);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  [data-animate],
-  .animate-hero-fade-in,
-  .animate-cat-peek,
-  .hero-ambient-zoom,
-  .animate-pulse-glow {
-    opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  ::view-transition-group(*) {
     animation: none !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Reduced motion — one authoritative block for every animated surface
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  [data-animate],
+  [data-stagger] > *,
+  .reveal-text .reveal-word,
+  .tilt-card,
+  .animate-hero-fade-in,
+  .animate-cat-peek,
+  .animate-float,
+  .hero-ambient-zoom,
+  .animate-pulse-glow,
+  .animate-pulse-glow::before,
+  .text-shimmer-lilac,
+  .brand-cat-icon,
+  [data-magnetic],
+  .project-card,
+  .faq-item-inner,
+  .faq-item-grid,
+  #scroll-progress-bar {
+    opacity: 1 !important;
+    transform: none !important;
+    translate: none !important;
+    scale: none !important;
+    filter: none !important;
+    clip-path: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+
+  [data-animate="mask-up"] {
+    clip-path: none !important;
+  }
+}
+
+/* Scroll-linked reveal as a progressive enhancement on browsers that
+   support `animation-timeline: view()` — the JS engine still runs everywhere
+   else, so this only adds smoothness, never behaviour. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    [data-animate="scroll-fade"] {
+      animation: scrollFade linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 26%;
+    }
+
+    @keyframes scrollFade {
+      from {
+        opacity: 0.15;
+        transform: translate3d(0, 28px, 0) scale(0.97);
+      }
+      to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+      }
+    }
+  }
+}
+

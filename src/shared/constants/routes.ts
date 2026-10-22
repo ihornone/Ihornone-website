@@ -10,6 +10,7 @@ export const Routes = {
   BLOG: '/blog',
   BLOG_DETAIL: (id: string) => `/blog/${id}` as const,
   REVIEWS: '/reviews',
+  EMAIL: '/email',
 } as const;
 
 export const SITE = {

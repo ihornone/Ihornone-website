@@ -125,7 +125,7 @@ const featuredProjects = sortedEntries.slice(0, 3).map((entry) => ({
     <!-- 3. Tech Specializations & Ready Modules -->
     <section class="w-full space-y-8 sm:space-y-10" data-animate="fade-up">
       <div class="w-full">
-        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-[#2A1E1E] tracking-tight leading-[1.15] m-0 text-left">
+        <h2 data-reveal-text class="underline-draw text-3xl sm:text-4xl lg:text-5xl font-black text-[#2A1E1E] tracking-tight leading-[1.15] m-0 text-left pb-2">
           Спеціалізація та готові модулі
         </h2>
       </div>
@@ -136,7 +136,7 @@ const featuredProjects = sortedEntries.slice(0, 3).map((entry) => ({
     <!-- 4. Featured Projects Showcase (Sticky Stacking Big Cards with Exact 16:10 Ratio, No Image Cropping) -->
     <section class="w-full space-y-8 sm:space-y-12" data-animate="fade-up">
       <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-[#2A1E1E] tracking-tight leading-[1.15] m-0 text-left">
+        <h2 data-reveal-text class="underline-draw text-3xl sm:text-4xl lg:text-5xl font-black text-[#2A1E1E] tracking-tight leading-[1.15] m-0 text-left pb-2">
           Останні реалізовані проєкти
         </h2>
 
@@ -164,7 +164,10 @@ const featuredProjects = sortedEntries.slice(0, 3).map((entry) => ({
           const isPhotoRight = idx % 2 === 0;
 
           return (
-            <article class="spotlight-card bg-white rounded-[24px] sm:rounded-[32px] p-5 sm:p-7 lg:p-9 border border-[#623A2D]/10 shadow-[0_12px_36px_rgba(42,30,30,0.04)] hover:shadow-[0_20px_48px_rgba(42,30,30,0.08)] transition-all duration-300">
+            <article
+              data-animate="mask-up"
+              class="spotlight-card bg-white rounded-[24px] sm:rounded-[32px] p-5 sm:p-7 lg:p-9 border border-[#623A2D]/10 shadow-[0_12px_36px_rgba(42,30,30,0.04)] hover:shadow-[0_20px_48px_rgba(42,30,30,0.08)] transition-all duration-300"
+            >
               <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-10 items-stretch">
                 <!-- Text Block: on mobile order-2 (under photo), on desktop order-1 if text-left, order-2 if text-right -->
                 <div
@@ -236,7 +239,7 @@ const featuredProjects = sortedEntries.slice(0, 3).map((entry) => ({
     <!-- 5. FAQ Accordion -->
     <section class="w-full space-y-8 sm:space-y-10" data-animate="fade-up">
       <div class="w-full">
-        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-[#2A1E1E] tracking-tight leading-[1.15] m-0 text-left">
+        <h2 data-reveal-text class="underline-draw text-3xl sm:text-4xl lg:text-5xl font-black text-[#2A1E1E] tracking-tight leading-[1.15] m-0 text-left pb-2">
           Часті запитання клієнтів
         </h2>
       </div>

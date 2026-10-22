@@ -129,6 +129,17 @@ const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '';
     <!-- Client Router for instant millisecond transitions -->
     <ClientRouter />
 
+    <noscript>
+      <style>
+        [data-animate],
+        [data-stagger] > * {
+          opacity: 1 !important;
+          transform: none !important;
+          clip-path: none !important;
+        }
+      </style>
+    </noscript>
+
     {isHome && (
       <link rel="preload" as="image" href="/images/mascot/hero-cat.webp" type="image/webp" fetchpriority="high" />
     )}
@@ -168,6 +179,17 @@ const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '';
         teardown();
         teardown = null;
       }
+    });
+
+    // Astro restores the previous scroll position on back/forward navigation.
+    // With `scroll-behavior: smooth` on <html> that restore would glide from
+    // the top of the page, which reads as the page jumping around — force it
+    // to be instant while the router swaps the document.
+    document.addEventListener('astro:before-preparation', () => {
+      document.documentElement.style.scrollBehavior = 'auto';
+    });
+    document.addEventListener('astro:page-load', () => {
+      document.documentElement.style.scrollBehavior = '';
     });
   </script>
 </html>

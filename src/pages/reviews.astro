@@ -5,7 +5,15 @@ import BentoCta from '../shared/components/sections/BentoCta.astro';
 import { ReviewsMasonry } from '../features/reviews';
 
 const imageModules = import.meta.glob('/src/content/reviews/*.{png,jpg,jpeg,webp,avif,gif}', { eager: true, query: '?url', import: 'default' });
-const images = Object.values(imageModules) as string[];
+const imageMetaModules = import.meta.glob('/src/content/reviews/*.{png,jpg,jpeg,webp,avif,gif}', { eager: true, import: 'default' });
+
+// Carry the intrinsic dimensions along so the browser can reserve the exact
+// space before a lazy image loads — otherwise every image that arrives shifts
+// the content below it and the page visibly jumps while scrolling.
+const images = Object.values(imageMetaModules).map((meta) => {
+  const m = meta as unknown as { src: string; width: number; height: number };
+  return { src: m.src, width: m.width, height: m.height };
+});
 ---
 
 <Layout

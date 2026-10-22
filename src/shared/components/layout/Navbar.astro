@@ -16,7 +16,7 @@ const allServices = (await getCollection("services")).sort(
 <!-- Full-Width Top Glass Blur Bar on Scroll (Across the whole screen top & right of navbar) -->
 <div
   id="top-scroll-blur-bar"
-  class="fixed top-0 left-0 w-full h-16 sm:h-20 z-40 pointer-events-none opacity-0 transition-opacity duration-300 backdrop-blur-md [mask-image:linear-gradient(to_bottom,black_50%,transparent)]"
+  class="fixed top-0 left-0 w-full h-16 sm:h-20 z-40 pointer-events-none opacity-0 invisible transition-opacity duration-300 backdrop-blur-md [mask-image:linear-gradient(to_bottom,black_50%,transparent)]"
 >
 </div>
 
@@ -61,6 +61,7 @@ const allServices = (await getCollection("services")).sort(
         aria-label="ihornone - на головну"
       >
         <div
+          transition:name="brand-logo"
           class="w-7 h-7 rounded-full bg-[#D09AFC] flex items-center justify-center text-[#2A1E1E] text-xs shadow-xs brand-cat-icon"
         >
           <i class="fa-solid fa-cat"></i>
@@ -375,8 +376,6 @@ const allServices = (await getCollection("services")).sort(
 
 <script>
   function initNavbarBehavior() {
-    const pocket = document.getElementById("navbar-pocket");
-    const blurBar = document.getElementById("top-scroll-blur-bar");
     const toggleBtn = document.getElementById("mobile-nav-toggle");
     const menuContent = document.getElementById("mobile-menu-content");
     const backdrop = document.getElementById("mobile-nav-backdrop");
@@ -389,22 +388,6 @@ const allServices = (await getCollection("services")).sort(
     const productsToggle = document.getElementById("mobile-products-toggle");
     const productsMenu = document.getElementById("mobile-products-menu");
     const productsChevron = document.getElementById("mobile-products-chevron");
-
-    // Handle Scroll for Full-Width Glass Blur
-    function handleScroll() {
-      if (window.scrollY > 15) {
-        blurBar?.classList.remove("opacity-0");
-        blurBar?.classList.add("opacity-100");
-        pocket?.classList.add("is-scrolled");
-      } else {
-        blurBar?.classList.remove("opacity-100");
-        blurBar?.classList.add("opacity-0");
-        pocket?.classList.remove("is-scrolled");
-      }
-    }
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
 
     function openMenu() {
       menuContent?.classList.remove("hidden");
