@@ -149,6 +149,11 @@ const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '';
     )}
   </head>
   <body class="bg-oat-cream text-ink-black font-sans min-h-screen antialiased flex flex-col">
+    <!-- Film grain texture over the page background -->
+    <div class="grain-fixed" aria-hidden="true">
+      <div class="grain-layer"></div>
+    </div>
+
     <!-- Smooth Top Scroll Progress Bar -->
     <div id="scroll-progress-bar" aria-hidden="true"></div>
 
