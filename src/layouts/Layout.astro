@@ -11,6 +11,7 @@ interface Props {
   url?: string;
   type?: string;
   structuredData?: object;
+  whiteBg?: boolean;
 }
 
 const {
@@ -20,6 +21,7 @@ const {
   url = 'https://www.ihornone.site/',
   type = 'website',
   structuredData,
+  whiteBg = false,
 } = Astro.props;
 
 const siteName = 'ihornone';
@@ -148,11 +150,13 @@ const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '';
       <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
     )}
   </head>
-  <body class="bg-oat-cream text-ink-black font-sans min-h-screen antialiased flex flex-col">
+  <body class:list={['text-ink-black font-sans min-h-screen antialiased flex flex-col', whiteBg ? 'page-white' : 'bg-oat-cream']}>
     <!-- Film grain texture over the page background -->
-    <div class="grain-fixed" aria-hidden="true">
-      <div class="grain-layer"></div>
-    </div>
+    {!whiteBg && (
+      <div class="grain-fixed" aria-hidden="true">
+        <div class="grain-layer"></div>
+      </div>
+    )}
 
     <!-- Smooth Top Scroll Progress Bar -->
     <div id="scroll-progress-bar" aria-hidden="true"></div>

@@ -119,6 +119,30 @@ body::before {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
+   White-background pages (legal / policy documents).
+
+   These pages opt out of the cream backdrop, the ambient gradient wash and
+   the film grain, and render on pure white. The navbar pocket and its two
+   scoop curves follow the body, otherwise the cream tab would float on a
+   white sheet and break the page.
+   ═══════════════════════════════════════════════════════════════════════════ */
+body.page-white {
+  background-color: #FFFFFF;
+}
+
+body.page-white::before {
+  background-image: none;
+}
+
+body.page-white #navbar-pocket {
+  background-color: #FFFFFF;
+}
+
+body.page-white #navbar-pocket svg path {
+  fill: #FFFFFF;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
    Film grain over the page background.
 
    The noise is an SVG feTurbulence tinted to the site palette, so the speckle

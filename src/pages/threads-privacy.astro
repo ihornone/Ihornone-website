@@ -1,0 +1,152 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../shared/components/sections/Hero.astro';
+
+const lastUpdated = '23 жовтня 2026 року';
+---
+
+<Layout
+  title="Політика конфіденційності — ihornone Threads Monitor"
+  description="Політика обробки даних застосунку ihornone Threads Monitor: які публічні пости Threads обробляються, навіщо, як довго зберігаються та як їх видалити."
+  url="/threads-privacy"
+  whiteBg
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 pt-2 sm:pt-4 pb-20 space-y-10">
+    <Hero
+      title="Політика конфіденційності"
+    >
+      <span class="mascot-pill-badge">
+        <i class="fa-brands fa-threads"></i>
+        ihornone Threads Monitor
+      </span>
+    </Hero>
+
+    <div class="space-y-8 text-[#2A1E1E]" data-animate="fade-up">
+
+      <p class="m-0 text-sm text-[#623A2D]/70 leading-relaxed font-medium">
+        Дата останнього оновлення: {lastUpdated}
+      </p>
+
+      <div class="p-5 rounded-[20px] sm:rounded-[24px] bg-[#FAF1EC] border border-[#623A2D]/10 text-sm text-[#623A2D] leading-relaxed font-medium">
+        Ця політика описує, які дані обробляє застосунок <strong>ihornone Threads Monitor</strong> (далі — «Застосунок»), навіщо, як довго зберігаються та як їх видалити. Розробник і власник Застосунку: <strong>ihornone</strong> (Україна), контакт: <a href="mailto:hello@ihornone.site" class="text-[#95553C] font-bold underline hover:text-[#2A1E1E]">hello@ihornone.site</a>, Telegram: <a href="https://t.me/ihornone" target="_blank" rel="noopener noreferrer" class="text-[#95553C] font-bold underline hover:text-[#2A1E1E]">@ihornone</a>.
+      </div>
+
+      <!-- 1 -->
+      <section class="space-y-2.5">
+        <h2 class="text-base font-black text-[#2A1E1E] m-0">1. Які дані обробляються</h2>
+        <p class="text-sm text-[#623A2D]/85 leading-relaxed font-medium m-0">
+          Застосунок використовує Threads API і обробляє лише <strong>публічні пости</strong> Threads, які містять ключові слова, визначені власником Застосунку. Для кожного знайденого поста обробляються:
+        </p>
+        <ul class="list-disc list-inside text-sm text-[#623A2D]/85 space-y-1.5 pl-2 font-medium">
+          <li>ідентифікатор поста;</li>
+          <li>текст поста;</li>
+          <li>ім'я користувача (username) автора;</li>
+          <li>посилання на пост (permalink);</li>
+          <li>дата і час публікації.</li>
+        </ul>
+        <p class="text-sm text-[#623A2D]/85 leading-relaxed font-medium m-0">
+          Застосунок <strong>не</strong> збирає приватні повідомлення, закриті акаунти, паролі, платіжні дані, контакти з телефону, а також будь-які дані, які не є публічними.
+        </p>
+      </section>
+
+      <!-- 2 -->
+      <section class="space-y-2.5">
+        <h2 class="text-base font-black text-[#2A1E1E] m-0">2. Мета обробки</h2>
+        <p class="text-sm text-[#623A2D]/85 leading-relaxed font-medium m-0">
+          Дані використовуються виключно для того, щоб власник Застосунку міг переглянути публічний пост, який містить потребу в послугах розробки, і вручну вирішити, чи відповідати авторові.
+        </p>
+        <p class="text-sm text-[#623A2D]/85 leading-relaxed font-medium m-0">
+          Застосунок:
+        </p>
+        <ul class="list-disc list-inside text-sm text-[#623A2D]/85 space-y-1.5 pl-2 font-medium">
+          <li><strong>не</strong> публікує від імені користувачів жодного контенту без їхнього окремого рішення;</li>
+          <li><strong>не</strong> надсилає автоматичних повідомлень, відповідей, коментарів або запитів контактів авторам постів;</li>
+          <li><strong>не</strong> використовує дані для реклами, профілювання чи продажу третім особам.</li>
+        </ul>
+      </section>
+
+      <!-- 3 -->
+      <section class="space-y-2.5">
+        <h2 class="text-base font-black text-[#2A1E1E] m-0">3. Як дані передаються і зберігаються</h2>
+        <ul class="list-disc list-inside text-sm text-[#623A2D]/85 space-y-1.5 pl-2 font-medium">
+          <li>Знайдені пости надсилаються власнику Застосунку в закритий чат Telegram. Доступ до цього чату має лише власник.</li>
+          <li>Список ідентифікаторів уже оброблених постів зберігається на сервері, щоб не надсилати один і той самий пост двічі.</li>
+          <li>Текст і метадані постів <strong>не зберігаються</strong> на сервері після надсилання повідомлення в Telegram.</li>
+          <li>Токен доступу Threads зберігається в змінних середовища сервера і не передається третім особам.</li>
+        </ul>
+      </section>
+
+      <!-- 4 -->
+      <section class="space-y-2.5">
+        <h2 class="text-base font-black text-[#2A1E1E] m-0">4. Строк зберігання</h2>
+        <ul class="list-disc list-inside text-sm text-[#623A2D]/85 space-y-1.5 pl-2 font-medium">
+          <li>Ідентифікатори оброблених постів зберігаються <strong>30 днів</strong>, після чого автоматично видаляються.</li>
+          <li>Дані, отримані з Threads, не зберігаються довше, ніж потрібно для сповіщення.</li>
+        </ul>
+      </section>
+
+      <!-- 5 -->
+      <section class="space-y-2.5">
+        <h2 class="text-base font-black text-[#2A1E1E] m-0">5. Передача третім особам</h2>
+        <p class="text-sm text-[#623A2D]/85 leading-relaxed font-medium m-0">
+          Дані не продаються, не передаються рекламним чи аналітичним платформам і не розголошуються. Єдиний сервіс, через який проходять повідомлення, — Telegram, як канал доставки власнику Застосунку.
+        </p>
+      </section>
+
+      <!-- 6 -->
+      <section class="space-y-2.5">
+        <h2 class="text-base font-black text-[#2A1E1E] m-0">6. Права автора поста</h2>
+        <p class="text-sm text-[#623A2D]/85 leading-relaxed font-medium m-0">
+          Автор публічного поста має право вимагати:
+        </p>
+        <ul class="list-disc list-inside text-sm text-[#623A2D]/85 space-y-1.5 pl-2 font-medium">
+          <li>видалення даних про себе, які зберігаються в Застосунку (ідентифікатор поста, ім'я користувача);</li>
+          <li>виключення свого акаунта з подальшої обробки.</li>
+        </ul>
+        <p class="text-sm text-[#623A2D]/85 leading-relaxed font-medium m-0">
+          Для цього напишіть на <a href="mailto:hello@ihornone.site" class="text-[#95553C] font-bold underline hover:text-[#2A1E1E]">hello@ihornone.site</a> або в Telegram <a href="https://t.me/ihornone" target="_blank" rel="noopener noreferrer" class="text-[#95553C] font-bold underline hover:text-[#2A1E1E]">@ihornone</a> з темою «Видалення даних Threads». Запит буде оброблено протягом <strong>7 днів</strong>.
+        </p>
+      </section>
+
+      <!-- 7 -->
+      <section class="space-y-2.5">
+        <h2 class="text-base font-black text-[#2A1E1E] m-0">7. Безпека</h2>
+        <p class="text-sm text-[#623A2D]/85 leading-relaxed font-medium m-0">
+          Токени доступу зберігаються в захищених змінних середовища. Доступ до сервера і чату з сповіщеннями має лише власник Застосунку.
+        </p>
+      </section>
+
+      <!-- 8 -->
+      <section class="space-y-2.5">
+        <h2 class="text-base font-black text-[#2A1E1E] m-0">8. Зміни політики</h2>
+        <p class="text-sm text-[#623A2D]/85 leading-relaxed font-medium m-0">
+          Якщо політика змінюється, нова версія публікується на цій сторінці з оновленою датою. Суттєві зміни можуть бути оголошені окремо.
+        </p>
+      </section>
+
+      <!-- 9 -->
+      <section class="space-y-3 pt-2">
+        <h2 class="text-base font-black text-[#2A1E1E] m-0">9. Контакти</h2>
+        <div class="flex flex-wrap gap-3">
+          <a
+            href="https://t.me/ihornone"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#FAF1EC] border border-[#623A2D]/15 text-[#2A1E1E] text-sm font-bold shadow-2xs hover:border-[#D09AFC] hover:-translate-y-0.5 transition-all no-underline"
+          >
+            <i class="fa-brands fa-telegram text-[#2AABEE] text-base"></i>
+            <span>Telegram: @ihornone</span>
+          </a>
+          <a
+            href="mailto:hello@ihornone.site"
+            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#FAF1EC] border border-[#623A2D]/15 text-[#2A1E1E] text-sm font-bold shadow-2xs hover:border-[#D09AFC] hover:-translate-y-0.5 transition-all no-underline"
+          >
+            <i class="fa-solid fa-envelope text-[#EA4335] text-sm"></i>
+            <span>Email: hello@ihornone.site</span>
+          </a>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</Layout>
