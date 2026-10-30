@@ -56,24 +56,18 @@ const { class: className = "" } = Astro.props;
       class="grain-surface relative bg-[#FAF1EC] rounded-tl-[24px] sm:rounded-tl-[28px] px-5 sm:px-6 py-3.5 sm:py-4 shadow-md flex items-center gap-3 sm:gap-3.5"
     >
       <!-- Inverted Scoop Curve (Above the plate along the right edge: curves smoothly inwards R=24) -->
-      <svg
+      <div
         class="absolute -top-[24px] right-0 w-[24px] h-[24px] pointer-events-none"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path d="M24 24 V0 A 24 24 0 0 1 0 24 H24 Z" fill="#FAF1EC"></path>
-      </svg>
+        style="clip-path: path('M24 24 V0 A24 24 0 0 1 0 24 H24 Z'); transform: translateY(1px)"
+        aria-hidden="true"
+      ><div class="grain-surface h-full w-full bg-[#FAF1EC]"></div></div>
 
       <!-- Inverted Scoop Curve (To the left of the plate along the bottom edge: curves smoothly inwards R=24) -->
-      <svg
+      <div
         class="absolute bottom-0 -left-[24px] w-[24px] h-[24px] pointer-events-none"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path d="M24 24 H0 A 24 24 0 0 0 24 0 V24 Z" fill="#FAF1EC"></path>
-      </svg>
+        style="clip-path: path('M24 24 H0 A24 24 0 0 0 24 0 V24 Z'); transform: translateX(1px)"
+        aria-hidden="true"
+      ><div class="grain-surface h-full w-full bg-[#FAF1EC]"></div></div>
 
       <!-- Lavender Primary Button with Pulse Glow (Capsule rounded-full) -->
       <a

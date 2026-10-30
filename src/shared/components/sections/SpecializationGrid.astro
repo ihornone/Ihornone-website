@@ -1,5 +1,5 @@
 ---
-import IconBox from '../ui/IconBox.astro';
+import Drawer from '../ui/Drawer.astro';
 import { getCollection } from 'astro:content';
 
 interface Props {
@@ -34,9 +34,10 @@ for (let i = 0; i < allItems.length; i += 2) {
           <button
             type="button"
             class="spec-item spotlight-card bg-white border border-[#623A2D]/10 rounded-[20px] p-4 sm:p-5 flex items-center gap-4 text-left transition-all duration-300 shadow-[0_8px_24px_rgba(42,30,30,0.04)] hover:border-[#D09AFC] hover:shadow-[0_16px_36px_rgba(42,30,30,0.09)] hover:-translate-y-0.5 cursor-pointer w-full flex-1 group"
-            data-title={item.data.title}
-            data-desc={item.data.fullDescription || item.data.desc}
-            data-icon={item.data.icon}
+            data-drawer-open="spec-drawer"
+            data-drawer-panel={item.id}
+            data-drawer-title={item.data.title}
+            data-drawer-icon={item.data.icon}
           >
             <div class="w-12 h-12 rounded-[14px] bg-[#FAF1EC] border border-[#623A2D]/8 flex items-center justify-center shrink-0 text-[#2A1E1E] group-hover:bg-[#D09AFC]/30 transition-colors shadow-2xs">
               <i class:list={[item.data.icon, "text-lg text-[#2A1E1E]"]}></i>
@@ -52,190 +53,69 @@ for (let i = 0; i < allItems.length; i += 2) {
   </div>
 </div>
 
-<dialog
-  id="spec-drawer"
-  class="fixed inset-0 z-[200] bg-transparent p-0 m-0 max-w-none max-h-none w-full h-full opacity-0 pointer-events-none backdrop:bg-black/50"
->
-  <div class="drawer-content h-full flex flex-col md:flex-row justify-end">
-    <div class="drawer-backdrop absolute inset-0" aria-hidden="true"></div>
-    <div class="drawer-panel relative bg-white h-full w-full max-w-md flex flex-col shadow-2xl overflow-hidden md:rounded-l-[24px]">
-      <div class="flex items-center justify-between px-6 py-5 border-b border-[#623A2D]/10 shrink-0">
-        <div class="flex items-center gap-3">
-          <div id="spec-drawer-icon"></div>
-          <h3 id="spec-drawer-title" class="text-lg font-black text-[#2A1E1E] m-0"></h3>
-        </div>
-        <button
-          type="button"
-          class="js-close-spec w-9 h-9 rounded-full bg-[#FAF1EC] flex items-center justify-center text-[#2A1E1E]/70 hover:text-[#2A1E1E] transition-colors cursor-pointer border-none"
-          aria-label="Закрити"
-        >
-          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-        </button>
-      </div>
-      <div class="flex-1 overflow-y-auto overscroll-contain px-6 py-6">
-        <p id="spec-drawer-desc" class="text-sm sm:text-base text-[#623A2D]/85 leading-relaxed font-medium m-0"></p>
-      </div>
+<!--
+  Розгорнутий опис кожної спеціалізації рендериться на сервері, а не підставляється
+  з data-атрибутів: текст потрапляє в HTML (краулери бачать опис), а не лише в пам'ять
+  браузера після кліку.
+-->
+<Drawer id="spec-drawer" title="Спеціалізація">
+  {allItems.map((item) => (
+    <div data-drawer-panel-value={item.id}>
+      <p class="m-0 text-sm sm:text-base leading-relaxed font-medium text-[#623A2D]/85">
+        {item.data.fullDescription || item.data.desc}
+      </p>
     </div>
-  </div>
-</dialog>
-
-<style>
-  dialog {
-    padding: 0;
-    border: none;
-    background: transparent;
-    max-width: none;
-    max-height: none;
-    width: 100%;
-    height: 100%;
-  }
-
-  dialog::backdrop {
-    background: rgba(0, 0, 0, 0);
-    transition: background 0.3s;
-  }
-
-  dialog[open]::backdrop {
-    background: rgba(0, 0, 0, 0.5);
-  }
-
-  dialog[open] .drawer-panel {
-    transform: translateX(0);
-  }
-
-  .drawer-content {
-    position: relative;
-    height: 100%;
-  }
-
-  .drawer-backdrop {
-    position: absolute;
-    inset: 0;
-  }
-
-  .drawer-panel {
-    transform: translateX(100%);
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    overscroll-behavior: contain;
-  }
-
-  @media (max-width: 767px) {
-    dialog[open] .drawer-panel {
-      transform: translateY(0);
-    }
-
-    .drawer-panel {
-      transform: translateY(100%);
-      max-height: 70vh;
-      border-radius: 24px 24px 0 0;
-      margin-top: auto;
-    }
-
-    .drawer-content {
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-    }
-
-    .drawer-backdrop {
-      position: fixed;
-    }
-  }
-
-  @media (min-width: 768px) {
-    .drawer-panel {
-      max-height: none;
-      border-top-left-radius: 24px;
-      border-bottom-left-radius: 24px;
-    }
-  }
-</style>
+  ))}
+</Drawer>
 
 <script>
   document.addEventListener('astro:page-load', () => {
-    const dialog = document.getElementById('spec-drawer') as HTMLDialogElement;
-    const titleEl = document.getElementById('spec-drawer-title');
-    const iconEl = document.getElementById('spec-drawer-icon');
-    const descEl = document.getElementById('spec-drawer-desc');
-    const items = document.querySelectorAll('.spec-item');
-    const closeBtns = document.querySelectorAll('.js-close-spec');
-    const backdrop = dialog?.querySelector('.drawer-backdrop');
     const container = document.getElementById('spec-scroll-container');
+    if (!container || container.dataset.dragBound === 'true') return;
+    container.dataset.dragBound = 'true';
+
+    const items = container.querySelectorAll('.spec-item');
 
     // Drag-to-scroll support for mouse/trackpad swipe simulation
-    if (container) {
-      let isDown = false;
-      let startX = 0;
-      let scrollLeft = 0;
-      let isDragging = false;
+    let isDown = false;
+    let startX = 0;
+    let scrollLeft = 0;
+    let isDragging = false;
 
-      container.addEventListener('mousedown', (e) => {
-        isDown = true;
-        isDragging = false;
-        startX = e.pageX - container.offsetLeft;
-        scrollLeft = container.scrollLeft;
-      });
+    container.addEventListener('mousedown', (e) => {
+      isDown = true;
+      isDragging = false;
+      startX = e.pageX - container.offsetLeft;
+      scrollLeft = container.scrollLeft;
+    });
 
-      window.addEventListener('mouseup', () => {
-        isDown = false;
-      });
+    window.addEventListener('mouseup', () => {
+      isDown = false;
+    });
 
-      container.addEventListener('mousemove', (e) => {
-        if (!isDown) return;
-        const x = e.pageX - container.offsetLeft;
-        const walk = (x - startX);
-        if (Math.abs(walk) > 5) {
-          isDragging = true;
-        }
-        container.scrollLeft = scrollLeft - walk;
-      });
+    container.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      const x = e.pageX - container.offsetLeft;
+      const walk = x - startX;
+      if (Math.abs(walk) > 5) {
+        isDragging = true;
+      }
+      container.scrollLeft = scrollLeft - walk;
+    });
 
-      // Prevent click triggering drawer when dragging
-      items.forEach((item) => {
-        item.addEventListener('click', (e) => {
+    // Prevent click triggering drawer when dragging
+    items.forEach((item) => {
+      item.addEventListener(
+        'click',
+        (e) => {
           if (isDragging) {
             e.stopImmediatePropagation();
             e.preventDefault();
             isDragging = false;
           }
-        }, true);
-      });
-    }
-
-    function open(title: string, desc: string, icon: string) {
-      if (!dialog || !titleEl || !descEl || !iconEl) return;
-      titleEl.textContent = title;
-      descEl.textContent = desc;
-      iconEl.innerHTML = `<div class="w-11 h-11 rounded-[14px] flex items-center justify-center shrink-0 bg-[#D09AFC]/30 text-[#2A1E1E]"><i class="${icon} text-base"></i></div>`;
-      dialog.showModal();
-      dialog.style.opacity = '1';
-      dialog.style.pointerEvents = 'auto';
-      document.body.style.overflow = 'hidden';
-    }
-
-    function close() {
-      if (!dialog) return;
-      dialog.style.opacity = '0';
-      dialog.style.pointerEvents = 'none';
-      dialog.close();
-      document.body.style.overflow = '';
-    }
-
-    items.forEach((item) => {
-      item.addEventListener('click', () => {
-        const title = item.getAttribute('data-title') || '';
-        const desc = item.getAttribute('data-desc') || '';
-        const icon = item.getAttribute('data-icon') || '';
-        open(title, desc, icon);
-      });
-    });
-
-    closeBtns.forEach(btn => btn.addEventListener('click', close));
-    backdrop?.addEventListener('click', close);
-
-    dialog?.addEventListener('cancel', (e) => {
-      e.preventDefault();
-      close();
+        },
+        true
+      );
     });
   });
 </script>

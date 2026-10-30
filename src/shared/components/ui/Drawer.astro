@@ -1,0 +1,675 @@
+---
+/**
+ * Єдиний drawer для всіх модальних панелей сайту.
+ *
+ * Один DOM, дві презентації:
+ *   — десктоп: панель виїжджає збоку (за замовчуванням справа) на всю висоту;
+ *   — телефон: та сама панель висувається знизу як bottom sheet.
+ *
+ * Механіка — нативний <dialog> + showModal().
+ *
+ * Рух поділено за надійністю:
+ *   — СЛАЙД панелі веде JS-степер (rAF із таймерною підстраховкою):
+ *     у частині вбудованих переглядачів transform-переходи реєструються,
+ *     але ніколи не просуваються, і панель «вистрибує» миттєво — степер
+ *     малює кожен кадр сам і працює однаково скрізь;
+ *   — ЗГАСАННЯ (backdrop і каскад вмісту) — звичайні CSS-переходи
+ *     на opacity: вони відтворюються і в здорових браузерах, і у
+ *     вбудованих переглядачах.
+ *
+ * Закриття — перетягуванням, кліком по backdrop або Esc.
+ *
+ * Використання:
+ *   <button data-drawer-open="my-drawer">Відкрити</button>
+ *   <Drawer id="my-drawer" title="Заголовок">…</Drawer>
+ *
+ * Додатково тригер може передавати:
+ *   data-drawer-panel="key"   — показати всередині drawer'а блок
+ *                                 [data-drawer-panel-value="key"];
+ *   data-drawer-title="…"     — підмінити заголовок;
+ *   data-drawer-icon="…"      — підмінити іконку (клас FontAwesome);
+ *   data-drawer-subtitle="…"  — підмінити підзаголовок.
+ */
+export interface Props {
+  id: string;
+  title?: string;
+  subtitle?: string;
+  icon?: string;
+  width?: 'sm' | 'md' | 'lg';
+  side?: 'right' | 'left';
+}
+
+const {
+  id,
+  title = '',
+  subtitle = '',
+  icon = '',
+  width = 'md',
+  side = 'right',
+} = Astro.props;
+
+const widths = { sm: '400px', md: '480px', lg: '560px' };
+---
+
+<dialog
+  id={id}
+  data-drawer
+  data-side={side}
+  data-default-title={title}
+  aria-labelledby={`${id}-title`}
+  style={`--drawer-width: ${widths[width]}`}
+  class="drawer fixed inset-0 z-[200] m-0 h-full w-full max-h-none max-w-none border-none bg-transparent p-0 overflow-hidden text-left text-ink-black"
+>
+  <div
+    class="drawer-root relative flex h-full w-full items-end justify-end data-[side=left]:justify-start lg:items-stretch"
+    data-side={side}
+  >
+    <div
+      class="drawer-backdrop absolute inset-0 bg-ink-black/45 opacity-0 transition-opacity duration-[var(--dur-drawer)] ease-[var(--ease-sheet-in)]"
+      data-drawer-backdrop
+      aria-hidden="true"
+    ></div>
+
+    <section
+      class="drawer-panel relative z-10 flex w-full max-h-[92vh] max-h-[92dvh] flex-col overflow-hidden rounded-t-[28px] border-t border-[#623A2D]/10 bg-paper-white shadow-[0_20px_60px_rgba(42,30,30,0.18)] lg:h-full lg:max-h-none lg:w-[var(--drawer-width)] lg:max-w-full lg:rounded-none lg:rounded-l-[32px] lg:border-t-0 lg:border-l data-[side=left]:lg:rounded-none data-[side=left]:lg:rounded-r-[32px] data-[side=left]:lg:border-l-0 data-[side=left]:lg:border-r"
+      data-drawer-panel
+      data-side={side}
+    >
+      <div class="drawer-grabber flex shrink-0 cursor-grab touch-none justify-center pt-2.5 pb-1 lg:hidden" data-drawer-drag aria-hidden="true">
+        <span class="h-1.5 w-11 rounded-full bg-[#623A2D]/20"></span>
+      </div>
+
+      <header class="drawer-header flex shrink-0 touch-none select-none items-center justify-between gap-4 border-b border-[#623A2D]/10 px-6 py-5" data-drawer-drag>
+        <div class="drawer-heading flex min-w-0 items-center gap-3">
+          <span
+            class="drawer-icon grid h-11 w-11 shrink-0 place-items-center rounded-[14px] bg-cobalt-pop/30 text-base text-ink-black shadow-2xs empty:hidden"
+            data-drawer-icon
+          >{icon && <i class={icon} aria-hidden="true"></i>}</span>
+
+          <div class="drawer-heading-text min-w-0">
+            <h2 class="drawer-title m-0 text-lg font-black leading-tight tracking-tight text-ink-black sm:text-xl" id={`${id}-title`} data-drawer-title>{title}</h2>
+            <p class="drawer-subtitle m-0 mt-1 text-xs font-medium leading-relaxed text-[#623A2D]/75" data-drawer-subtitle hidden={!subtitle}>{subtitle}</p>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          class="drawer-close grid h-10 w-10 shrink-0 cursor-pointer place-items-center rounded-full border border-[#623A2D]/10 bg-mascot-bg text-xs text-ink-black/70 transition-[background-color,color,scale] duration-[var(--dur-fast)] ease-[var(--ease-out-expo)] hover:bg-[#F4E8E3] hover:text-ink-black active:scale-95"
+          data-drawer-close
+          aria-label="Закрити"
+        >
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </header>
+
+      <div
+        class="drawer-body min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 pt-5 pb-7 sm:px-8 sm:pt-8 sm:pb-8"
+        data-drawer-body
+      >
+        <slot />
+      </div>
+
+      <slot name="footer" />
+    </section>
+  </div>
+</dialog>
+
+<style>
+  /* ── Моушн-система drawer'а ───────────────────────────────────────────
+     Стан задає клас .is-open на <dialog>.
+
+     ПАНЕЛЬ (слайд): позицію складає translate3d із трьох доданків —
+       --closed-x/y  положення «закрито» (залежить від брейкпойнта, боку);
+       --drag-x/y    живе зміщення від пальця (drag-to-dismiss);
+       --fall-x/y    піксельний офсет JS-степера, що веде слайд.
+     CSS-переходу на transform в панелі немає навмисно: слайд веде
+     степер (див. скрипт), тому перехід лише заважав би.
+
+     ЗАГАСАННЯ (backdrop і вміст): звичайні CSS-переходи на opacity —
+     вхід 460мс сповіддю cubic-bezier(0.32, 0.72, 0, 1) (канонічна крива
+     шітів), вихід 320мс прискоренням. Вміст піднімається каскадом.
+     У русі — тільки transform/opacity, без layout-властивостей.
+  */
+  .drawer-panel {
+    --drag-x: 0px;
+    --drag-y: 0px;
+    --fall-x: 0px;
+    --fall-y: 0px;
+    --closed-x: 0%;
+    --closed-y: 100%;
+
+    transform: translate3d(
+      calc(var(--closed-x) + var(--drag-x) + var(--fall-x)),
+      calc(var(--closed-y) + var(--drag-y) + var(--fall-y)),
+      0
+    );
+    will-change: transform;
+  }
+
+  .drawer.is-open .drawer-panel {
+    --closed-y: 0%;
+  }
+
+  .drawer-panel.is-dragging {
+    transition: none;
+  }
+
+  /* Затемнення з'являється разом із панеллю, а на виході гасне швидше —
+     в такт панелі, а не позаду неї. */
+  .drawer.is-open .drawer-backdrop {
+    opacity: 1;
+  }
+
+  .drawer:not(.is-open) .drawer-backdrop {
+    transition-duration: var(--dur-base);
+  }
+
+  /* Вміст каскадно піднімається вслід за панеллю. Використовуємо transition,
+     а не keyframes-анімацію: у середовищах без анімаційного годинника
+     transition рендериться у кінцевому стані (вміст просто видимий),
+     тоді як зупинена keyframes-анімація назавжди лишила б opacity: 0. */
+  .drawer-body > * {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      opacity 300ms var(--ease-out-expo),
+      transform 380ms var(--ease-out-expo);
+  }
+
+  .drawer.is-open .drawer-body > * {
+    opacity: 1;
+    transform: none;
+  }
+
+  .drawer.is-open .drawer-body > :nth-child(1) { transition-delay: 110ms; }
+  .drawer.is-open .drawer-body > :nth-child(2) { transition-delay: 150ms; }
+  .drawer.is-open .drawer-body > :nth-child(3) { transition-delay: 190ms; }
+  .drawer.is-open .drawer-body > :nth-child(4) { transition-delay: 230ms; }
+  .drawer.is-open .drawer-body > :nth-child(5) { transition-delay: 270ms; }
+  .drawer.is-open .drawer-body > :nth-child(n + 6) { transition-delay: 310ms; }
+
+  /* На виході вміст швидко розчиняється без каскаду. */
+  .drawer:not(.is-open) .drawer-body > * {
+    transition:
+      opacity 140ms var(--ease-sheet-out),
+      transform 160ms var(--ease-sheet-out);
+  }
+
+  @media (min-width: 768px) {
+    .drawer-panel {
+      --closed-y: 0%;
+      --closed-x: 100%;
+    }
+
+    .drawer.is-open .drawer-panel {
+      --closed-x: 0%;
+    }
+
+    .drawer[data-side='left'] .drawer-panel {
+      --closed-x: -100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .drawer,
+    .drawer-backdrop,
+    .drawer-panel,
+    .drawer-body > * {
+      transition-duration: 1ms;
+      transition-delay: 0ms;
+    }
+  }
+</style>
+
+<script>
+  const MOBILE = window.matchMedia('(max-width: 767px)');
+  const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  let scrollLocked = false;
+  let previousOverflow = '';
+  let previousBodyPadding = '';
+
+  function lockPageScroll() {
+    if (scrollLocked) return;
+    const root = document.documentElement;
+    const body = document.body;
+    previousOverflow = body.style.overflow;
+    previousBodyPadding = body.style.paddingRight;
+
+    // Компенсуємо РЕАЛЬНУ ширину скролбара: коли viewport перестає
+    // прокручуватись, скролбар зникає і контентна область ширшає.
+    const scrollbarWidth = window.innerWidth - root.clientWidth;
+    if (scrollbarWidth > 0) {
+      body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+
+    // Блокуємо через BODY, а не через html. За специфікацією overflow,
+    // поки в <html> overflow = visible, браузер бере overflow з <body> і
+    // застосовує його до viewport. Якщо ж змінити overflow на <html>,
+    // правило перестає діяти — і <body> стає справжнім scroll-контейнером
+    // зі своїм скролбаром: контент звужується на 15px і сторінка «сідає».
+    body.style.overflow = 'hidden';
+    scrollLocked = true;
+  }
+
+  function unlockPageScroll() {
+    if (!scrollLocked) return;
+    document.body.style.overflow = previousOverflow;
+    document.body.style.paddingRight = previousBodyPadding;
+    scrollLocked = false;
+  }
+
+  /** Блокування тримається, поки хоч один drawer відкритий. */
+  function syncPageScroll() {
+    const anyOpen = [...document.querySelectorAll<HTMLElement>('[data-drawer]')].some((d) => d.hasAttribute('open'));
+    if (anyOpen) lockPageScroll();
+    else unlockPageScroll();
+  }
+
+  function getPanel(drawer: HTMLElement): HTMLElement | null {
+    return drawer.querySelector<HTMLElement>('[data-drawer-panel]');
+  }
+
+  /** Підставляє вміст із data-атрибутів тригера у шапку drawer'а. */
+  function applyTriggerMeta(drawer: HTMLElement, trigger: HTMLElement | null) {
+    const titleEl = drawer.querySelector<HTMLElement>('[data-drawer-title]');
+    const iconEl = drawer.querySelector<HTMLElement>('[data-drawer-icon]');
+    const subtitleEl = drawer.querySelector<HTMLElement>('[data-drawer-subtitle]');
+
+    const title = trigger?.getAttribute('data-drawer-title') ?? '';
+    const icon = trigger?.getAttribute('data-drawer-icon') ?? '';
+    const subtitle = trigger?.getAttribute('data-drawer-subtitle') ?? '';
+
+    if (titleEl) {
+      titleEl.textContent = title || drawer.getAttribute('data-default-title') || '';
+    }
+    if (iconEl) {
+      iconEl.innerHTML = icon ? `<i class="${icon}" aria-hidden="true"></i>` : '';
+    }
+    if (subtitleEl) {
+      subtitleEl.textContent = subtitle;
+      subtitleEl.hidden = !subtitle;
+    }
+  }
+
+  /** Показує всередині drawer'а лише той блок, який відповідає тригеру. */
+  function applyPanelSelection(drawer: HTMLElement, trigger: HTMLElement | null) {
+    const panels = drawer.querySelectorAll<HTMLElement>('[data-drawer-panel-value]');
+    if (!panels.length) return;
+
+    const wanted = trigger?.getAttribute('data-drawer-panel') ?? '';
+    let matched = false;
+
+    panels.forEach((panel) => {
+      const isMatch = !!wanted && panel.getAttribute('data-drawer-panel-value') === wanted;
+      panel.hidden = !isMatch;
+      if (isMatch) matched = true;
+    });
+
+    // Тригер без ключа (або ключ не знайдено) — показуємо весь вміст.
+    if (!matched) panels.forEach((panel) => (panel.hidden = false));
+  }
+
+  /* ── Степер слайду ────────────────────────────────────────────────────
+     У більшості браузерів слайд міг би бути звичайним CSS-переходом,
+     але частина вбудованих переглядачів (панель ZCode, окремі webview)
+     реєструє transform-переходи і ніколи їх не просуває — панель тоді
+     «вистрибує» миттєво. Тому слайд завжди веде степер: rAF малює кадр
+     у кожен vsync, а якщо rAF у середовищі не тікає, рух підхоплює
+     таймер. Криві ті самі, що в CSS-токенах. */
+  function makeEase(p1x: number, p1y: number, p2x: number, p2y: number) {
+    const cx = 3 * p1x;
+    const bx = 3 * (p2x - p1x) - cx;
+    const ax = 1 - cx - bx;
+    const cy = 3 * p1y;
+    const by = 3 * (p2y - p1y) - cy;
+    const ay = 1 - cy - by;
+    const sampleX = (t: number) => ((ax * t + bx) * t + cx) * t;
+    const slopeX = (t: number) => (3 * ax * t + 2 * bx) * t + cx;
+    return (x: number) => {
+      let t = x;
+      for (let i = 0; i < 8; i++) {
+        const d = slopeX(t);
+        if (Math.abs(d) < 1e-6) break;
+        t -= (sampleX(t) - x) / d;
+      }
+      return ((ay * t + by) * t + cy) * t;
+    };
+  }
+
+  const EASE_SHEET_IN = makeEase(0.32, 0.72, 0, 1);
+  const EASE_SHEET_OUT = makeEase(0.4, 0, 1, 1);
+
+  /** Крокує t∈[0,1] впродовж duration: rAF-цикл + таймерна підстраховка. */
+  function stepFrames(duration: number, apply: (t: number) => void) {
+    return new Promise<void>((resolve) => {
+      const start = performance.now();
+      let done = false;
+      let lastRaf = 0;
+      const finish = () => {
+        if (done) return;
+        done = true;
+        apply(1);
+        resolve();
+      };
+      const step = () => {
+        if (done) return;
+        apply(Math.min(1, (performance.now() - start) / duration));
+        if (performance.now() - start >= duration) finish();
+      };
+      const rafLoop = () => {
+        if (done) return;
+        lastRaf = performance.now();
+        step();
+        if (!done) requestAnimationFrame(rafLoop);
+      };
+      try {
+        requestAnimationFrame(rafLoop);
+      } catch {
+        /* без rAF рух веде лише таймер */
+      }
+      // Таймерна підстраховка: поки rAF тікає — простоє; щойно кадри
+      // зупиняються (фонове вбудоване вікно), рух підхоплює таймер.
+      const timerLoop = () => {
+        if (done) return;
+        if (performance.now() - lastRaf > 50) step();
+        window.setTimeout(timerLoop, 16);
+      };
+      window.setTimeout(timerLoop, 40);
+      window.setTimeout(finish, duration + 150);
+    });
+  }
+
+  const SLIDE_IN_DURATION = 460;
+  const SLIDE_OUT_DURATION = 300;
+
+  interface SlideParts {
+    panel: HTMLElement;
+    axis: '--fall-x' | '--fall-y';
+    dragAxis: '--drag-x' | '--drag-y';
+    sign: number;
+    extent: number;
+  }
+
+  /** Готує панель до степованого руху: вимикає їй CSS-переходи. */
+  function prepSlide(drawer: HTMLElement): SlideParts | null {
+    const panel = getPanel(drawer);
+    if (!panel) return null;
+    const vertical = MOBILE.matches;
+    panel.style.transition = 'none';
+    return {
+      panel,
+      axis: vertical ? '--fall-y' : '--fall-x',
+      dragAxis: vertical ? '--drag-y' : '--drag-x',
+      sign: drawer.dataset.side === 'left' ? -1 : 1,
+      extent: vertical ? panel.offsetHeight : panel.offsetWidth,
+    };
+  }
+
+  function cleanupSlide(parts: SlideParts) {
+    const { panel } = parts;
+    panel.style.transition = '';
+    panel.classList.remove('is-dragging');
+    for (const axis of ['--fall-x', '--fall-y', '--drag-x', '--drag-y']) {
+      panel.style.removeProperty(axis);
+    }
+  }
+
+  /** Відкриття: з «закритого» положення в нуль, сповідною кривою. */
+  async function runSlideIn(parts: SlideParts) {
+    const { panel, axis, sign, extent } = parts;
+    panel.style.setProperty(axis, `${sign * extent}px`);
+    await stepFrames(SLIDE_IN_DURATION, (t) => {
+      panel.style.setProperty(axis, `${sign * extent * (1 - EASE_SHEET_IN(t))}px`);
+    });
+    cleanupSlide(parts);
+  }
+
+  /** Закриття: з поточного положення (з недоіграним drag) за край. */
+  async function runSlideOut(parts: SlideParts, drawer: HTMLElement) {
+    const { panel, axis, dragAxis, sign, extent } = parts;
+    const dragOffset = parseFloat(panel.style.getPropertyValue(dragAxis)) || 0;
+    panel.style.removeProperty(dragAxis);
+    const start = dragOffset;
+    const target = sign * extent;
+
+    await stepFrames(SLIDE_OUT_DURATION, (t) => {
+      const p = EASE_SHEET_OUT(t);
+      panel.style.setProperty(axis, `${start + (target - start) * p}px`);
+    });
+
+    drawer.classList.remove('is-open');
+    if (drawer.open) drawer.close();
+    cleanupSlide(parts);
+    syncPageScroll();
+  }
+
+  /** Пружне повернення панелі на місце після невдалого drag. */
+  function springBack(panel: HTMLElement, dragAxis: '--drag-x' | '--drag-y') {
+    const start = parseFloat(panel.style.getPropertyValue(dragAxis)) || 0;
+    return stepFrames(220, (t) => {
+      panel.style.setProperty(dragAxis, `${start * (1 - EASE_SHEET_IN(t))}px`);
+    }).then(() => {
+      panel.classList.remove('is-dragging');
+      panel.style.removeProperty(dragAxis);
+    });
+  }
+
+  function openDrawer(drawer: HTMLElement, trigger: HTMLElement | null) {
+    if (drawer.hasAttribute('open')) return;
+
+    // Один drawer за раз: попередній закриваємо одразу, щоб два панелі
+    // не накладалися одна на одну.
+    document.querySelectorAll<HTMLElement>('[data-drawer]').forEach((other) => {
+      if (other === drawer || !other.hasAttribute('open')) return;
+      other.classList.remove('is-open');
+      if (other.open) other.close();
+    });
+
+    applyTriggerMeta(drawer, trigger);
+    applyPanelSelection(drawer, trigger);
+
+    drawer.showModal();
+    syncPageScroll();
+
+    // Примусовий reflow: панель має отримати розміри ДО першого кадру,
+    // інакше extent для степера буде нульовим.
+    const panel = getPanel(drawer);
+    if (panel) void panel.offsetWidth;
+
+    drawer.classList.add('is-open');
+
+    if (!REDUCED.matches) {
+      const parts = prepSlide(drawer);
+      if (parts) runSlideIn(parts);
+    }
+  }
+
+  function closeDrawer(drawer: HTMLElement) {
+    if (!drawer.hasAttribute('open')) return;
+
+    if (REDUCED.matches) {
+      drawer.classList.remove('is-open');
+      if (drawer.open) drawer.close();
+      const panel = getPanel(drawer);
+      panel?.style.removeProperty('--drag-x');
+      panel?.style.removeProperty('--drag-y');
+      syncPageScroll();
+      return;
+    }
+
+    const parts = prepSlide(drawer);
+    if (parts) runSlideOut(parts, drawer);
+  }
+
+  /** Перетягування панелі мишею або пальцем для закриття. */
+  function setupDrag(drawer: HTMLElement) {
+    const panel = getPanel(drawer);
+    if (!panel) return;
+
+    const sign = drawer.dataset.side === 'left' ? -1 : 1;
+
+    drawer.querySelectorAll<HTMLElement>('[data-drawer-drag]').forEach((region) => {
+      region.addEventListener('pointerdown', (event) => {
+        const start = event as PointerEvent;
+        if (start.pointerType === 'mouse' && start.button !== 0) return;
+        if ((start.target as HTMLElement).closest('button, a, input, textarea, select')) return;
+
+        const vertical = MOBILE.matches;
+        const axis = vertical ? '--drag-y' : '--drag-x';
+        const pointerId = start.pointerId;
+        const startX = start.clientX;
+        const startY = start.clientY;
+
+        let lastX = startX;
+        let lastY = startY;
+        let lastTime = start.timeStamp;
+        let velocity = 0;
+        let delta = 0;
+        let dragging = false;
+
+        try {
+          region.setPointerCapture(pointerId);
+        } catch {
+          /* capture не критичний — слухачі висять на window */
+        }
+
+        const onMove = (moveEvent: PointerEvent) => {
+          if (moveEvent.pointerId !== pointerId) return;
+
+          // Сирці: вниз на телефоні, убік від краю на десктопі.
+          const raw = vertical
+            ? moveEvent.clientY - startY
+            : (moveEvent.clientX - startX) * sign;
+
+          if (!dragging) {
+            if (Math.abs(raw) < 4) return;
+            dragging = true;
+          }
+
+          const dt = moveEvent.timeStamp - lastTime;
+          if (dt > 0) {
+            const instant = vertical
+              ? (moveEvent.clientY - lastY) / dt
+              : ((moveEvent.clientX - lastX) * sign) / dt;
+            velocity = velocity * 0.6 + instant * 0.4;
+          }
+          lastX = moveEvent.clientX;
+          lastY = moveEvent.clientY;
+          lastTime = moveEvent.timeStamp;
+
+          // У бік «відкриття» панель піддається пружності, у бік закриття — ні.
+          delta = raw > 0 ? raw : raw * 0.18;
+          const extent = vertical ? panel.offsetHeight : panel.offsetWidth;
+          delta = Math.min(delta, extent);
+
+          panel.classList.add('is-dragging');
+          panel.style.setProperty(axis, `${(delta * sign).toFixed(2)}px`);
+
+          if (moveEvent.cancelable) moveEvent.preventDefault();
+        };
+
+        const finish = (endEvent: PointerEvent) => {
+          if (endEvent.pointerId !== pointerId) return;
+          window.removeEventListener('pointermove', onMove);
+          window.removeEventListener('pointerup', finish);
+          window.removeEventListener('pointercancel', finish);
+          try {
+            region.releasePointerCapture(pointerId);
+          } catch {
+            /* already released */
+          }
+
+          if (!dragging) return;
+
+          const extent = vertical ? panel.offsetHeight : panel.offsetWidth;
+          const dismissed = endEvent.type === 'pointerup' && (delta > extent * 0.22 || velocity > 0.45);
+          if (dismissed) {
+            closeDrawer(drawer);
+          } else {
+            // Пружне повернення на місце степером — працює скрізь.
+            springBack(panel, axis as '--drag-x' | '--drag-y');
+          }
+        };
+
+        window.addEventListener('pointermove', onMove, { passive: false });
+        window.addEventListener('pointerup', finish);
+        window.addEventListener('pointercancel', finish);
+      });
+    });
+  }
+
+  /**
+   * `<dialog>` позиціонується через `position: fixed`, але будь-який предок
+   * із transform (руховий движок ставить його на всі `[data-animate]`)
+   * стає containing block — і тоді панель виїжджає не з краю екрана,
+   * а з краю секції: заокруглення опиняється не з того боку, а анімація
+   * рахує відсоток від ширини секції замість екрана.
+   *
+   * Тому переносимо drawer у body — звільнити його від секції.
+   */
+  function mountDrawers() {
+    document.querySelectorAll<HTMLElement>('[data-drawer]').forEach((drawer) => {
+      if (drawer.parentElement !== document.body) {
+        document.body.appendChild(drawer);
+      }
+    });
+  }
+
+  function initDrawers() {
+    mountDrawers();
+
+    document.querySelectorAll<HTMLElement>('[data-drawer]').forEach((drawer) => {
+      if (drawer.dataset.drawerReady === 'true') return;
+      drawer.dataset.drawerReady = 'true';
+
+      drawer.addEventListener('cancel', (event) => {
+        event.preventDefault();
+        closeDrawer(drawer);
+      });
+
+      drawer.querySelector('[data-drawer-backdrop]')?.addEventListener('click', () => closeDrawer(drawer));
+
+      setupDrag(drawer);
+    });
+  }
+
+  // Відкривання/закриття через делегування — працює і для вузлів,
+  // які Astro перемалював під час View Transition.
+  document.addEventListener('click', (event) => {
+    const target = event.target as HTMLElement | null;
+    if (!target) return;
+
+    const trigger = target.closest<HTMLElement>('[data-drawer-open]');
+    if (trigger) {
+      const id = trigger.getAttribute('data-drawer-open');
+      const drawer = id ? document.getElementById(id) : null;
+      if (drawer?.matches('[data-drawer]')) {
+        event.preventDefault();
+        openDrawer(drawer, trigger);
+      }
+      return;
+    }
+
+    const closeButton = target.closest<HTMLElement>('[data-drawer-close]');
+    if (closeButton) {
+      const drawer = closeButton.closest<HTMLElement>('[data-drawer]');
+      if (drawer?.matches('[data-drawer]')) {
+        event.preventDefault();
+        closeDrawer(drawer);
+      }
+    }
+  });
+
+  // Навігація під час відкритого drawer'а не має залишати сторінку заблокованою.
+  document.addEventListener('astro:before-swap', () => {
+    document.querySelectorAll<HTMLElement>('[data-drawer]').forEach((drawer) => {
+      drawer.classList.remove('is-open');
+      if (drawer.open) drawer.close();
+    });
+    unlockPageScroll();
+  });
+
+  initDrawers();
+  document.addEventListener('astro:page-load', initDrawers);
+</script>

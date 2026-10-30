@@ -2,7 +2,6 @@ export { default as BentoCta } from './BentoCta.astro';
 export { default as BentoServices } from './BentoServices.astro';
 export { default as ContactCards } from './ContactCards.astro';
 export { default as ContactForm } from './ContactForm.astro';
-export { default as CtaBanner } from './CtaBanner.astro';
 export { default as Faq } from './Faq.astro';
 export { default as FullscreenHero } from './FullscreenHero.astro';
 export { default as Gallery } from './Gallery.astro';
