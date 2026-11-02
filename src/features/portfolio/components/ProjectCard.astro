@@ -18,7 +18,7 @@ const { project, class: className = '' } = Astro.props;
 >
   <!-- 1. Велика картка фото (3:2, без обрізань, без зайвих бейджів) -->
   <a
-    href={`/portfolio/${project.id}`}
+    href={`/portfolio/${project.id}/`}
     class="block aspect-[3/2] w-full rounded-[20px] sm:rounded-[24px] overflow-hidden bg-[#2A1E1E] relative border border-[#623A2D]/8 shadow-xs no-underline group/media"
     aria-label={project.title}
   >
@@ -42,7 +42,7 @@ const { project, class: className = '' } = Astro.props;
 
       <!-- 3. Назва -->
       <h3 class="text-lg sm:text-xl font-black text-[#2A1E1E] m-0 tracking-tight leading-snug group-hover:text-[#95553C] transition-colors">
-        <a href={`/portfolio/${project.id}`} class="text-[#2A1E1E] hover:text-[#95553C] transition-colors no-underline">
+        <a href={`/portfolio/${project.id}/`} class="text-[#2A1E1E] hover:text-[#95553C] transition-colors no-underline">
           {project.title}
         </a>
       </h3>
@@ -51,7 +51,7 @@ const { project, class: className = '' } = Astro.props;
     <!-- 4. Кнопка -->
     <div class="pt-2 mt-auto w-full">
       <a
-        href={`/portfolio/${project.id}`}
+        href={`/portfolio/${project.id}/`}
         class="w-full inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full bg-[#2A1E1E] text-white hover:bg-[#3D2C2C] text-xs sm:text-sm font-black shadow-xs hover:shadow-md transition-all duration-300 no-underline group/btn"
         aria-label={`Детальніше про проєкт ${project.title}`}
       >

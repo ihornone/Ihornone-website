@@ -80,7 +80,7 @@ const allServices = (await getCollection("services")).sort(
         <!-- Services Dropdown (10px rounded) -->
         <div class="relative group">
           <a
-            href="/services"
+            href="/services/"
             class:list={[
               "nav-item flex items-center gap-1.5",
               { active: currentPath.startsWith("/services") },
@@ -99,7 +99,7 @@ const allServices = (await getCollection("services")).sort(
             >
               {
                 allServices.map((service) => (
-                  <a href={`/services/${service.id}`} class="dropdown-item">
+                  <a href={`/services/${service.id}/`} class="dropdown-item">
                     <span>{service.data.title}</span>
                   </a>
                 ))
@@ -133,7 +133,7 @@ const allServices = (await getCollection("services")).sort(
               class="bg-[#FAF1EC] border border-[#623A2D]/15 rounded-[16px] p-2 min-w-[190px] shadow-xl space-y-1"
             >
               <a
-                href="/my-services"
+                href="/my-services/"
                 class:list={[
                   "dropdown-item",
                   { active: currentPath.startsWith("/my-services") },
@@ -142,7 +142,7 @@ const allServices = (await getCollection("services")).sort(
                 <span>Мої сервіси</span>
               </a>
               <a
-                href="/templates"
+                href="/templates/"
                 class:list={[
                   "dropdown-item",
                   { active: currentPath.startsWith("/templates") },
@@ -155,7 +155,7 @@ const allServices = (await getCollection("services")).sort(
         </div>
 
         <a
-          href="/portfolio"
+          href="/portfolio/"
           class:list={[
             "nav-item",
             { active: currentPath.startsWith("/portfolio") },
@@ -164,19 +164,19 @@ const allServices = (await getCollection("services")).sort(
           Портфоліо
         </a>
         <a
-          href="/reviews"
+          href="/reviews/"
           class:list={["nav-item", { active: currentPath === "/reviews" }]}
         >
           Відгуки
         </a>
         <a
-          href="/about"
+          href="/about/"
           class:list={["nav-item", { active: currentPath === "/about" }]}
         >
           Про мене
         </a>
         <a
-          href="/blog"
+          href="/blog/"
           class:list={[
             "nav-item",
             { active: currentPath.startsWith("/blog") },
@@ -240,7 +240,7 @@ const allServices = (await getCollection("services")).sort(
           >
             {
               allServices.map((service) => (
-                <a href={`/services/${service.id}`} class="mobile-subitem">
+                <a href={`/services/${service.id}/`} class="mobile-subitem">
                   <span>{service.data.title}</span>
                 </a>
               ))
@@ -266,25 +266,25 @@ const allServices = (await getCollection("services")).sort(
             id="mobile-products-menu"
             class="hidden pl-4 pr-1 py-1 space-y-0.5 bg-[#623A2D]/5 rounded-[10px] my-1"
           >
-            <a href="/my-services" class="mobile-subitem">
+            <a href="/my-services/" class="mobile-subitem">
               <span>Мої сервіси</span>
             </a>
-            <a href="/templates" class="mobile-subitem">
+            <a href="/templates/" class="mobile-subitem">
               <span>Шаблони</span>
             </a>
           </div>
         </div>
 
-        <a href="/portfolio" class="mobile-item">
+        <a href="/portfolio/" class="mobile-item">
           <span>Портфоліо</span>
         </a>
-        <a href="/reviews" class="mobile-item">
+        <a href="/reviews/" class="mobile-item">
           <span>Відгуки</span>
         </a>
-        <a href="/about" class="mobile-item">
+        <a href="/about/" class="mobile-item">
           <span>Про мене</span>
         </a>
-        <a href="/blog" class="mobile-item">
+        <a href="/blog/" class="mobile-item">
           <span>Блог</span>
         </a>
       </nav>

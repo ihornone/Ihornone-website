@@ -195,7 +195,9 @@ const widths = { sm: '400px', md: '480px', lg: '560px' };
       transform 160ms var(--ease-sheet-out);
   }
 
-  @media (min-width: 768px) {
+  /* Напрямок слайду перемикається разом із макетом (lg): до 1024px це
+     bottom sheet — панель підіймається знизу, далі — бокова панель. */
+  @media (min-width: 1024px) {
     .drawer-panel {
       --closed-y: 0%;
       --closed-x: 100%;
@@ -222,7 +224,9 @@ const widths = { sm: '400px', md: '480px', lg: '560px' };
 </style>
 
 <script>
-  const MOBILE = window.matchMedia('(max-width: 767px)');
+  // Bottom-sheet макет (панель знизу) живе до lg, далі — бокова панель.
+  // Напрямок слайду й drag-вісь мають збігатися саме з цим брейкпойнтом.
+  const SHEET_LAYOUT = window.matchMedia('(max-width: 1023px)');
   const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   let scrollLocked = false;
@@ -395,7 +399,7 @@ const widths = { sm: '400px', md: '480px', lg: '560px' };
   function prepSlide(drawer: HTMLElement): SlideParts | null {
     const panel = getPanel(drawer);
     if (!panel) return null;
-    const vertical = MOBILE.matches;
+    const vertical = SHEET_LAYOUT.matches;
     panel.style.transition = 'none';
     return {
       panel,
@@ -515,7 +519,7 @@ const widths = { sm: '400px', md: '480px', lg: '560px' };
         if (start.pointerType === 'mouse' && start.button !== 0) return;
         if ((start.target as HTMLElement).closest('button, a, input, textarea, select')) return;
 
-        const vertical = MOBILE.matches;
+        const vertical = SHEET_LAYOUT.matches;
         const axis = vertical ? '--drag-y' : '--drag-x';
         const pointerId = start.pointerId;
         const startX = start.clientX;
