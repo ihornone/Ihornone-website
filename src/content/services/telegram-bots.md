@@ -4,7 +4,7 @@ shortTitle: "Боти"
 icon: "fa-brands fa-telegram"
 order: 2
 description: "Автоматизація продажів, прийом платежів та Telegram WebApps для бізнесу 24/7."
-heroSubtitle: "Створюю Telegram-ботів та WebApps, які автоматизують продажі, обробляють замовлення та економлять до 70% часу персоналу."
+heroSubtitle: "Індивідуальна розробка Telegram-ботів та WebApps, які автоматизують продажі, приймають оплати 24/7 та економлять до 70% робочого часу персоналу."
 isPopular: false
 badge: "Топ напрямок"
 mascotSrc: "/images/mascot/bot-cat.webp"

@@ -4,7 +4,7 @@ shortTitle: "Додатки"
 icon: "fa-solid fa-mobile-screen-button"
 order: 3
 description: "Нативні та кросплатформні мобільні додатки для iOS та Android."
-heroSubtitle: "Створюю кросплатформні мобільні застосунки для iOS та Android. Один код для двох маркетів — подвійна аудиторія за вдвічі менший бюджет."
+heroSubtitle: "Індивідуальна кросплатформна розробка для iOS та Android на React Native / Expo. Єдиний код для двох платформ, нативна продуктивність та повний супровід публікації в App Store і Google Play."
 isPopular: false
 badge: "iOS & Android"
 mascotSrc: "/images/mascot/mobile-cat.webp"

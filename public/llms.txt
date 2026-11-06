@@ -1,0 +1,30 @@
+# ihornone — Full-Stack Developer & Bot Studio
+
+> Індивідуальна розробка Telegram-ботів, веб-сервісів та мобільних додатків від Full-Stack інженера Ігоря Пелиха (ihornone). Прямий контакт без посередників, запуск MVP за 14–28 днів та 30 днів гарантії на код.
+
+## Про розробника
+- **Ім'я / Бренд:** Ігор Пелих (`ihornone`)
+- **Роль:** Full-Stack Software Engineer & AI Integrator
+- **Локація:** Львів, Україна (працює з клієнтами з України, Польщі, ЄС та США)
+- **Досвід:** 3+ роки комерційної розробки
+- **Стек:** TypeScript, Astro, React, Next.js, React Native, Expo, Python (aiogram 3), Node.js, PostgreSQL, Redis, Cloudflare, OpenAI API, Monobank API, LiqPay, Stripe.
+- **Контакти:** Telegram: https://t.me/ihornone | Email: hello@ihornone.site | GitHub: https://github.com/ihornone | Сайт: https://www.ihornone.site
+
+## Ключові послуги
+- [Telegram-боти & WebApps](https://www.ihornone.site/services/telegram-bots/): Автоматизація продажів, онлайн-оплати (Monobank, LiqPay, Stripe), Telegram Mini Apps (TMA), AI-асистенти підтримки на базі ChatGPT/Claude, інтеграція з CRM (KeyCRM, SalesDrive). Від 3 700 ₴ (~$90).
+- [Веб-сайти & Платформи](https://www.ihornone.site/services/websites/): Швидкі лендінги, корпоративні сайти та e-commerce на Astro, React та Tailwind CSS з Google PageSpeed 95–100, SEO та GEO семантичною розміткою Schema.org. Від 6 000 ₴ (~$150).
+- [Мобільні застосунки](https://www.ihornone.site/services/mobile-apps/): Кросплатформні додатки для iOS та Android на React Native / Expo з єдиною кодовою базою, push-сповіщеннями та публікацією в App Store і Google Play під ключ. Від 18 500 ₴ (~$450).
+
+## Чому обирають ihornone
+- Економія до 40% бюджету порівняно з агентствами (оплата суто за інженерію без націнок на офіси та PM-ів).
+- Пряма комунікація з автором коду без посередників.
+- Запуск MVP за 14–28 днів із першим робочим прототипом на 5–7 день.
+- 100% права на вихідний код у приватному Git клієнта з першого коміту.
+- 30 днів безкоштовної гарантійної підтримки після релізу.
+
+## Посилання
+- [Прайс-лист для AI-агентів](https://www.ihornone.site/pricing.md)
+- [Портфоліо робіт](https://www.ihornone.site/portfolio/)
+- [Відгуки клієнтів](https://www.ihornone.site/reviews/)
+- [Про мене](https://www.ihornone.site/about/)
+- [Блог та статті про SEO/GEO/AI](https://www.ihornone.site/blog/)
