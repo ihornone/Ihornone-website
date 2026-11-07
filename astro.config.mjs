@@ -11,6 +11,7 @@ export default defineConfig({
   site: siteUrl,
   trailingSlash: 'always',
   output: 'static',
+  session: false,
   adapter: cloudflare(),
   integrations: [
     react(), 
