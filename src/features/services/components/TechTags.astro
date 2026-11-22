@@ -1,36 +1,37 @@
 ---
 import Card from '../../../shared/components/ui/Card.astro';
 import SectionHeader from '../../../shared/components/ui/SectionHeader.astro';
+import Icon from '../../../shared/components/ui/Icon.astro';
 
 interface Props {
-  technologies: string[];
+ technologies: string[];
 }
 
 const { technologies = [] } = Astro.props;
 
 // Group technologies into 3 clean, simple categories
 const techCategories = [
-  {
-    title: 'Frontend & UI',
-    icon: 'fa-solid fa-code',
-    items: technologies.filter((t) =>
-      ['Astro', 'React', 'Next.js', 'React Native', 'Expo', 'TypeScript', 'Tailwind CSS', 'Figma', 'React Navigation'].includes(t)
-    ),
-  },
-  {
-    title: 'Backend & Бази даних',
-    icon: 'fa-solid fa-server',
-    items: technologies.filter((t) =>
-      ['Node.js', 'Python', 'aiogram', 'Telegram Bot API', 'PostgreSQL', 'Redis', 'Firebase', 'Supabase', 'Redux Toolkit', 'OpenAI API'].includes(t)
-    ),
-  },
-  {
-    title: 'Інфраструктура & Інтеграції',
-    icon: 'fa-solid fa-cloud',
-    items: technologies.filter((t) =>
-      ['Cloudflare', 'Vercel', 'Docker', 'Stripe', 'Monobank API', 'App Store Connect', 'Google Play Console', 'Fastlane'].includes(t)
-    ),
-  },
+ {
+ title: 'Frontend & UI',
+ icon: 'code',
+ items: technologies.filter((t) =>
+ ['Astro', 'React', 'Next.js', 'React Native', 'Expo', 'TypeScript', 'Tailwind CSS', 'Figma', 'React Navigation'].includes(t)
+ ),
+ },
+ {
+ title: 'Backend & Бази даних',
+ icon: 'server',
+ items: technologies.filter((t) =>
+ ['Node.js', 'Python', 'aiogram', 'Telegram Bot API', 'PostgreSQL', 'Redis', 'Firebase', 'Supabase', 'Redux Toolkit', 'OpenAI API'].includes(t)
+ ),
+ },
+ {
+ title: 'Інфраструктура & Інтеграції',
+ icon: 'cloud',
+ items: technologies.filter((t) =>
+ ['Cloudflare', 'Vercel', 'Docker', 'Stripe', 'Monobank API', 'App Store Connect', 'Google Play Console', 'Fastlane'].includes(t)
+ ),
+ },
 ];
 
 // Fallback in case none matched specific categories
@@ -38,44 +39,43 @@ const defaultCategory = techCategories.every(c => c.items.length === 0);
 ---
 
 {technologies && technologies.length > 0 && (
-  <section class="space-y-6 w-full" data-animate="fade-up">
-    <SectionHeader
-      title="Технологічний стек"
-      subtitle="Сучасні, перевірені та надійні інструменти під кожну задачу."
-    />
+ <section class="space-y-8 w-full" data-animate="fade-up">
+ <SectionHeader
+ title="Технологічний стек"
+ />
 
-    {!defaultCategory ? (
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6" data-animate="fade-up" data-stagger>
-        {techCategories.map((cat) => (
-          <Card class="p-6 space-y-4 bg-white border border-[#623A2D]/10">
-            <div class="flex items-center gap-3 pb-3 border-b border-[#623A2D]/10">
-              <div class="w-9 h-9 rounded-full bg-[#FAF1EC] text-[#95553C] flex items-center justify-center text-sm shrink-0 border border-[#623A2D]/10">
-                <i class={cat.icon}></i>
-              </div>
-              <strong class="text-base font-black text-[#2A1E1E]">{cat.title}</strong>
-            </div>
-            <ul class="space-y-2.5 list-none p-0 m-0">
-              {cat.items.map((item) => (
-                <li class="flex items-center gap-2.5 text-xs font-bold text-[#2A1E1E]">
-                  <i class="fa-solid fa-check text-[#D09AFC] text-xs shrink-0"></i>
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </Card>
-        ))}
-      </div>
-    ) : (
-      <div class="p-6 rounded-[24px] bg-white border border-[#623A2D]/10">
-        <div class="flex flex-wrap gap-2">
-          {technologies.map((tech) => (
-            <span class="px-3.5 py-1.5 bg-[#FAF1EC] border border-[#623A2D]/10 rounded-full text-xs font-black text-[#2A1E1E]">
-              {tech}
-            </span>
-          ))}
-        </div>
-      </div>
-    )}
-  </section>
+ {!defaultCategory ? (
+ <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8" data-animate="fade-up" data-stagger>
+ {techCategories.map((cat) => (
+ <Card class="p-6 space-y-4">
+ <div class="flex items-center gap-3 pb-3 border-b-2 border-dashed border-[#1E1414]/20">
+ <div class="w-9 h-9 rounded-full bg-[#E8BA98] text-[#1E1414] flex items-center justify-center text-sm shrink-0 border-2 border-[#1E1414]">
+ <Icon name={cat.icon} size={16} />
+ </div>
+ <strong class="text-base font-black text-[#1E1414]">{cat.title}</strong>
+ </div>
+ <ul class="space-y-3 list-none p-0 ">
+ {cat.items.map((item) => (
+ <li class="flex items-center gap-3 text-xs font-bold text-[#1E1414]">
+ <Icon name="check" size={14} class="text-[#95553C] shrink-0" />
+ <span>{item}</span>
+ </li>
+ ))}
+ </ul>
+ </Card>
+ ))}
+ </div>
+ ) : (
+ <div class="p-6 rounded-3xl bg-white border-2 border-[#1E1414]">
+ <div class="flex flex-wrap gap-2">
+ {technologies.map((tech) => (
+ <span class="px-4 py-2 bg-[#F4E8E3] border border-[#1E1414]/20 rounded-full text-xs font-black text-[#1E1414]">
+ {tech}
+ </span>
+ ))}
+ </div>
+ </div>
+ )}
+ </section>
 )}
 

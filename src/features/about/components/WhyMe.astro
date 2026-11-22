@@ -16,34 +16,24 @@ interface Props {
 
 const defaultItems: WhyMeItem[] = [
   {
-    icon: 'fa-solid fa-tags',
-    title: 'Пряма вартість інженерії',
-    desc: 'Оплата виключно за створення продукту. Відсутність витрат на менеджерський штат та офіси заощаджує до 40% вашого бюджету за агентської якості коду.'
+    icon: 'user-check',
+    title: 'Прямий контакт із розробником',
+    desc: 'Спілкуєтеся безпосередньо з автором коду без акаунт-менеджерів та зіпсованого телефону. Будь-які технічні питання та правки узгоджуються за лічені хвилини.'
   },
   {
-    icon: 'fa-solid fa-rocket',
-    title: 'Запуск MVP за 14–28 днів',
-    desc: 'Перший робочий прототип ви тестуєте вже в перший тиждень. Швидкі ітерації без бюрократії дозволяють перевірити ідею та запуститися в рекордні терміни.'
+    icon: 'rocket',
+    title: 'Швидкий запуск MVP за 14–28 днів',
+    desc: 'Перший інтерактивний прототип ви тестуєте вже на 5–7 день. Швидкі спринти без зайвої бюрократії дозволяють перевірити ідею на ринку в обумовлені строки.'
   },
   {
-    icon: 'fa-solid fa-user-check',
-    title: 'Прямий контакт з автором коду',
-    desc: 'Спілкуєтеся безпосередньо зі мною, а не через ланцюжок посередників. Технічні питання та правки обговорюються й впроваджуються за лічені хвилини.'
+    icon: 'coins',
+    title: 'Економія до 40% кошторису',
+    desc: 'Оплата виключно за чисту інженерію. Відсутність витрат на оренду офісів та менеджерський штат студій дає високу якість за чесну та фіксовану ціну.'
   },
   {
-    icon: 'fa-solid fa-bolt',
-    title: 'Глибока профільна експертиза',
-    desc: 'Фокус на Telegram-ботах з онлайн-оплатою, надшвидких веб-сайтах на Astro/React та мобільних додатках на React Native з перевіреною архітектурою.'
-  },
-  {
-    icon: 'fa-solid fa-layer-group',
-    title: 'Повний цикл під ключ',
-    desc: 'Беру на себе всі етапи: проектування архітектури, дизайн інтерфейсу, бекенд, інтеграцію платіжних систем, тестування та фінальний запуск.'
-  },
-  {
-    icon: 'fa-solid fa-shield-halved',
-    title: '30 днів гарантії на код',
-    desc: 'Після релізу надаю місяць безкоштовної технічної підтримки: усунення прихованих помилок, допомогу з сервером та оперативні відповіді в Telegram.'
+    icon: 'shield-check',
+    title: '30 днів гарантії та 100% ваш Git',
+    desc: 'Весь код належить вам з першого коміту у вашому репозиторії. Після релізу надаю місяць безкоштовної гарантійної підтримки та нагляду за сервером.'
   },
 ];
 
@@ -51,19 +41,19 @@ const { items = defaultItems, class: className = '' } = Astro.props;
 ---
 
 <section class:list={['space-y-8 w-full', className]} data-animate="fade-up">
-  <div class="text-center max-w-xl mx-auto">
-    <h2 class="text-2xl sm:text-4xl font-black text-[#2A1E1E] tracking-tight m-0">
-      Чому обирають мене
-    </h2>
-  </div>
+  <SectionHeader
+    title="Чому обирають співпрацю зі мною"
+    highlight="співпрацю"
+    tagColor="caramel"
+  />
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6" data-animate="fade-up" data-stagger>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-5 xl:gap-8 items-stretch" data-animate="fade-up" data-stagger>
     {items.map((item) => (
-      <Card hover class="space-y-4 h-full flex flex-col justify-start">
+      <Card hover class="p-6 lg:p-5 xl:p-6 space-y-4 h-full flex flex-col justify-start">
         <IconBox icon={item.icon} size="md" />
-        <div class="space-y-1.5 flex-1">
-          <h3 class="text-base font-black text-[#2A1E1E] m-0">{item.title}</h3>
-          <p class="text-xs sm:text-sm text-[#623A2D]/75 font-medium leading-relaxed m-0">{item.desc}</p>
+        <div class="space-y-2 flex-1 flex flex-col justify-start">
+          <h3 class="text-lg sm:text-[19px] font-black text-[#1E1414] tracking-tight leading-snug">{item.title}</h3>
+          <p class="text-xs sm:text-[13.5px] text-[#1E1414]/85 font-medium leading-relaxed flex-1">{item.desc}</p>
         </div>
       </Card>
     ))}

@@ -1,4 +1,6 @@
 ---
+import Icon from './Icon.astro';
+
 interface BreadcrumbItem {
   label: string;
   href?: string;
@@ -19,13 +21,13 @@ const { items, class: className = '' } = Astro.props;
       {item.href ? (
         <a
           href={item.href}
-          class="inline-flex items-center gap-2 text-xs md:text-sm font-black text-[#2A1E1E] hover:text-[#95553C] transition-colors no-underline bg-white px-4 py-1.5 rounded-full border border-[#623A2D]/10 shadow-2xs hover:border-[#D09AFC]"
+          class="inline-flex items-center gap-2 text-xs md:text-sm font-black text-[#2A1E1E] hover:text-[#95553C] transition-[color,translate,box-shadow] duration-200 no-underline bg-white px-4 py-2 rounded-full border-2 border-[#1E1414] hover:-translate-y-0.5 hover:shadow-[0_4px_0_#D09AFC] motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-none"
         >
-          <i class="fa-solid fa-arrow-left text-[10px]"></i>
+          <Icon name="arrow-left" size={13} />
           {item.label}
         </a>
       ) : (
-        <span class="text-xs md:text-sm font-bold text-[#623A2D]/75 bg-[#FAF1EC] px-4 py-1.5 rounded-full border border-[#623A2D]/10">
+        <span class="text-xs md:text-sm font-bold text-[#623A2D]/75 bg-[#F4E8E3] px-4 py-2 rounded-full border-2 border-[#1E1414]/40">
           {item.label}
         </span>
       )}

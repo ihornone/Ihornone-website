@@ -1,28 +1,131 @@
 ---
-import Button from '../../../shared/components/ui/Button.astro';
+import Tag from '../../../shared/components/ui/Tag.astro';
+import QuickContactModal from '../../../shared/components/ui/QuickContactModal.astro';
+import Icon from '../../../shared/components/ui/Icon.astro';
+
+export interface LatestProjectData {
+  id: string;
+  title: string;
+  category?: string;
+  type?: string;
+  duration?: string;
+  technologies?: string | string[];
+  description?: string;
+  image?: string;
+}
 
 interface Props {
   title: string;
+  shortTitle?: string;
   icon?: string;
   description: string;
   heroSubtitle?: string;
+  startingPrice?: string;
+  technologies?: string[];
+  latestProject?: LatestProjectData | null;
 }
 
-const { title, icon, description, heroSubtitle } = Astro.props;
+const { title, shortTitle, icon, description, heroSubtitle, startingPrice, latestProject } = Astro.props;
+const lead = description || heroSubtitle;
 ---
 
-<section class="bento-card p-6 sm:p-8 md:p-10 shadow-2xs w-full text-center" data-animate="fade-up">
-  <div class="flex flex-col items-center text-center gap-4 sm:gap-5 max-w-3xl mx-auto">
-    <h1 class="text-2xl sm:text-4xl md:text-5xl font-black text-[#2A1E1E] tracking-tight leading-tight m-0">
-      {title}
-    </h1>
-    <div class="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3.5 pt-2 w-full sm:w-auto">
-      <Button href="https://t.me/ihornone" target="_blank" variant="dark" class="w-full sm:w-auto">
-        Замовити розробку
-      </Button>
-      <Button href="https://t.me/ihornone" target="_blank" variant="outline" class="w-full sm:w-auto">
-        Безкоштовна консультація
-      </Button>
+<section
+  class="relative w-full bg-white border-2 border-[#1E1414] rounded-[32px] sm:rounded-[48px] p-6 sm:p-10 lg:p-14 overflow-hidden transition-[translate,box-shadow] duration-200 hover:shadow-[0_12px_0_#D09AFC]"
+  data-animate="fade-up"
+>
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+    <div class="lg:col-span-7 flex flex-col items-start gap-6">
+      {shortTitle && (
+        <span class="inline-block -rotate-2 rounded-lg bg-[#1E1414] text-white px-3.5 py-1.5 text-xs font-black uppercase tracking-wider">
+          ✦ {shortTitle}
+        </span>
+      )}
+
+      <h1
+        data-reveal-text
+        class="text-3xl sm:text-4xl lg:text-[48px] xl:text-[52px] font-black text-[#1E1414] tracking-[-0.035em] leading-[1.13]"
+      >
+        {shortTitle === 'Сайти' ? (
+          <>
+            Розробка <Tag color="caramel" class="mx-1">веб-сайтів</Tag> та платформ
+          </>
+        ) : shortTitle === 'Боти' ? (
+          <>
+            Створення <Tag color="lilac" class="mx-1">Telegram-ботів</Tag> та WebApps
+          </>
+        ) : shortTitle === 'Додатки' ? (
+          <>
+            Розробка <Tag color="pink" class="mx-1">мобільних додатків</Tag> iOS & Android
+          </>
+        ) : (
+          <>{title}</>
+        )}
+      </h1>
+
+      {lead && (
+        <p class="text-sm sm:text-base lg:text-lg text-[#1E1414]/85 font-medium leading-relaxed max-w-2xl">
+          {lead}
+        </p>
+      )}
+
+      {startingPrice && (
+        <div class="inline-flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-[#F4E8E3] border-2 border-[#1E1414] text-sm sm:text-base font-black text-[#1E1414]">
+          <span class="text-xs font-bold text-[#623A2D]/80 uppercase tracking-wider">Вартість:</span>
+          <span class="text-[#1E1414] font-black">{startingPrice}</span>
+        </div>
+      )}
+
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-2 w-full sm:w-auto">
+        <a
+          href="https://t.me/ihornone"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="pill-btn-primary flex items-center justify-center gap-2.5 !px-8 !py-4 !text-base group no-underline"
+        >
+          <Icon name="telegram" size={20} />
+          <span>Написати в Telegram</span>
+          <Icon name="arrow-right" size={14} class="transition-transform duration-300 group-hover:translate-x-1" />
+        </a>
+        <QuickContactModal
+          triggerText="Швидка консультація"
+          triggerClass="pill-btn-outline !py-3.5 !px-6 !text-sm flex items-center justify-center gap-2 cursor-pointer w-full sm:w-auto"
+        />
+      </div>
+    </div>
+
+    <div class="lg:col-span-5 w-full">
+      <div class="rounded-3xl border-2 border-[#1E1414] bg-[#FAF1EC] p-4 sm:p-5 shadow-[8px_8px_0_#D09AFC] space-y-4">
+        <!-- Mockup top bar -->
+        <div class="flex items-center justify-between px-1">
+          <div class="flex items-center gap-1.5">
+            <span class="w-3 h-3 rounded-full bg-[#FAC3C8] border border-[#1E1414]"></span>
+            <span class="w-3 h-3 rounded-full bg-[#E8BA98] border border-[#1E1414]"></span>
+            <span class="w-3 h-3 rounded-full bg-[#D09AFC] border border-[#1E1414]"></span>
+          </div>
+          <div class="px-3 py-1 rounded-full bg-white border border-[#1E1414] text-[11px] font-black text-[#1E1414] shadow-[2px_2px_0_#1E1414]">
+            Останній проєкт
+          </div>
+        </div>
+
+        {latestProject?.image ? (
+          <a
+            href={`/portfolio/${latestProject.id}/`}
+            class="group block relative w-full aspect-[16/10] sm:aspect-[16/9] rounded-2xl overflow-hidden border-2 border-[#1E1414] bg-white shadow-[4px_4px_0_#1E1414] hover:shadow-[6px_6px_0_#D09AFC] hover:-translate-y-0.5 transition-all"
+            aria-label={`Кейс: ${latestProject.title}`}
+          >
+            <img
+              src={latestProject.image}
+              alt={latestProject.title}
+              class="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
+              loading="eager"
+            />
+          </a>
+        ) : (
+          <div class="rounded-2xl border-2 border-[#1E1414] bg-white p-6 text-center text-sm font-bold text-[#1E1414]/70">
+            Останній реалізований кейс
+          </div>
+        )}
+      </div>
     </div>
   </div>
 </section>

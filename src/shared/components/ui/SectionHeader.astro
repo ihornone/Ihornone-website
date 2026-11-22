@@ -1,28 +1,48 @@
 ---
+import Tag from './Tag.astro';
+
 interface Props {
   title: string;
   subtitle?: string;
+  highlight?: string;
+  tagColor?: 'lilac' | 'caramel' | 'pink' | 'sand' | 'espresso';
   align?: 'left' | 'center';
   class?: string;
 }
 
 const {
   title,
+  subtitle,
+  highlight,
+  tagColor = 'lilac',
   align = 'left',
   class: className = '',
 } = Astro.props;
 
+/* Unlimited-style heading: the key word sits inside a rotated sticker chip
+   that is part of the heading itself, inheriting its font size. */
+const hlIndex = highlight ? title.indexOf(highlight) : -1;
+const hasHighlight = highlight !== undefined && hlIndex >= 0;
+const before = hasHighlight ? title.slice(0, hlIndex) : '';
+const after = hasHighlight ? title.slice(hlIndex + (highlight?.length ?? 0)) : '';
+
 const alignClasses = {
   left: 'text-left',
-  center: 'text-center max-w-xl mx-auto',
+  center: 'text-center',
 };
 ---
 
-<div class={`${alignClasses[align]} ${className}`}>
+<div class:list={[alignClasses[align], className]}>
   <h2
     data-reveal-text
-    class="underline-draw text-2xl sm:text-3xl lg:text-4xl font-black text-[#2A1E1E] tracking-tight m-0 pb-2"
+    class="text-3xl sm:text-4xl lg:text-[56px] font-black text-[#1E1414] tracking-[-0.035em] leading-[1.13]"
   >
-    {title}
+    {hasHighlight ? (
+      <>
+        {before}<Tag color={tagColor} class="mx-1">{highlight}</Tag>{after}
+      </>
+    ) : (
+      title
+    )}
   </h2>
 </div>

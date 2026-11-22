@@ -1,0 +1,10 @@
+# Trailing-slash canonicalization — static hosts serve /page from /page/index.html,
+# these force the canonical slash form for top-level pages
+/about /about/ 308
+/services /services/ 308
+/portfolio /portfolio/ 308
+/reviews /reviews/ 308
+/blog /blog/ 308
+/privacy /privacy/ 308
+/my-services /my-services/ 308
+/templates /templates/ 308

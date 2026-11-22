@@ -1,0 +1,22 @@
+---
+interface Props {
+  color?: 'lilac' | 'caramel' | 'pink' | 'sand' | 'espresso';
+  class?: string;
+}
+
+const { color = 'lilac', class: className = '' } = Astro.props;
+
+/* Sticker chip embedded in headings. Rotation direction alternates per
+   colour so neighbouring tags never lean the same way. */
+const variantClasses = {
+  lilac: 'bg-[#D09AFC] text-[#1E1414] -rotate-3',
+  caramel: 'bg-[#95553C] text-white rotate-3',
+  pink: 'bg-[#FAC3C8] text-[#1E1414] rotate-2',
+  sand: 'bg-[#E8BA98] text-[#1E1414] -rotate-2',
+  espresso: 'bg-[#1E1414] text-white rotate-2',
+};
+---
+
+<span class:list={['sticker-tag', variantClasses[color], className]}>
+  <slot />
+</span>

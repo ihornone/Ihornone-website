@@ -1,17 +1,23 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Hero from '../shared/components/sections/Hero.astro';
 import Stats from '../shared/components/sections/Stats.astro';
 import BentoCta from '../shared/components/sections/BentoCta.astro';
-import Button from '../shared/components/ui/Button.astro';
-import { WhyMe, ComparisonTable, CodeGuarantee, FeaturedWorks, TechStack, Workflow } from '../features/about';
+import {
+  AboutHero,
+  WhyMe,
+  FeaturedWorks,
+  ComparisonTable,
+  CodeGuarantee,
+  TechStack,
+  Workflow,
+} from '../features/about';
 
 const stats = [
   {
     value: '100%',
     label: 'прозорий процес',
     subtext: 'код у вашому GitHub',
-    link: { text: 'Дивитись кейси в портфоліо', href: '/portfolio' },
+    link: { text: 'Дивитись кейси в портфоліо', href: '/portfolio/' },
   },
   {
     value: '3+',
@@ -53,37 +59,32 @@ const stats = [
     }
   }}
 >
-  <div class="w-full max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20 pt-2 sm:pt-4 pb-16 sm:pb-24 space-y-16 md:space-y-24">
-    <Hero
-      title="Індивідуальна розробка сайтів, Telegram-ботів та додатків для бізнесу"
-      buttons={[
-        { label: "Обговорити проєкт", href: 'https://t.me/ihornone', variant: 'dark' },
-        { label: 'Дивитися кейси', href: '/portfolio', variant: 'outline' },
-      ]}
-    />
+  <div class="w-full max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-20 pt-4 sm:pt-6 pb-16 sm:pb-24 space-y-16 sm:space-y-24">
+    <!-- 1. Головний блок із презентацією -->
+    <AboutHero />
 
-    <!-- Чому обирають мене -->
-    <WhyMe />
-
-    <!-- Живі докази: ключові кейси -->
-    <FeaturedWorks />
-
-    <!-- Я vs Агентства vs Інші фрилансери -->
-    <ComparisonTable />
-
-    <!-- Деталізація гарантії на код (30 днів) -->
-    <CodeGuarantee />
-
-    <!-- Стек технологій -->
-    <TechStack />
-
-    <!-- Етапи розробки -->
-    <Workflow />
-
-    <!-- Статистика -->
+    <!-- 2. Ряд цифр (швидка довіра) -->
     <Stats items={stats} columns={4} />
 
-    <!-- Bento CTA with Mascot -->
+    <!-- 3. Чому обирають співпрацю зі мною -->
+    <WhyMe />
+
+    <!-- 4. Ключові кейси -->
+    <FeaturedWorks />
+
+    <!-- 5. Таблиця «Якість агентства» (порівняння з агентствами та іншими фрилансерами) -->
+    <ComparisonTable />
+
+    <!-- 6. Блок 30-денної гарантії з конкретикою -->
+    <CodeGuarantee />
+
+    <!-- 7. Стек технологій -->
+    <TechStack />
+
+    <!-- 8. Етапи розробки -->
+    <Workflow />
+
+    <!-- 9. Заклик до дії -->
     <BentoCta />
   </div>
 </Layout>

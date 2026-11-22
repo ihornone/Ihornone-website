@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import Icon from "../ui/Icon.astro";
 
 interface Props {
   class?: string;
@@ -54,18 +55,20 @@ const allServices = (await getCollection("services")).sort(
     <div
       class="px-4 sm:px-5 py-2.5 sm:py-3 flex items-center justify-between lg:justify-start gap-3 sm:gap-4"
     >
-      <!-- Logo with Mascot Palette Icon -->
       <a
         href="/"
-        class="flex items-center gap-2 text-base sm:text-lg font-black text-[#2A1E1E] tracking-tight no-underline group shrink-0"
+        class="flex items-center gap-2.5 text-base sm:text-lg font-black text-[#2A1E1E] tracking-tight no-underline group shrink-0"
         aria-label="ihornone - на головну"
       >
-        <div
+        <img
+          src="/images/logo.webp"
+          alt="ihornone logo"
+          width="32"
+          height="32"
           transition:name="brand-logo"
-          class="w-7 h-7 rounded-full bg-[#D09AFC] flex items-center justify-center text-[#2A1E1E] text-xs shadow-xs brand-cat-icon"
-        >
-          <i class="fa-solid fa-cat"></i>
-        </div>
+          class="w-8 h-8 rounded-xl object-contain brand-cat-icon shadow-xs"
+          loading="eager"
+        />
         <span class="tracking-tight font-black text-[#2A1E1E]">ihornone</span>
       </a>
 
@@ -87,9 +90,11 @@ const allServices = (await getCollection("services")).sort(
             ]}
           >
             Послуги
-            <i
-              class="fa-solid fa-chevron-down text-[9px] group-hover:rotate-180 transition-transform duration-200"
-            ></i>
+            <Icon
+              name="chevron-down"
+              size={11}
+              class="group-hover:rotate-180 transition-transform duration-200"
+            />
           </a>
           <div
             class="hidden group-hover:block absolute top-full left-0 pt-2 z-50"
@@ -108,52 +113,6 @@ const allServices = (await getCollection("services")).sort(
           </div>
         </div>
 
-        <!-- Products Dropdown (10px rounded) -->
-        <div class="relative group">
-          <button
-            type="button"
-            class:list={[
-              "nav-item flex items-center gap-1.5 cursor-pointer bg-transparent border-0",
-              {
-                active:
-                  currentPath.startsWith("/my-services") ||
-                  currentPath.startsWith("/templates"),
-              },
-            ]}
-          >
-            Продукти
-            <i
-              class="fa-solid fa-chevron-down text-[9px] group-hover:rotate-180 transition-transform duration-200"
-            ></i>
-          </button>
-          <div
-            class="hidden group-hover:block absolute top-full left-0 pt-2 z-50"
-          >
-            <div
-              class="bg-[#FAF1EC] border border-[#623A2D]/15 rounded-[16px] p-2 min-w-[190px] shadow-xl space-y-1"
-            >
-              <a
-                href="/my-services/"
-                class:list={[
-                  "dropdown-item",
-                  { active: currentPath.startsWith("/my-services") },
-                ]}
-              >
-                <span>Мої сервіси</span>
-              </a>
-              <a
-                href="/templates/"
-                class:list={[
-                  "dropdown-item",
-                  { active: currentPath.startsWith("/templates") },
-                ]}
-              >
-                <span>Шаблони</span>
-              </a>
-            </div>
-          </div>
-        </div>
-
         <a
           href="/portfolio/"
           class:list={[
@@ -164,16 +123,16 @@ const allServices = (await getCollection("services")).sort(
           Портфоліо
         </a>
         <a
-          href="/reviews/"
-          class:list={["nav-item", { active: currentPath === "/reviews" }]}
-        >
-          Відгуки
-        </a>
-        <a
           href="/about/"
           class:list={["nav-item", { active: currentPath === "/about" }]}
         >
           Про мене
+        </a>
+        <a
+          href="/reviews/"
+          class:list={["nav-item", { active: currentPath === "/reviews" }]}
+        >
+          Відгуки
         </a>
         <a
           href="/blog/"
@@ -188,15 +147,17 @@ const allServices = (await getCollection("services")).sort(
 
       <!-- Right Telegram Button (Desktop) & Mobile Burger Button -->
       <div class="flex items-center gap-2">
-        <a
-          href="https://t.me/ihornone"
-          target="_blank"
-          rel="noopener"
-          class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-black bg-[#D09AFC] text-[#2A1E1E] hover:bg-[#BF80FA] active:scale-95 transition-all shadow-xs no-underline"
-        >
-          <i class="fa-brands fa-telegram text-[#2A1E1E]"></i>
-          <span>Telegram</span>
-        </a>
+        <div class="hidden sm:block">
+          <a
+            href="https://t.me/ihornone"
+            target="_blank"
+            rel="noopener"
+            class="pill-btn-lilac !px-4 !py-2 !text-xs flex items-center gap-1.5"
+          >
+            <Icon name="telegram" size={15} />
+            <span>Telegram</span>
+          </a>
+        </div>
 
         <!-- Mobile Menu Button (Capsule rounded-full) -->
         <button
@@ -205,7 +166,8 @@ const allServices = (await getCollection("services")).sort(
           class="lg:hidden w-8.5 h-8.5 rounded-full bg-[#623A2D]/8 border border-[#623A2D]/15 flex items-center justify-center text-[#2A1E1E] text-xs cursor-pointer hover:bg-[#623A2D]/15 transition-colors"
           aria-label="Меню"
         >
-          <i class="fa-solid fa-bars" id="burger-icon"></i>
+          <span id="burger-icon-open"><Icon name="menu" size={16} /></span>
+          <span id="burger-icon-close" class="hidden"><Icon name="x" size={16} /></span>
         </button>
       </div>
     </div>
@@ -229,9 +191,12 @@ const allServices = (await getCollection("services")).sort(
             aria-expanded="false"
           >
             <span>Послуги</span>
-            <i
-              class="fa-solid fa-chevron-down text-[10px] text-[#623A2D]/60 transition-transform duration-200"
-              id="mobile-services-chevron"></i>
+            <Icon
+              name="chevron-down"
+              size={12}
+              class="text-[#623A2D]/60 transition-transform duration-200"
+              id="mobile-services-chevron"
+            />
           </button>
 
           <div
@@ -248,41 +213,14 @@ const allServices = (await getCollection("services")).sort(
           </div>
         </div>
 
-        <!-- Products Accordion on Mobile -->
-        <div>
-          <button
-            type="button"
-            id="mobile-products-toggle"
-            class="mobile-item w-full flex items-center justify-between text-left cursor-pointer border-0 bg-transparent"
-            aria-expanded="false"
-          >
-            <span>Продукти</span>
-            <i
-              class="fa-solid fa-chevron-down text-[10px] text-[#623A2D]/60 transition-transform duration-200"
-              id="mobile-products-chevron"></i>
-          </button>
-
-          <div
-            id="mobile-products-menu"
-            class="hidden pl-4 pr-1 py-1 space-y-0.5 bg-[#623A2D]/5 rounded-[10px] my-1"
-          >
-            <a href="/my-services/" class="mobile-subitem">
-              <span>Мої сервіси</span>
-            </a>
-            <a href="/templates/" class="mobile-subitem">
-              <span>Шаблони</span>
-            </a>
-          </div>
-        </div>
-
         <a href="/portfolio/" class="mobile-item">
           <span>Портфоліо</span>
         </a>
-        <a href="/reviews/" class="mobile-item">
-          <span>Відгуки</span>
-        </a>
         <a href="/about/" class="mobile-item">
           <span>Про мене</span>
+        </a>
+        <a href="/reviews/" class="mobile-item">
+          <span>Відгуки</span>
         </a>
         <a href="/blog/" class="mobile-item">
           <span>Блог</span>
@@ -294,9 +232,9 @@ const allServices = (await getCollection("services")).sort(
           href="https://t.me/ihornone"
           target="_blank"
           rel="noopener"
-          class="w-full py-2.5 px-3 rounded-full bg-[#D09AFC] text-[#2A1E1E] text-center font-black text-xs flex items-center justify-center gap-2 no-underline shadow-xs hover:bg-[#BF80FA] transition-colors"
+          class="pill-btn-lilac w-full !py-3 !text-xs flex items-center justify-center gap-2"
         >
-          <i class="fa-brands fa-telegram text-[#2A1E1E]"></i>
+          <Icon name="telegram" size={16} />
           <span>Написати в Telegram</span>
         </a>
       </div>
@@ -379,28 +317,25 @@ const allServices = (await getCollection("services")).sort(
     const toggleBtn = document.getElementById("mobile-nav-toggle");
     const menuContent = document.getElementById("mobile-menu-content");
     const backdrop = document.getElementById("mobile-nav-backdrop");
-    const icon = document.getElementById("burger-icon");
+    const openIcon = document.getElementById("burger-icon-open");
+    const closeIcon = document.getElementById("burger-icon-close");
 
     const servicesToggle = document.getElementById("mobile-services-toggle");
     const servicesMenu = document.getElementById("mobile-services-menu");
     const servicesChevron = document.getElementById("mobile-services-chevron");
 
-    const productsToggle = document.getElementById("mobile-products-toggle");
-    const productsMenu = document.getElementById("mobile-products-menu");
-    const productsChevron = document.getElementById("mobile-products-chevron");
-
     function openMenu() {
       menuContent?.classList.remove("hidden");
       backdrop?.classList.remove("hidden");
-      icon?.classList.remove("fa-bars");
-      icon?.classList.add("fa-xmark");
+      openIcon?.classList.add("hidden");
+      closeIcon?.classList.remove("hidden");
     }
 
     function closeMenu() {
       menuContent?.classList.add("hidden");
       backdrop?.classList.add("hidden");
-      icon?.classList.remove("fa-xmark");
-      icon?.classList.add("fa-bars");
+      openIcon?.classList.remove("hidden");
+      closeIcon?.classList.add("hidden");
     }
 
     toggleBtn?.addEventListener("click", (e) => {
@@ -424,20 +359,6 @@ const allServices = (await getCollection("services")).sort(
         servicesMenu?.classList.add("hidden");
         servicesChevron?.classList.remove("rotate-180");
         servicesToggle?.setAttribute("aria-expanded", "false");
-      }
-    });
-
-    productsToggle?.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const isSubmenuHidden = productsMenu?.classList.contains("hidden");
-      if (isSubmenuHidden) {
-        productsMenu?.classList.remove("hidden");
-        productsChevron?.classList.add("rotate-180");
-        productsToggle?.setAttribute("aria-expanded", "true");
-      } else {
-        productsMenu?.classList.add("hidden");
-        productsChevron?.classList.remove("rotate-180");
-        productsToggle?.setAttribute("aria-expanded", "false");
       }
     });
 

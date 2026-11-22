@@ -1,27 +1,29 @@
 @import "tailwindcss";
+@import "@fontsource/comfortaa/300.css";
 @import "@fontsource/comfortaa";
-@import "@fortawesome/fontawesome-free/css/all.min.css";
+@import "@fontsource/comfortaa/700.css";
 
 @theme {
-  /* Exact Colors Sampled from User's Swatch & Mascot Reference Palette */
-  --color-mascot-bg: #FAF1EC;
-  --color-mascot-cream: #FAF1EC;
-  --color-mascot-espresso: #2A1E1E;
-  --color-mascot-chestnut: #623A2D;
-  --color-mascot-caramel: #95553C;
-  --color-mascot-sand: #E8BA98;
-  --color-mascot-pink: #FAC3C8;
-  --color-mascot-lilac: #D09AFC;
-  --color-mascot-lilac-hover: #BF80FA;
+  /* Site palette sampled from the original swatch */
+  --color-cream: #FAF1EC;
+  --color-cream-light: #FAF1EC;
+  --color-espresso: #2A1E1E;
+  --color-chestnut: #623A2D;
+  --color-caramel: #95553C;
+  --color-sand: #E8BA98;
+  --color-pink: #FAC3C8;
+  --color-lilac: #D09AFC;
+  --color-lilac-hover: #BF80FA;
 
-  /* Universal 10px Radius everywhere */
+  /* Radius scale: 10px for small controls, stepped up for buttons (16px),
+     cards (24px) and giant floating panels (literal 32/64px utilities). */
   --radius-xs: 10px;
   --radius-sm: 10px;
   --radius-md: 10px;
   --radius-lg: 10px;
-  --radius-xl: 10px;
-  --radius-2xl: 10px;
-  --radius-3xl: 10px;
+  --radius-xl: 14px;
+  --radius-2xl: 16px;
+  --radius-3xl: 24px;
   --radius: 10px;
 
   /* Aliases for theme tokens */
@@ -66,32 +68,58 @@
 }
 
 @layer components {
-  /* Mascot Badge (Pill capsule rounded-full) */
-  .mascot-pill-badge {
+  /* Pill badge (small intro chip above headings) */
+  .pill-badge {
     @apply inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-black tracking-tight bg-[#D09AFC] text-[#2A1E1E] shadow-2xs;
   }
-  
-  /* Buttons with smooth capsule rounded-full radius */
+
+  /* Sticker tag — rotated coloured chip embedded in headings (unlimited-style).
+     em-based sizing keeps the chip INSIDE the heading's line box on every
+     heading size, so heading→content gaps stay visually uniform. */
+  .sticker-tag {
+    @apply inline-block rounded-xl px-[0.3em] py-[0.1em] text-[0.9em] leading-none font-black align-middle max-sm:rounded-lg;
+  }
+
+  /* Pop card — physical card language: 2px espresso outline, no blur shadow */
+  .pop-card {
+    @apply rounded-3xl border-2 border-[#1E1414] bg-white;
+  }
+
+  /* Number badge hanging off a card corner */
+  .num-badge {
+    @apply absolute -left-4 -top-4 sm:-left-5 sm:-top-5 grid size-12 place-items-center rounded-full bg-[#1E1414] text-lg font-black text-white;
+  }
+
+  /* Blueprint grid backdrop for hero panels — warm 1px lines on cream */
+  .grid-blueprint {
+    background-image:
+      linear-gradient(to right, rgba(98, 58, 45, 0.09) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(98, 58, 45, 0.09) 1px, transparent 1px);
+    background-size: 80px 80px;
+  }
+
+  /* Buttons: physical hover — the card lifts and a solid offset shadow
+     appears beneath it. No blur shadows, no shimmer. */
   .pill-btn {
-    @apply inline-flex items-center justify-center gap-2.5 rounded-full font-bold text-sm px-6 py-3 transition-all duration-300 cursor-pointer no-underline;
+    @apply inline-flex items-center justify-center gap-2.5 rounded-2xl font-bold text-sm px-6 py-3 transition-[translate,box-shadow,background-color,border-color] duration-200 cursor-pointer no-underline motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-none;
   }
   .pill-btn-primary {
-    @apply inline-flex items-center justify-center gap-2.5 rounded-full font-black text-sm px-7 py-3 transition-all duration-300 cursor-pointer no-underline bg-[#2A1E1E] text-white shadow-md hover:bg-[#3D2C2C] hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0;
+    @apply inline-flex items-center justify-center gap-2.5 rounded-2xl border-2 border-[#1E1414] bg-[#1E1414] font-black text-sm px-7 py-3 text-white transition-[translate,box-shadow] duration-200 cursor-pointer no-underline hover:-translate-y-1 hover:shadow-[0_10px_0_#D09AFC] active:translate-y-0 active:shadow-none motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-none;
   }
   .pill-btn-lilac {
-    @apply inline-flex items-center justify-center gap-2.5 rounded-full font-black text-sm px-7 py-3 transition-all duration-300 cursor-pointer no-underline bg-[#D09AFC] text-[#2A1E1E] shadow-md hover:bg-[#BF80FA] hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0;
+    @apply inline-flex items-center justify-center gap-2.5 rounded-2xl border-2 border-[#1E1414] bg-[#D09AFC] font-black text-sm px-7 py-3 text-[#1E1414] transition-[translate,box-shadow] duration-200 cursor-pointer no-underline hover:-translate-y-1 hover:shadow-[0_10px_0_#1E1414] active:translate-y-0 active:shadow-none motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-none;
   }
   .pill-btn-sand {
-    @apply inline-flex items-center justify-center gap-2.5 rounded-full font-black text-sm px-7 py-3 transition-all duration-300 cursor-pointer no-underline bg-[#E8BA98] text-[#2A1E1E] shadow-sm hover:bg-[#DEAB86] hover:-translate-y-0.5 hover:shadow-md active:translate-y-0;
+    @apply inline-flex items-center justify-center gap-2.5 rounded-2xl border-2 border-[#1E1414] bg-[#E8BA98] font-black text-sm px-7 py-3 text-[#1E1414] transition-[translate,box-shadow] duration-200 cursor-pointer no-underline hover:-translate-y-1 hover:shadow-[0_10px_0_#1E1414] active:translate-y-0 active:shadow-none motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-none;
   }
   .pill-btn-outline {
-    @apply inline-flex items-center justify-center gap-2.5 rounded-full font-bold text-sm px-7 py-3 transition-all duration-300 cursor-pointer no-underline bg-[#FAF1EC] text-[#2A1E1E] border border-[#623A2D]/15 hover:bg-[#F4E8E3] hover:border-[#623A2D]/30 hover:-translate-y-0.5 hover:shadow-sm active:translate-y-0;
+    @apply inline-flex items-center justify-center gap-2.5 rounded-2xl border-2 border-[#1E1414]/60 bg-[#FAF1EC]/60 font-bold text-sm px-7 py-3 text-[#1E1414] transition-[translate,box-shadow,border-color] duration-200 cursor-pointer no-underline hover:border-[#1E1414] hover:-translate-y-1 hover:shadow-[0_10px_0_#D09AFC] active:translate-y-0 active:shadow-none motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-none;
   }
   .pill-btn-dark {
-    @apply inline-flex items-center justify-center gap-2.5 rounded-full font-bold text-sm px-7 py-3 transition-all duration-300 cursor-pointer no-underline bg-[#2A1E1E] text-white hover:bg-[#3D2C2C] hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0;
+    @apply inline-flex items-center justify-center gap-2.5 rounded-2xl border-2 border-[#1E1414] bg-[#1E1414] font-bold text-sm px-7 py-3 text-white transition-[translate,box-shadow] duration-200 cursor-pointer no-underline hover:-translate-y-1 hover:shadow-[0_10px_0_#D09AFC] active:translate-y-0 active:shadow-none motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-none;
   }
   .bento-card {
-    @apply bg-white border border-[#623A2D]/10 rounded-[24px] sm:rounded-[32px] p-6 sm:p-8 shadow-[0_12px_36px_rgba(42,30,30,0.06)] transition-all duration-300 hover:border-[#D09AFC] hover:shadow-[0_22px_48px_rgba(42,30,30,0.12)] hover:-translate-y-1;
+    @apply bg-white border-2 border-[#1E1414] rounded-3xl p-6 sm:p-8 transition-[translate,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-[0_12px_0_#D09AFC] motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-none;
   }
 }
 
@@ -301,58 +329,42 @@
 
 /* Global html/body defaults */
 html {
-  /* Smooth, GPU-friendly scrolling with offset so anchor targets never hide under the fixed navbar */
   scroll-behavior: smooth;
   scroll-padding-top: 6rem;
+  background-color: #FAF1EC;
 }
 
 body {
   font-family: var(--font-comfortaa);
-  background-color: var(--color-mascot-bg);
-  color: var(--color-mascot-espresso);
+  background-color: #FAF1EC;
+  color: var(--color-espresso);
   margin: 0;
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
+  isolation: isolate;
 }
 
-/* GPU-composited background layer: static texture that never triggers repaints during scrolling */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
+  background-color: #FAF1EC;
   background-image: 
     radial-gradient(at 10% 10%, rgba(208, 154, 252, 0.06) 0px, transparent 40%),
     radial-gradient(at 90% 90%, rgba(232, 186, 152, 0.08) 0px, transparent 50%),
     radial-gradient(at 50% 50%, rgba(250, 195, 200, 0.05) 0px, transparent 60%);
-  transform: translateZ(0);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    White-background pages (legal / policy documents).
 
    These pages opt out of the cream backdrop, the ambient gradient wash and
-   the film grain, and render on pure white. The navbar pocket and its two
-   scoop curves follow the body, otherwise the cream tab would float on a
-   white sheet and break the page.
+   the film grain, and render on pure white.
    ═══════════════════════════════════════════════════════════════════════════ */
-body.page-white {
-  background-color: #FFFFFF;
-}
 
-body.page-white::before {
-  background-image: none;
-}
-
-body.page-white #navbar-pocket {
-  background-color: #FFFFFF;
-}
-
-body.page-white #navbar-pocket svg path {
-  fill: #FFFFFF;
-}
 
 /* ═══════════════════════════════════════════════════════════════════════════
    Film grain over the page background.
@@ -361,10 +373,6 @@ body.page-white #navbar-pocket svg path {
    is warm espresso on the cream background instead of dirty grey. The layer
    sits BEHIND the content (z-index -1), so cards, photos and text stay
    perfectly clean — only the page backdrop carries the texture.
-
-   A surface that should read as background rather than as a card (the hero
-   button panel) opts in via .grain-surface, which paints the same texture
-   inside itself instead of over the whole page.
    ═══════════════════════════════════════════════════════════════════════════ */
 .grain-fixed {
   position: fixed;
@@ -380,24 +388,6 @@ body.page-white #navbar-pocket svg path {
   background-image: var(--noise, none);
   background-size: 220px 220px;
   opacity: 0.5;
-}
-
-/* Opt-in grain for a single surface that should read as part of the page */
-.grain-surface {
-  position: relative;
-  isolation: isolate;
-}
-
-.grain-surface::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: inherit;
-  background-image: var(--noise, none);
-  background-size: 220px 220px;
-  opacity: 0.5;
-  pointer-events: none;
 }
 
 /* Base resets */
@@ -445,7 +435,7 @@ html {
   overflow: visible;
   clip: auto;
   white-space: normal;
-  background-color: var(--color-mascot-espresso);
+  background-color: var(--color-espresso);
   color: #FFFFFF;
   border-radius: 8px;
 }
@@ -536,35 +526,21 @@ html {
    so grids are no longer capped at eight items.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* One shared transform composition for reveal offsets + interactive tilt */
-[data-animate],
+/* One shared transform composition for interactive tilt */
 .tilt-card,
-[data-stagger] > * {
-  --reveal-x: 0px;
-  --reveal-y: 0px;
-  --reveal-scale: 1;
+.bento-card,
+.project-card {
   --tilt-x: 0deg;
   --tilt-y: 0deg;
   --tilt-perspective: 1000px;
-  transform:
-    perspective(var(--tilt-perspective))
-    rotateX(var(--tilt-x))
-    rotateY(var(--tilt-y))
-    translate3d(var(--flip-x, 0px), var(--flip-y, 0px), 0)
-    translate3d(var(--reveal-x), var(--reveal-y), 0)
-    scale(var(--reveal-scale));
+  transform-style: preserve-3d;
+  will-change: transform;
 }
 
-/* One shared transition contract: reveal owns opacity/transform/clip-path,
-   everything else keeps a short, snappy hover response. */
 [data-animate],
 .tilt-card,
 [data-stagger] > * {
-  --reveal-delay: 0ms;
   transition:
-    opacity var(--dur-reveal) var(--ease-out-expo) var(--reveal-delay),
-    transform var(--dur-reveal) var(--ease-out-expo) var(--reveal-delay),
-    clip-path var(--dur-reveal) var(--ease-out-expo) var(--reveal-delay),
     translate var(--dur-base) var(--ease-out-expo) 0ms,
     scale var(--dur-base) var(--ease-out-expo) 0ms,
     border-color var(--dur-base) var(--ease-out-expo) 0ms,
@@ -575,223 +551,36 @@ html {
 }
 
 [data-animate] {
-  opacity: 0;
+  opacity: 1;
 }
 
-/* Reveal variants — they only seed the offset variables */
-[data-animate="fade-up"] { --reveal-y: 20px; }
-[data-animate="fade-down"] { --reveal-y: -20px; }
-[data-animate="fade-in"] { --reveal-y: 0px; }
-[data-animate="zoom-in"] { --reveal-scale: 0.96; }
-[data-animate="slide-left"] { --reveal-x: 24px; }
-[data-animate="slide-right"] { --reveal-x: -24px; }
-
-[data-animate="blur-in"] {
-  --reveal-scale: 0.94;
-  --reveal-blur: 8px;
-  filter: blur(var(--reveal-blur));
+/* Visible state */
+[data-animate].is-visible {
+  opacity: 1;
 }
 
 [data-animate="mask-up"] {
   clip-path: inset(0 0 100% 0);
-}
-
-/* Visible state — offsets reset, opacity lands on 1 */
-[data-animate].is-visible {
-  opacity: 1;
-  --reveal-x: 0px;
-  --reveal-y: 0px;
-  --reveal-scale: 1;
-}
-
-[data-animate="blur-in"].is-visible {
-  --reveal-blur: 0px;
+  transition: clip-path 0.7s var(--ease-out-expo);
 }
 
 [data-animate="mask-up"].is-visible {
   clip-path: inset(0 0 0 0);
 }
 
-/* Staggered entry for grids — delay comes from the `--i` index set by JS */
+/* Staggered entry for grids */
 [data-stagger] > * {
-  --reveal-y: 16px;
-  --reveal-delay: calc(var(--i, 0) * var(--dur-stagger-step));
-  opacity: 0;
+  opacity: 1;
 }
 
 [data-animate].is-visible [data-stagger] > *,
-[data-animate][data-stagger].is-visible > * {
+[data-animate][data-stagger].is-visible > *,
+[data-stagger] > *.is-visible {
   opacity: 1;
-  --reveal-x: 0px;
-  --reveal-y: 0px;
-  --reveal-scale: 1;
 }
 
-/* A container that staggers its own children must not animate itself as
-   well — otherwise the whole block slides while its items fade in, and the
-   two motions together read as a jump. The children carry the entrance. */
 [data-animate][data-stagger] {
   opacity: 1;
-  --reveal-x: 0px;
-  --reveal-y: 0px;
-  --reveal-scale: 1;
-}
-
-/* Dynamic Interactive Spotlight on Cards (Stripe / Linear specular glow) */
-.spotlight-card,
-.bento-card {
-  position: relative;
-  isolation: isolate;
-}
-
-.spotlight-card::before,
-.bento-card::before {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  padding: 1px;
-  background: radial-gradient(
-    450px circle at var(--mouse-x, -999px) var(--mouse-y, -999px),
-    rgba(208, 154, 252, 0.4),
-    rgba(232, 186, 152, 0.15) 30%,
-    transparent 65%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  z-index: 15;
-}
-
-.spotlight-card::after,
-.bento-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(
-    500px circle at var(--mouse-x, -999px) var(--mouse-y, -999px),
-    rgba(208, 154, 252, 0.05),
-    transparent 60%
-  );
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  z-index: 1;
-}
-
-.spotlight-card:hover::before,
-.spotlight-card:hover::after,
-.bento-card:hover::before,
-.bento-card:hover::after {
-  opacity: 1;
-}
-
-/* 3D Tilt Card Physics — the transform itself is composed in the shared
-   reveal/tilt rule above, so JS only drives --tilt-x / --tilt-y. */
-.tilt-card {
-  transform-style: preserve-3d;
-}
-
-/* Liquid Button Shimmer Sheen */
-@keyframes shimmerSweep {
-  0% {
-    transform: translateX(-160%) skewX(-20deg);
-  }
-  100% {
-    transform: translateX(260%) skewX(-20deg);
-  }
-}
-
-.btn-shimmer,
-.pill-btn,
-.pill-btn-primary,
-.pill-btn-lilac,
-.pill-btn-sand,
-.pill-btn-outline,
-.pill-btn-dark {
-  position: relative;
-  overflow: hidden;
-}
-
-.btn-shimmer::after,
-.pill-btn::after,
-.pill-btn-primary::after,
-.pill-btn-lilac::after,
-.pill-btn-sand::after,
-.pill-btn-outline::after,
-.pill-btn-dark::after {
-  content: "";
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 45%;
-  height: 200%;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.38) 50%,
-    transparent 100%
-  );
-  transform: translateX(-160%) skewX(-20deg);
-  pointer-events: none;
-  z-index: 5;
-}
-
-.btn-shimmer:hover::after,
-.pill-btn:hover::after,
-.pill-btn-primary:hover::after,
-.pill-btn-lilac:hover::after,
-.pill-btn-sand:hover::after,
-.pill-btn-outline:hover::after,
-.pill-btn-dark:hover::after {
-  animation: shimmerSweep 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* Chromatic Text Shimmer for key keywords */
-@keyframes textShimmer {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-.text-shimmer-lilac {
-  background: linear-gradient(
-    115deg,
-    #D09AFC 0%,
-    #FAC3C8 25%,
-    #BF80FA 50%,
-    #FAF1EC 75%,
-    #D09AFC 100%
-  );
-  background-size: 240% 100%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: textShimmer 6s ease-in-out infinite;
-  display: inline-block;
-}
-
-/* Floating animation for mascots / icons */
-@keyframes gentleFloat {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
-}
-
-.animate-float {
-  animation: gentleFloat 4.2s ease-in-out infinite;
 }
 
 /* Smooth Accordion Body Grid Transition */
@@ -844,66 +633,55 @@ details[open] .faq-item-inner {
 }
 
 /* Button arrow nudge on hover */
-.pill-btn:hover .fa-arrow-right,
-.pill-btn-primary:hover .fa-arrow-right,
-.pill-btn-lilac:hover .fa-arrow-right,
-.pill-btn-dark:hover .fa-arrow-right,
-.pill-btn-sand:hover .fa-arrow-right,
-.pill-btn-outline:hover .fa-arrow-right {
+.pill-btn:hover .lucide-arrow-right,
+.pill-btn:hover .btn-icon,
+.pill-btn-primary:hover .lucide-arrow-right,
+.pill-btn-primary:hover .btn-icon,
+.pill-btn-lilac:hover .lucide-arrow-right,
+.pill-btn-lilac:hover .btn-icon,
+.pill-btn-dark:hover .lucide-arrow-right,
+.pill-btn-dark:hover .btn-icon,
+.pill-btn-sand:hover .lucide-arrow-right,
+.pill-btn-sand:hover .btn-icon,
+.pill-btn-outline:hover .lucide-arrow-right,
+.pill-btn-outline:hover .btn-icon {
   transform: translateX(4px);
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Telegram CTA Pulse Glow.
-   The glow lives on a pseudo-element whose opacity is animated — animating
-   `box-shadow` directly would repaint the button on every frame of an
-   endless animation, which is exactly what makes a page feel janky. */
-@keyframes pulseGlow {
-  0%, 100% {
-    opacity: 0.3;
-  }
-  50% {
-    opacity: 0.85;
-  }
-}
-.animate-pulse-glow {
-  position: relative;
-}
-.animate-pulse-glow::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  box-shadow: 0 4px 16px 0 rgba(208, 154, 252, 0.6);
-  opacity: 0;
-  animation: pulseGlow 3s ease-in-out infinite;
-  pointer-events: none;
-}
-
-/* Mascot peek breathing animation */
-@keyframes catPeek {
-  0%, 100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-4px) rotate(-0.4deg);
-  }
-}
-.animate-cat-peek {
-  animation: catPeek 3.8s ease-in-out infinite;
-}
-
-/* Mascot cat brand logo wiggle */
-@keyframes catWiggle {
+/* Brand monogram wiggle */
+@keyframes markWiggle {
   0%, 100% { transform: rotate(0deg) scale(1); }
   25% { transform: rotate(-12deg) scale(1.1); }
   75% { transform: rotate(12deg) scale(1.1); }
 }
-.brand-cat-icon {
+.brand-mark-icon {
   transition: transform 0.3s ease;
 }
-.group:hover .brand-cat-icon {
-  animation: catWiggle 0.6s ease-in-out;
+.group:hover .brand-mark-icon {
+  animation: markWiggle 0.6s ease-in-out;
+}
+
+/* Running marquee band — the track carries two identical halves and slides
+   by exactly -50%, which reads as a seamless endless loop. Pauses on hover;
+   prefers-reduced-motion freezes it (see the kill-switch block below). */
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-track {
+  animation: marqueeScroll 32s linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* Hero parallax layer — driven by --px / --py from the animation engine.
+   The pointer-driven transform lives on its own element so it composes
+   cleanly with the reveal system instead of fighting it. */
+.hero-parallax-layer {
+  transform: translate3d(var(--px, 0px), var(--py, 0px), 0) scale(1.04);
+  will-change: transform;
 }
 
 /* Fullscreen Hero Ambient Cinematic Zoom */
@@ -919,117 +697,46 @@ details[open] .faq-item-inner {
   animation: heroAmbientZoom 18s ease-in-out infinite alternate;
 }
 
-/* Hero parallax layer — driven by --px / --py from the animation engine.
-   Lives on its own element so the ambient zoom animation above never
-   overwrites the pointer-driven transform. */
-.hero-parallax-layer {
-  transform: translate3d(var(--px, 0px), var(--py, 0px), 0) scale(1.04);
-  will-change: transform;
+/* Mascot cat brand logo wiggle */
+@keyframes catWiggle {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  25% { transform: rotate(-12deg) scale(1.1); }
+  75% { transform: rotate(12deg) scale(1.1); }
 }
-
-/* Hero Text Fade In */
-@keyframes heroFadeIn {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 20px, 0);
-  }
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
+.brand-cat-icon {
+  transition: transform 0.3s ease;
 }
-.animate-hero-fade-in {
-  animation: heroFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+.group:hover .brand-cat-icon {
+  animation: catWiggle 0.6s ease-in-out;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    New motion primitives
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* Per-word text reveal — the engine splits headings into word spans and
-   stamps each one with `--i`, so lines rise one word at a time. */
+/* Visible by default to eliminate any flash of unstyled/hidden content on load */
+[data-reveal-text] {
+  opacity: 1;
+}
+
+.hero-btn-primary,
+.hero-btn-secondary,
+.hero-interactive-container .network-lines,
+.hero-interactive-container .node > *,
+.hero-interactive-container .hero-text-block .moki-interactive-node,
+.hero-interactive-container .hero-scroll-btn {
+  opacity: 1;
+}
+
+/* Per-word text reveal */
 .reveal-text .reveal-word {
   display: inline-block;
-  opacity: 0;
-  transform: translate3d(0, 0.6em, 0) rotate(2deg);
-  transition:
-    opacity var(--dur-reveal) var(--ease-out-expo) calc(var(--i, 0) * 45ms),
-    transform var(--dur-reveal) var(--ease-out-expo) calc(var(--i, 0) * 45ms);
+  opacity: 1;
   will-change: transform, opacity;
 }
 
 .reveal-text.is-visible .reveal-word {
   opacity: 1;
-  transform: translate3d(0, 0, 0) rotate(0deg);
-}
-
-/* Animated underline that draws itself under a heading */
-.underline-draw {
-  position: relative;
-}
-
-.underline-draw::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -0.12em;
-  width: 100%;
-  height: 0.12em;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #D09AFC, #FAC3C8, #E8BA98);
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform var(--dur-slow) var(--ease-out-expo) var(--underline-delay, 120ms);
-}
-
-.underline-draw.is-visible::after,
-.is-visible .underline-draw::after {
-  transform: scaleX(1);
-}
-
-/* Animated gradient border for hero cards */
-.gradient-border {
-  position: relative;
-  border-radius: inherit;
-}
-
-.gradient-border::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: conic-gradient(
-    from var(--angle, 0deg),
-    transparent 0deg,
-    #D09AFC 60deg,
-    #FAC3C8 140deg,
-    #E8BA98 220deg,
-    transparent 300deg
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  opacity: 0;
-  transition: opacity var(--dur-base) var(--ease-out-expo);
-  pointer-events: none;
-}
-
-.gradient-border:hover::before {
-  opacity: 1;
-  animation: spinBorder 4s linear infinite;
-}
-
-@property --angle {
-  syntax: "<angle>";
-  inherits: false;
-  initial-value: 0deg;
-}
-
-@keyframes spinBorder {
-  to {
-    --angle: 360deg;
-  }
 }
 
 /* Micro press feedback — uses the standalone `scale` property so it composes
@@ -1141,16 +848,14 @@ button:hover > .btn-icon,
 
   [data-animate],
   [data-stagger] > *,
+  [data-stack-card],
   .reveal-text .reveal-word,
   .tilt-card,
   .animate-hero-fade-in,
-  .animate-cat-peek,
-  .animate-float,
-  .hero-ambient-zoom,
-  .animate-pulse-glow,
-  .animate-pulse-glow::before,
-  .text-shimmer-lilac,
+  .brand-mark-icon,
   .brand-cat-icon,
+  .hero-ambient-zoom,
+  .marquee-track,
   [data-magnetic],
   .project-card,
   .faq-item-inner,

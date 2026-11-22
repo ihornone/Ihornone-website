@@ -1,0 +1,39 @@
+---
+import { Moki } from './Moki';
+import type { ShapeId, ExpressionId, StateId } from './index';
+
+interface Props {
+  size?: number;
+  shape?: ShapeId;
+  color?: string;
+  expression?: ExpressionId;
+  state?: StateId;
+  follow?: boolean | 'page' | 'area';
+  class?: string;
+}
+
+const {
+  size = 220,
+  shape = 'squircle',
+  color = '#1E1414',
+  expression = 'heureux',
+  state = 'idle',
+  follow = 'page',
+  class: className = '',
+} = Astro.props;
+---
+
+<Moki
+  client:load
+  size={size}
+  shape={shape}
+  color={color}
+  expression={expression}
+  state={state}
+  follow={follow}
+  playing={false}
+  paper="#FAF1EC"
+  decorative={false}
+  label="Мокі"
+  className={className}
+/>

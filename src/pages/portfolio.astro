@@ -3,6 +3,8 @@ import Layout from '../layouts/Layout.astro';
 import Hero from '../shared/components/sections/Hero.astro';
 import ServiceFaq from '../shared/components/sections/ServiceFaq.astro';
 import BentoCta from '../shared/components/sections/BentoCta.astro';
+import Tag from '../shared/components/ui/Tag.astro';
+import MokiWidget from '../shared/components/moki/MokiWidget.astro';
 import { PortfolioFilterGrid } from '../features/portfolio';
 import { getCollection } from 'astro:content';
 
@@ -59,16 +61,41 @@ const categories = ['Усі проєкти', ...new Set(allProjects.map((p) => p
     }
   }}
 >
-  <div class="w-full max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20 pt-2 sm:pt-4 pb-16 sm:pb-24 space-y-16 sm:space-y-24">
-    <Hero
+          <Hero
       title="Кейси та реалізовані цифрові рішення для бізнесу"
+      tag="Кейси"
+      tagColor="pink"
     />
 
+<div class="w-full max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-20 pt-2 sm:pt-4 pb-16 sm:pb-24 space-y-16 sm:space-y-24">
     <PortfolioFilterGrid categories={categories} projects={allProjects} />
 
-    <ServiceFaq />
-    
-    <!-- Bento CTA with Mascot -->
+    <!-- FAQ Section -->
+    <div class="space-y-8 sm:space-y-12" data-animate="fade-up">
+      <div class="flex items-center justify-between sm:justify-start gap-4">
+        <h2
+          data-reveal-text
+          class="text-3xl sm:text-4xl lg:text-[56px] font-black text-[#1E1414] tracking-[-0.035em] leading-[1.13]"
+        >
+          Часті <Tag color="pink" class="mx-1">запитання</Tag> клієнтів
+        </h2>
+        <div class="shrink-0 -mt-2">
+          <MokiWidget
+            size={85}
+            expression="curieux"
+            color="#D09AFC"
+            shape="galet"
+            follow="page"
+          />
+        </div>
+      </div>
+
+      <div class="w-full">
+        <ServiceFaq globalOnly showHeader={false} />
+      </div>
+    </div>
+
+    <!-- CTA banner -->
     <BentoCta />
   </div>
 </Layout>

@@ -1,111 +1,115 @@
 ---
+import Icon from "../ui/Icon.astro";
+
 interface Props {
-  id: string;
-  icon?: string;
-  title: string;
-  shortTitle?: string;
-  description: string;
-  isPopular?: boolean;
-  class?: string;
-  startingPrice?: string;
+ id: string;
+ icon?: string;
+ title: string;
+ shortTitle?: string;
+ description: string;
+ isPopular?: boolean;
+ class?: string;
+ startingPrice?: string;
 }
 
 const {
-  id,
-  icon,
-  title,
-  shortTitle = "",
-  description,
-  isPopular = false,
-  class: className = "",
-  startingPrice = "",
+ id,
+ icon,
+ title,
+ shortTitle = "",
+ description,
+ isPopular = false,
+ class: className = "",
+ startingPrice = "",
 } = Astro.props;
 
 // Specific brand color themes for each service from our palette
-const themeConfig: Record<string, { bg: string; line: string; hoverShadow: string }> = {
-  'telegram-bots': {
-    bg: 'bg-[#F4E8FC]',
-    line: 'bg-[#BF80FA]',
-    hoverShadow: 'hover:shadow-[0_20px_40px_rgba(208,154,252,0.25)]',
-  },
-  'websites': {
-    bg: 'bg-[#FDF0E7]',
-    line: 'bg-[#C28257]',
-    hoverShadow: 'hover:shadow-[0_20px_40px_rgba(232,186,152,0.25)]',
-  },
-  'mobile-apps': {
-    bg: 'bg-[#FDECEF]',
-    line: 'bg-[#E2959E]',
-    hoverShadow: 'hover:shadow-[0_20px_40px_rgba(250,195,200,0.28)]',
-  },
+const themeConfig: Record<string, { tile: string; hoverShadow: string }> = {
+ 'telegram-bots': {
+ tile: 'bg-[#D09AFC]',
+ hoverShadow: 'hover:shadow-[0_12px_0_#D09AFC]',
+ },
+ 'websites': {
+ tile: 'bg-[#E8BA98]',
+ hoverShadow: 'hover:shadow-[0_12px_0_#E8BA98]',
+ },
+ 'mobile-apps': {
+ tile: 'bg-[#FAC3C8]',
+ hoverShadow: 'hover:shadow-[0_12px_0_#FAC3C8]',
+ },
 };
 
 const currentTheme = themeConfig[id] || {
-  bg: 'bg-white',
-  line: 'bg-[#D09AFC]',
-  hoverShadow: 'hover:shadow-[0_20px_40px_rgba(42,30,30,0.08)]',
+ tile: 'bg-[#F4E8E3]',
+ hoverShadow: 'hover:shadow-[0_12px_0_#D09AFC]',
 };
 ---
 
 <article
-  class:list={[
-    "group spotlight-card tilt-card relative flex flex-col justify-between rounded-[24px] sm:rounded-[32px] p-6 sm:p-8 border border-[#623A2D]/10 shadow-[0_12px_36px_rgba(42,30,30,0.05)] transition-all duration-300 hover:-translate-y-1.5 select-none w-full h-full overflow-visible",
-    currentTheme.bg,
-    currentTheme.hoverShadow,
-    className,
-  ]}
+ class:list={[
+ "group relative flex flex-col justify-between rounded-3xl p-6 sm:p-8 border-2 border-[#1E1414] bg-white transition-[translate,box-shadow] duration-200 hover:-translate-y-1 select-none w-full h-full overflow-visible motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-none",
+ currentTheme.hoverShadow,
+ className,
+ ]}
 >
-  <!-- Centered Popular Badge on the top border line without dots -->
-  {
-    isPopular && (
-      <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 z-20 bg-[#2A1E1E] text-white text-[10px] sm:text-[11px] font-black uppercase tracking-wider px-3.5 py-1 rounded-full border border-white/20 shadow-xs whitespace-nowrap">
-        <span>Популярне</span>
-      </div>
-    )
-  }
+ <!-- Centered Popular Badge on the top border line -->
+ {
+ isPopular && (
+ <div class="absolute -top-4 left-1/2 -translate-x-1/2 z-20 bg-[#1E1414] text-white text-[10px] sm:text-[11px] font-black uppercase tracking-wider px-4 py-1 rounded-full border-2 border-white whitespace-nowrap">
+ <span>Популярне</span>
+ </div>
+ )
+ }
 
-  <!-- Top bar: decorative accent line -->
-  <div class="flex items-center justify-between gap-3 mb-5">
-    <div class:list={["h-[5px] w-14 rounded-full opacity-85 transition-all duration-300 group-hover:w-20", currentTheme.line]}></div>
-  </div>
+ <!-- Icon tile -->
+ <div class="flex items-center justify-between gap-3 mb-6">
+ <div
+ class:list={[
+ "grid size-14 place-items-center rounded-2xl border-2 border-[#1E1414] text-2xl text-[#1E1414] transition-transform duration-300 group-hover:-rotate-3 group-hover:scale-105",
+ currentTheme.tile,
+ ]}
+ >
+ {icon && <Icon name={icon} size={26} />}
+ </div>
+ </div>
 
-  <!-- Upper Content Block -->
-  <div class="space-y-3 flex-1">
-    <!-- Large Bold Title -->
-    <h3 class="text-xl sm:text-2xl font-black text-[#2A1E1E] tracking-tight leading-[1.2] m-0">
-      {title}
-    </h3>
+ <!-- Upper Content Block -->
+ <div class="space-y-3 flex-1">
+ <!-- Large Bold Title -->
+ <h3 class="text-xl sm:text-2xl font-black text-[#1E1414] tracking-tight leading-[1.2] ">
+ {title}
+ </h3>
 
-    <!-- Description -->
-    <p class="text-xs sm:text-sm text-[#623A2D]/85 font-medium leading-relaxed m-0">
-      {description}
-    </p>
-  </div>
+ <!-- Description -->
+ <p class="text-xs sm:text-sm text-[#623A2D]/85 font-medium leading-relaxed ">
+ {description}
+ </p>
+ </div>
 
-  <!-- Bottom: Fully responsive Price & Action Button (Never overflows) -->
-  <div class="mt-6 pt-4 border-t border-[#623A2D]/10 flex flex-col 2xl:flex-row 2xl:items-center justify-between gap-3">
-    {
-      startingPrice ? (
-        <div class="flex items-baseline justify-between 2xl:flex-col 2xl:justify-start">
-          <span class="text-[10px] font-black uppercase tracking-wider text-[#623A2D]/60 leading-none">
-            Орієнтовно
-          </span>
-          <span class="text-base sm:text-lg font-black text-[#2A1E1E] leading-tight 2xl:mt-1 whitespace-nowrap">
-            {startingPrice}
-          </span>
-        </div>
-      ) : (
-        <div></div>
-      )
-    }
+ <!-- Bottom: Fully responsive Price & Action Button (Never overflows) -->
+ <div class="mt-6 pt-4 border-t-2 border-dashed border-[#1E1414]/20 flex flex-col 2xl:flex-row 2xl:items-center justify-between gap-3">
+ {
+ startingPrice ? (
+ <div class="flex items-baseline justify-between 2xl:flex-col 2xl:justify-start">
+ <span class="text-[10px] font-black uppercase tracking-wider text-[#623A2D]/60 leading-none">
+ Орієнтовно
+ </span>
+ <span class="text-base sm:text-lg font-black text-[#1E1414] leading-tight 2xl:mt-1 whitespace-nowrap">
+ {startingPrice}
+ </span>
+ </div>
+ ) : (
+ <div></div>
+ )
+ }
 
-    <a
-      href={`/services/${id}/`}
-      class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-[#2A1E1E] text-white hover:bg-[#3D2C2C] text-xs font-black shadow-sm hover:shadow-md transition-all duration-300 no-underline shrink-0 text-center w-full 2xl:w-auto"
-      aria-label={`Детальніше про ${title}`}
-    >
-      <span>Детальніше</span>
-      <i class="fa-solid fa-arrow-right text-[10px]" aria-hidden="true" />
-    </a>
-  </div>
+ <a
+ href={`/services/${id}/`}
+ class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border-2 border-[#1E1414] bg-[#1E1414] text-white text-xs font-black transition-[translate,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-[0_6px_0_#D09AFC] active:translate-y-0 active:shadow-none motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-none no-underline shrink-0 text-center w-full 2xl:w-auto"
+ aria-label={`Детальніше про ${title}`}
+ >
+ <span>Детальніше</span>
+ <Icon name="arrow-right" size={13} />
+ </a>
+ </div>
 </article>

@@ -1,494 +1,477 @@
 /**
- * High-performance, tactile interaction & animation engine for the ihornone portfolio.
+ * Masterclass GSAP & ScrollTrigger Unified Animation Suite.
  *
- * Design rules:
- *  - One single `requestAnimationFrame` loop drives every pointer-driven effect.
- *  - Reveals run on CSS transitions; JS only toggles classes and stamps `--i`.
- *  - Interactive transforms are written as CSS variables so they compose with
- *    the reveal transform instead of overwriting it.
- *  - `prefers-reduced-motion` disables motion but never hides content.
+ * Implements the signature word-by-word rising reveal and spring-pop entrance
+ * universally across ALL elements, sections, headers, cards, and pages:
+ *  - 1. Top progress bar & navbar scroll blur
+ *  - 2. Page Intro (Navbar drop-in)
+ *  - 3. Signature Hero headline (words rise + sticker tag pop + buttons spring)
+ *  - 4. Universal Heading reveals (every h1, h2, h3 across all pages)
+ *  - 5. Universal Card & Section reveals (clean, solid upward glide, no weird scrubs)
+ *  - 6. Cascading grid staggers
+ *  - 7. High-precision GSAP `quickTo` magnetic pull on ALL interactive buttons
+ *  - 8. 3D Perspective tilt with lighting on all bento and project cards
+ *  - 9. Animated numerical tickers
+ *  - 10. Footer upward cascade on scroll
+ *  - 11. Complete lifecycle management with `gsap.context()` for Astro View Transitions
+ *  - 12. Full `prefers-reduced-motion` compliance
  */
 
-interface TiltTarget {
-  el: HTMLElement;
-  maxTilt: number;
-  targetX: number;
-  targetY: number;
-  currentX: number;
-  currentY: number;
-  active: boolean;
-}
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-interface MagneticTarget {
-  el: HTMLElement;
-  strength: number;
-  targetX: number;
-  targetY: number;
-  currentX: number;
-  currentY: number;
-  active: boolean;
-}
-
-interface HeroParallax {
-  container: HTMLElement;
-  layers: HTMLElement[];
-  targetX: number;
-  targetY: number;
-  currentX: number;
-  currentY: number;
-  active: boolean;
-}
+gsap.registerPlugin(ScrollTrigger);
 
 export function initSiteAnimations(): () => void {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isFinePointer = window.matchMedia('(pointer: fine)').matches;
-  const cleanups: (() => void)[] = [];
 
-  /* ─────────────────────────────────────────────────────────────────────────
-     1. Shared rAF scheduler
-     ───────────────────────────────────────────────────────────────────────── */
-  const frameJobs: (() => void)[] = [];
-  let frameId: number | null = null;
+  const ctx = gsap.context(() => {
+    /* ─────────────────────────────────────────────────────────────────────────
+       1. Top Scroll Progress Bar & Navbar Scrolled State via ScrollTrigger
+       ───────────────────────────────────────────────────────────────────────── */
+    const progressBar = document.getElementById('scroll-progress-bar');
+    const blurBar = document.getElementById('top-scroll-blur-bar');
+    const navbarPocket = document.getElementById('navbar-pocket');
 
-  function requestFrame() {
-    if (frameId !== null) return;
-    frameId = requestAnimationFrame(() => {
-      frameId = null;
-      for (let i = 0; i < frameJobs.length; i++) frameJobs[i]();
-    });
-  }
-
-  function stopFrame() {
-    if (frameId !== null) {
-      cancelAnimationFrame(frameId);
-      frameId = null;
-    }
-  }
-
-  /* ─────────────────────────────────────────────────────────────────────────
-     2. Scroll state — progress bar + navbar blur, one listener, rAF-throttled
-     ───────────────────────────────────────────────────────────────────────── */
-  const progressBar = document.getElementById('scroll-progress-bar');
-  const blurBar = document.getElementById('top-scroll-blur-bar');
-  const navbarPocket = document.getElementById('navbar-pocket');
-  let lastScrollY = window.scrollY;
-
-  function readScrollState() {
-    const y = window.scrollY;
-
-    if (progressBar) {
-      const total = document.documentElement.scrollHeight - window.innerHeight;
-      const pct = total <= 0 ? 0 : Math.min(Math.max((y / total) * 100, 0), 100);
-      progressBar.style.transform = `scaleX(${(pct / 100).toFixed(4)})`;
-    }
-
-    if (blurBar) {
-      const isScrolled = y > 15;
-      blurBar.classList.toggle('opacity-0', !isScrolled);
-      blurBar.classList.toggle('opacity-100', isScrolled);
-      // `visibility` keeps the browser from compositing the full-width
-      // backdrop blur while the bar is hidden — that filter is expensive.
-      blurBar.classList.toggle('invisible', !isScrolled);
-      blurBar.classList.toggle('visible', isScrolled);
-    }
-
-    navbarPocket?.classList.toggle('is-scrolled', y > 15);
-
-    lastScrollY = y;
-  }
-
-  function onScroll() {
-    requestFrame();
-  }
-
-  window.addEventListener('scroll', onScroll, { passive: true });
-  frameJobs.push(readScrollState);
-  readScrollState();
-  cleanups.push(() => window.removeEventListener('scroll', onScroll));
-
-  /* ─────────────────────────────────────────────────────────────────────────
-     3. Scroll reveal — threshold 0 keeps tall sections working
-     ───────────────────────────────────────────────────────────────────────── */
-  const revealTargets = Array.from(document.querySelectorAll<HTMLElement>('[data-animate]'));
-
-  // Stamp the stagger index so grids are not limited to eight items any more.
-  document.querySelectorAll<HTMLElement>('[data-stagger]').forEach((group) => {
-    Array.from(group.children).forEach((child, index) => {
-      (child as HTMLElement).style.setProperty('--i', String(index));
-    });
-  });
-
-  const revealObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add('is-visible');
-        revealObserver.unobserve(entry.target);
+    if (progressBar || blurBar || navbarPocket) {
+      ScrollTrigger.create({
+        start: 'top top',
+        end: 'max',
+        onUpdate: (self) => {
+          if (progressBar) {
+            gsap.set(progressBar, { scaleX: self.progress });
+          }
+          const isScrolled = self.scroll() > 15;
+          if (blurBar) {
+            blurBar.classList.toggle('opacity-0', !isScrolled);
+            blurBar.classList.toggle('opacity-100', isScrolled);
+            blurBar.classList.toggle('invisible', !isScrolled);
+            blurBar.classList.toggle('visible', isScrolled);
+          }
+          navbarPocket?.classList.toggle('is-scrolled', isScrolled);
+        },
       });
-    },
-    { threshold: 0, rootMargin: '0px 0px -8% 0px' }
-  );
-
-  revealTargets.forEach((el) => {
-    if (prefersReducedMotion) {
-      el.classList.add('is-visible');
-    } else {
-      revealObserver.observe(el);
     }
-  });
 
-  cleanups.push(() => revealObserver.disconnect());
+    /* ─────────────────────────────────────────────────────────────────────────
+       2. Page Intro: Navbar Drop-In
+       ───────────────────────────────────────────────────────────────────────── */
+    if (navbarPocket && !prefersReducedMotion) {
+      gsap.fromTo(
+        navbarPocket,
+        { y: -25, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', delay: 0.05 },
+      );
+    }
 
-  /* ─────────────────────────────────────────────────────────────────────────
-     4. Text reveal — split headings into words, reveal them one by one
-     ───────────────────────────────────────────────────────────────────────── */
-  const textTargets = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal-text]'));
+    /* ─────────────────────────────────────────────────────────────────────────
+       3. Universal Text Splitting for Headings [data-reveal-text]
+       ───────────────────────────────────────────────────────────────────────── */
+    const textTargets = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal-text]'));
 
-  if (textTargets.length) {
     textTargets.forEach((el) => {
       if (el.dataset.revealReady === 'true') return;
 
-      const source = el.dataset.revealText || el.textContent || '';
-      const words = source.trim().split(/\s+/).filter(Boolean);
-      if (!words.length) return;
-
-      el.textContent = '';
-      el.classList.add('reveal-text');
-
-      words.forEach((word, index) => {
-        const span = document.createElement('span');
-        span.className = 'reveal-word';
-        span.style.setProperty('--i', String(index));
-        span.textContent = word;
-        el.appendChild(span);
-        if (index < words.length - 1) el.appendChild(document.createTextNode(' '));
-      });
-
-      el.dataset.revealReady = 'true';
-    });
-
-    const textObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add('is-visible');
-          textObserver.unobserve(entry.target);
-        });
-      },
-      { threshold: 0.15, rootMargin: '0px 0px -10% 0px' }
-    );
-
-    textTargets.forEach((el) => {
-      if (prefersReducedMotion) {
-        el.classList.add('is-visible');
-      } else {
-        textObserver.observe(el);
-      }
-    });
-
-    cleanups.push(() => textObserver.disconnect());
-  }
-
-  /* ─────────────────────────────────────────────────────────────────────────
-     5. Counter ticker
-     ───────────────────────────────────────────────────────────────────────── */
-  const counterObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        const el = entry.target as HTMLElement;
-        counterObserver.unobserve(el);
-        animateCounter(el);
-      });
-    },
-    { threshold: 0.1 }
-  );
-
-  function animateCounter(el: HTMLElement) {
-    if (prefersReducedMotion) return;
-
-    const target = parseFloat(el.getAttribute('data-count-to') || '0');
-    const prefix = el.getAttribute('data-count-prefix') || '';
-    const suffix = el.getAttribute('data-count-suffix') || '';
-    const decimals = parseInt(el.getAttribute('data-count-decimals') || '0', 10);
-    const duration = 1600;
-    const startTime = performance.now();
-
-    function update(now: number) {
-      const progress = Math.min((now - startTime) / duration, 1);
-      const ease = 1 - Math.pow(2, -10 * progress);
-      el.textContent = `${prefix}${(ease * target).toFixed(decimals)}${suffix}`;
-
-      if (progress < 1) {
-        requestAnimationFrame(update);
-      } else {
-        el.textContent = `${prefix}${target.toFixed(decimals)}${suffix}`;
-      }
-    }
-
-    requestAnimationFrame(update);
-  }
-
-  document.querySelectorAll('[data-count-to]').forEach((el) => counterObserver.observe(el));
-  cleanups.push(() => counterObserver.disconnect());
-
-  /* ─────────────────────────────────────────────────────────────────────────
-     6. Spotlight — mouse-following specular glow on cards
-     ───────────────────────────────────────────────────────────────────────── */
-  if (isFinePointer && !prefersReducedMotion) {
-    const spotlightCards = Array.from(document.querySelectorAll<HTMLElement>('.spotlight-card, .bento-card'));
-
-    spotlightCards.forEach((card) => {
-      let rafId: number | null = null;
-      let lastX = -999;
-      let lastY = -999;
-
-      function onMouseMove(e: MouseEvent) {
-        const rect = card.getBoundingClientRect();
-        lastX = e.clientX - rect.left;
-        lastY = e.clientY - rect.top;
-
-        if (rafId === null) {
-          rafId = requestAnimationFrame(() => {
-            card.style.setProperty('--mouse-x', `${lastX.toFixed(1)}px`);
-            card.style.setProperty('--mouse-y', `${lastY.toFixed(1)}px`);
-            rafId = null;
-          });
-        }
-      }
-
-      function onMouseLeave() {
-        if (rafId) {
-          cancelAnimationFrame(rafId);
-          rafId = null;
-        }
-        card.style.setProperty('--mouse-x', '-999px');
-        card.style.setProperty('--mouse-y', '-999px');
-      }
-
-      card.addEventListener('mousemove', onMouseMove, { passive: true });
-      card.addEventListener('mouseleave', onMouseLeave, { passive: true });
-
-      cleanups.push(() => {
-        card.removeEventListener('mousemove', onMouseMove);
-        card.removeEventListener('mouseleave', onMouseLeave);
-      });
-    });
-  }
-
-  /* ─────────────────────────────────────────────────────────────────────────
-     7. 3D tilt — writes CSS variables so it composes with the reveal
-     ───────────────────────────────────────────────────────────────────────── */
-  const tiltTargets: TiltTarget[] = [];
-
-  if (isFinePointer && !prefersReducedMotion) {
-    document.querySelectorAll<HTMLElement>('.tilt-card').forEach((el) => {
-      const target: TiltTarget = {
-        el,
-        maxTilt: parseFloat(el.dataset.tilt || '5'),
-        targetX: 0,
-        targetY: 0,
-        currentX: 0,
-        currentY: 0,
-        active: false,
-      };
-      tiltTargets.push(target);
-
-      function onMouseMove(e: MouseEvent) {
-        const rect = el.getBoundingClientRect();
-        const normX = (e.clientX - rect.left) / (rect.width / 2) - 1;
-        const normY = (e.clientY - rect.top) / (rect.height / 2) - 1;
-
-        target.targetX = normX * target.maxTilt;
-        target.targetY = -normY * target.maxTilt;
-        target.active = true;
-        el.style.willChange = 'transform';
-        requestFrame();
-      }
-
-      function onMouseLeave() {
-        target.targetX = 0;
-        target.targetY = 0;
-        target.active = false;
-        requestFrame();
-      }
-
-      el.addEventListener('mousemove', onMouseMove, { passive: true });
-      el.addEventListener('mouseleave', onMouseLeave, { passive: true });
-
-      cleanups.push(() => {
-        el.removeEventListener('mousemove', onMouseMove);
-        el.removeEventListener('mouseleave', onMouseLeave);
-        el.style.willChange = '';
-      });
-    });
-
-    frameJobs.push(() => {
-      let needsFrame = false;
-
-      for (const t of tiltTargets) {
-        if (!t.active && Math.abs(t.currentX) < 0.05 && Math.abs(t.currentY) < 0.05) {
-          if (t.currentX !== 0 || t.currentY !== 0) {
-            t.currentX = 0;
-            t.currentY = 0;
-            t.el.style.setProperty('--tilt-x', '0deg');
-            t.el.style.setProperty('--tilt-y', '0deg');
-            t.el.style.willChange = '';
-          }
-          continue;
-        }
-
-        needsFrame = true;
-        t.currentX += (t.targetX - t.currentX) * 0.12;
-        t.currentY += (t.targetY - t.currentY) * 0.12;
-        t.el.style.setProperty('--tilt-x', `${t.currentY.toFixed(2)}deg`);
-        t.el.style.setProperty('--tilt-y', `${t.currentX.toFixed(2)}deg`);
-      }
-
-      if (needsFrame) requestFrame();
-    });
-  }
-
-  /* ─────────────────────────────────────────────────────────────────────────
-     8. Magnetic buttons — the button leans toward the cursor
-     ───────────────────────────────────────────────────────────────────────── */
-  const magneticTargets: MagneticTarget[] = [];
-
-  if (isFinePointer && !prefersReducedMotion) {
-    document.querySelectorAll<HTMLElement>('[data-magnetic]').forEach((el) => {
-      const target: MagneticTarget = {
-        el,
-        strength: parseFloat(el.dataset.magnetic || '8'),
-        targetX: 0,
-        targetY: 0,
-        currentX: 0,
-        currentY: 0,
-        active: false,
-      };
-      magneticTargets.push(target);
-
-      function onMouseMove(e: MouseEvent) {
-        const rect = el.getBoundingClientRect();
-        const normX = (e.clientX - rect.left) / (rect.width / 2) - 1;
-        const normY = (e.clientY - rect.top) / (rect.height / 2) - 1;
-
-        target.targetX = normX * target.strength;
-        target.targetY = normY * target.strength;
-        target.active = true;
-        requestFrame();
-      }
-
-      function onMouseLeave() {
-        target.targetX = 0;
-        target.targetY = 0;
-        target.active = false;
-        requestFrame();
-      }
-
-      el.addEventListener('mousemove', onMouseMove, { passive: true });
-      el.addEventListener('mouseleave', onMouseLeave, { passive: true });
-
-      cleanups.push(() => {
-        el.removeEventListener('mousemove', onMouseMove);
-        el.removeEventListener('mouseleave', onMouseLeave);
-      });
-    });
-
-    frameJobs.push(() => {
-      let needsFrame = false;
-
-      for (const m of magneticTargets) {
-        if (!m.active && Math.abs(m.currentX) < 0.05 && Math.abs(m.currentY) < 0.05) {
-          if (m.currentX !== 0 || m.currentY !== 0) {
-            m.currentX = 0;
-            m.currentY = 0;
-            m.el.style.setProperty('--mag-x', '0px');
-            m.el.style.setProperty('--mag-y', '0px');
-          }
-          continue;
-        }
-
-        needsFrame = true;
-        m.currentX += (m.targetX - m.currentX) * 0.15;
-        m.currentY += (m.targetY - m.currentY) * 0.15;
-        m.el.style.setProperty('--mag-x', `${m.currentX.toFixed(2)}px`);
-        m.el.style.setProperty('--mag-y', `${m.currentY.toFixed(2)}px`);
-      }
-
-      if (needsFrame) requestFrame();
-    });
-  }
-
-  /* ─────────────────────────────────────────────────────────────────────────
-     9. Hero parallax — pointer-driven, damped
-     ───────────────────────────────────────────────────────────────────────── */
-  const heroContainer = document.querySelector<HTMLElement>('.hero-interactive-container');
-  const heroLayers = Array.from(document.querySelectorAll<HTMLElement>('.hero-parallax-layer'));
-
-  if (heroContainer && heroLayers.length && isFinePointer && !prefersReducedMotion) {
-    const hero: HeroParallax = {
-      container: heroContainer,
-      layers: heroLayers,
-      targetX: 0,
-      targetY: 0,
-      currentX: 0,
-      currentY: 0,
-      active: false,
-    };
-
-    function onHeroMouseMove(e: MouseEvent) {
-      const rect = hero.container.getBoundingClientRect();
-      hero.targetX = -((e.clientX - rect.left) / rect.width - 0.5) * 22;
-      hero.targetY = -((e.clientY - rect.top) / rect.height - 0.5) * 22;
-      hero.active = true;
-      requestFrame();
-    }
-
-    function onHeroMouseLeave() {
-      hero.targetX = 0;
-      hero.targetY = 0;
-      hero.active = false;
-      requestFrame();
-    }
-
-    hero.container.addEventListener('mousemove', onHeroMouseMove, { passive: true });
-    hero.container.addEventListener('mouseleave', onHeroMouseLeave, { passive: true });
-
-    frameJobs.push(() => {
-      if (!hero.active && Math.abs(hero.currentX) < 0.1 && Math.abs(hero.currentY) < 0.1) {
-        hero.currentX = 0;
-        hero.currentY = 0;
-        hero.layers.forEach((layer) => {
-          layer.style.setProperty('--px', '0px');
-          layer.style.setProperty('--py', '0px');
-        });
+      const rect = el.getBoundingClientRect();
+      const inView = rect.top < window.innerHeight * 0.95 && rect.bottom > 0;
+      if (inView || el.closest('.hero-title')) {
+        el.classList.add('is-visible', 'is-ready');
+        el.dataset.revealReady = 'true';
         return;
       }
 
-      hero.currentX += (hero.targetX - hero.currentX) * 0.07;
-      hero.currentY += (hero.targetY - hero.currentY) * 0.07;
+      let index = 0;
+      const newNodes: Node[] = [];
+      const wrapWord = (word: string) => {
+        const span = document.createElement('span');
+        span.className = 'reveal-word';
+        span.style.setProperty('--i', String(index++));
+        span.textContent = word;
+        newNodes.push(span, document.createTextNode(' '));
+      };
 
-      hero.layers.forEach((layer) => {
-        const depth = parseFloat(layer.dataset.depth || '1');
-        layer.style.setProperty('--px', `${(hero.currentX * depth).toFixed(2)}px`);
-        layer.style.setProperty('--py', `${(hero.currentY * depth).toFixed(2)}px`);
+      const hasElementChildren = Array.from(el.childNodes).some(
+        (n) => n.nodeType === Node.ELEMENT_NODE,
+      );
+
+      if (hasElementChildren) {
+        for (const node of Array.from(el.childNodes)) {
+          if (node.nodeType === Node.TEXT_NODE) {
+            for (const word of (node.textContent || '').split(/\s+/).filter(Boolean)) {
+              wrapWord(word);
+            }
+          } else if (node.nodeType === Node.ELEMENT_NODE) {
+            const child = node as HTMLElement;
+            child.classList.add('reveal-word');
+            child.style.setProperty('--i', String(index++));
+            newNodes.push(child, document.createTextNode(' '));
+          }
+        }
+      } else {
+        const source = el.dataset.revealText || el.textContent || '';
+        const words = source.trim().split(/\s+/).filter(Boolean);
+        if (!words.length) return;
+        words.forEach(wrapWord);
+      }
+
+      el.textContent = '';
+      newNodes.forEach((n) => el.appendChild(n));
+      el.classList.add('reveal-text');
+      el.classList.add('is-ready');
+      el.dataset.revealReady = 'true';
+    });
+
+    /* ─────────────────────────────────────────────────────────────────────────
+       4. Signature Hero Entrance (Homepage)
+       ───────────────────────────────────────────────────────────────────────── */
+    const heroTitle = document.querySelector<HTMLElement>('.hero-title');
+    const heroBtnPrimary = document.querySelector<HTMLElement>('.hero-btn-primary');
+    const heroContainer = document.querySelector<HTMLElement>('.hero-interactive-container');
+    const heroCentralMoki = heroContainer?.querySelector<HTMLElement>('.hero-text-block .moki-interactive-node');
+    const heroChips = heroContainer?.querySelectorAll<HTMLElement>('.hero-chips > *');
+
+    // Make hero immediately visible and solid with zero flash or disappearance
+    heroTitle?.classList.add('is-visible');
+    heroBtnPrimary?.classList.add('is-visible');
+    heroContainer?.classList.add('is-hero-ready');
+    if (heroCentralMoki) {
+      gsap.set(heroCentralMoki, { clearProps: 'all' });
+    }
+    if (heroChips) {
+      gsap.set(heroChips, { clearProps: 'all' });
+    }
+
+    /* ─────────────────────────────────────────────────────────────────────────
+       5. Universal Heading Reveals on Scroll (All Headings across all pages)
+       ───────────────────────────────────────────────────────────────────────── */
+    textTargets.forEach((el) => {
+      if (el.classList.contains('hero-title')) return;
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 0.95 && rect.bottom > 0) {
+        el.classList.add('is-visible');
+        return;
+      }
+
+      if (prefersReducedMotion) {
+        el.classList.add('is-visible');
+      } else {
+        const words = el.querySelectorAll<HTMLElement>('.reveal-word');
+        const tags = el.querySelectorAll<HTMLElement>('[data-tag], .pill-badge, span[class*="bg-[#"]');
+
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 88%',
+            once: true,
+            onEnter: () => el.classList.add('is-visible'),
+          },
+        });
+
+        if (words.length) {
+          tl.fromTo(
+            words,
+            { opacity: 0, y: 28, rotate: 1.5 },
+            {
+              opacity: 1,
+              y: 0,
+              rotate: 0,
+              duration: 0.85,
+              stagger: 0.035,
+              ease: 'power4.out',
+            },
+            0,
+          );
+        }
+
+        if (tags.length) {
+          tl.fromTo(
+            tags,
+            { scale: 0.85, opacity: 0, rotate: -3 },
+            { scale: 1, opacity: 1, rotate: 0, duration: 0.75, ease: 'back.out(1.8)' },
+            0.2,
+          );
+        }
+      }
+    });
+
+    /* ─────────────────────────────────────────────────────────────────────────
+       6. Universal Section & Card Reveals on Scroll (Solid, Clean Entrance)
+       ───────────────────────────────────────────────────────────────────────── */
+    const revealTargets = Array.from(document.querySelectorAll<HTMLElement>('[data-animate]'));
+
+    if (prefersReducedMotion) {
+      revealTargets.forEach((el) => el.classList.add('is-visible'));
+    } else {
+      // 6A. Staggered Grid Containers (Cards in 3/4 columns, process, bento, reviews)
+      document.querySelectorAll<HTMLElement>('[data-stagger]').forEach((container) => {
+        if (container.closest('.hero-text-block')) return;
+
+        const items = Array.from(container.children) as HTMLElement[];
+        if (!items.length) return;
+
+        const rect = container.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.95 && rect.bottom > 0) {
+          container.classList.add('is-visible');
+          items.forEach((item) => item.classList.add('is-visible'));
+          return;
+        }
+
+        container.classList.add('is-visible');
+
+        gsap.fromTo(
+          items,
+          {
+            opacity: 0,
+            y: 32,
+            scale: 0.98,
+          },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.85,
+            stagger: 0.07,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: container,
+              start: 'top 88%',
+              once: true,
+              onEnter: () => {
+                items.forEach((item) => item.classList.add('is-visible'));
+              },
+            },
+          },
+        );
       });
 
-      requestFrame();
+      // 6B. Standalone Sections & Single Cards
+      revealTargets.forEach((el) => {
+        const parentStagger = el.parentElement?.closest('[data-stagger]');
+        if (parentStagger && parentStagger !== el) return;
+        if (el.hasAttribute('data-stagger')) return;
+        if (el.closest('.hero-text-block')) return;
+
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.95 && rect.bottom > 0) {
+          el.classList.add('is-visible');
+          return;
+        }
+
+        const variant = el.getAttribute('data-animate');
+        let fromProps: gsap.TweenVars = { opacity: 0, y: 30 };
+
+        if (variant === 'fade-down') {
+          fromProps = { opacity: 0, y: -30 };
+        } else if (variant === 'fade-in') {
+          fromProps = { opacity: 0 };
+        } else if (variant === 'zoom-in') {
+          fromProps = { opacity: 0, scale: 0.96 };
+        } else if (variant === 'slide-left') {
+          fromProps = { opacity: 0, x: 30 };
+        } else if (variant === 'slide-right') {
+          fromProps = { opacity: 0, x: -30 };
+        }
+
+        gsap.fromTo(
+          el,
+          fromProps,
+          {
+            opacity: 1,
+            y: 0,
+            x: 0,
+            scale: 1,
+            duration: 0.85,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 88%',
+              once: true,
+              onEnter: () => el.classList.add('is-visible'),
+            },
+          },
+        );
+      });
+    }
+
+    /* ─────────────────────────────────────────────────────────────────────────
+       7. Footer Upward Entrance
+       ───────────────────────────────────────────────────────────────────────── */
+    const footer = document.querySelector('footer');
+    if (footer && !prefersReducedMotion) {
+      const footerElements = footer.querySelectorAll<HTMLElement>('.grid > div, .border-t, .space-y-4');
+      if (footerElements.length) {
+        gsap.fromTo(
+          footerElements,
+          { opacity: 0, y: 24 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            stagger: 0.08,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: footer,
+              start: 'top 92%',
+              once: true,
+            },
+          },
+        );
+      }
+    }
+
+    /* ─────────────────────────────────────────────────────────────────────────
+       8. Numerical Counter Tickers
+       ───────────────────────────────────────────────────────────────────────── */
+    const counterTargets = Array.from(document.querySelectorAll<HTMLElement>('[data-count-to]'));
+
+    counterTargets.forEach((el) => {
+      const target = parseFloat(el.getAttribute('data-count-to') || '0');
+      const prefix = el.getAttribute('data-count-prefix') || '';
+      const suffix = el.getAttribute('data-count-suffix') || '';
+      const decimals = parseInt(el.getAttribute('data-count-decimals') || '0', 10);
+
+      if (prefersReducedMotion) {
+        el.textContent = `${prefix}${target.toFixed(decimals)}${suffix}`;
+        return;
+      }
+
+      const countObj = { val: 0 };
+      gsap.to(countObj, {
+        val: target,
+        duration: 1.8,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 88%',
+          once: true,
+        },
+        onUpdate: () => {
+          el.textContent = `${prefix}${countObj.val.toFixed(decimals)}${suffix}`;
+        },
+      });
     });
 
-    cleanups.push(() => {
-      hero.container.removeEventListener('mousemove', onHeroMouseMove);
-      hero.container.removeEventListener('mouseleave', onHeroMouseLeave);
-    });
-  }
+    /* ─────────────────────────────────────────────────────────────────────────
+       9. Universal High-Precision Magnetic Pull on Buttons
+       ───────────────────────────────────────────────────────────────────────── */
+    if (isFinePointer && !prefersReducedMotion) {
+      const magneticSelectors = [
+        '[data-magnetic]',
+        '.pill-btn-primary',
+        '.pill-btn-lilac',
+        '.pill-btn-outline',
+        '.brand-cat-icon',
+        '.filter-tab',
+      ].join(', ');
 
-  /* ─────────────────────────────────────────────────────────────────────────
-     10. Teardown
-     ───────────────────────────────────────────────────────────────────────── */
+      document.querySelectorAll<HTMLElement>(magneticSelectors).forEach((el) => {
+        const strength = parseFloat(el.dataset.magnetic || '8');
+        const xTo = gsap.quickTo(el, 'x', { duration: 0.35, ease: 'power2.out' });
+        const yTo = gsap.quickTo(el, 'y', { duration: 0.35, ease: 'power2.out' });
+
+        const onMouseMove = (e: MouseEvent) => {
+          const rect = el.getBoundingClientRect();
+          const normX = (e.clientX - rect.left) / (rect.width / 2) - 1;
+          const normY = (e.clientY - rect.top) / (rect.height / 2) - 1;
+          xTo(normX * strength);
+          yTo(normY * strength);
+        };
+
+        const onMouseLeave = () => {
+          xTo(0);
+          yTo(0);
+        };
+
+        el.addEventListener('mousemove', onMouseMove, { passive: true });
+        el.addEventListener('mouseleave', onMouseLeave, { passive: true });
+      });
+    }
+
+    /* ─────────────────────────────────────────────────────────────────────────
+       10. 3D Perspective Tilt on All Bento & Project Cards
+       ───────────────────────────────────────────────────────────────────────── */
+    if (isFinePointer && !prefersReducedMotion) {
+      const cardSelectors = [
+        '.tilt-card',
+        '.bento-card',
+        '.project-card',
+        '.spotlight-card',
+        'article.bg-white',
+      ].join(', ');
+
+      document.querySelectorAll<HTMLElement>(cardSelectors).forEach((card) => {
+        const maxTilt = parseFloat(card.dataset.tilt || '3.5');
+        const rxTo = gsap.quickTo(card, 'rotationX', { duration: 0.45, ease: 'power2.out' });
+        const ryTo = gsap.quickTo(card, 'rotationY', { duration: 0.45, ease: 'power2.out' });
+
+        const onMouseMove = (e: MouseEvent) => {
+          const rect = card.getBoundingClientRect();
+          const normX = (e.clientX - rect.left) / (rect.width / 2) - 1;
+          const normY = (e.clientY - rect.top) / (rect.height / 2) - 1;
+          rxTo(-normY * maxTilt);
+          ryTo(normX * maxTilt);
+
+          card.style.setProperty('--mouse-x', `${(e.clientX - rect.left).toFixed(1)}px`);
+          card.style.setProperty('--mouse-y', `${(e.clientY - rect.top).toFixed(1)}px`);
+        };
+
+        const onMouseLeave = () => {
+          rxTo(0);
+          ryTo(0);
+          card.style.setProperty('--mouse-x', '-999px');
+          card.style.setProperty('--mouse-y', '-999px');
+        };
+
+        card.addEventListener('mousemove', onMouseMove, { passive: true });
+        card.addEventListener('mouseleave', onMouseLeave, { passive: true });
+      });
+    }
+
+    /* ─────────────────────────────────────────────────────────────────────────
+       11. Hero Mouse Parallax (Dev-cat background)
+       ───────────────────────────────────────────────────────────────────────── */
+    const heroLayers = Array.from(document.querySelectorAll<HTMLElement>('.hero-parallax-layer'));
+
+    if (heroContainer && heroLayers.length && isFinePointer && !prefersReducedMotion) {
+      const quickTos = heroLayers.map((layer) => {
+        const depth = parseFloat(layer.dataset.depth || '1');
+        return {
+          depth,
+          xTo: gsap.quickTo(layer, 'x', { duration: 0.55, ease: 'power2.out' }),
+          yTo: gsap.quickTo(layer, 'y', { duration: 0.55, ease: 'power2.out' }),
+        };
+      });
+
+      const onHeroMouseMove = (e: MouseEvent) => {
+        const rect = heroContainer.getBoundingClientRect();
+        const targetX = -((e.clientX - rect.left) / rect.width - 0.5) * 18;
+        const targetY = -((e.clientY - rect.top) / rect.height - 0.5) * 18;
+
+        quickTos.forEach(({ depth, xTo, yTo }) => {
+          xTo(targetX * depth);
+          yTo(targetY * depth);
+        });
+      };
+
+      const onHeroMouseLeave = () => {
+        quickTos.forEach(({ xTo, yTo }) => {
+          xTo(0);
+          yTo(0);
+        });
+      };
+
+      heroContainer.addEventListener('mousemove', onHeroMouseMove, { passive: true });
+      heroContainer.addEventListener('mouseleave', onHeroMouseLeave, { passive: true });
+    }
+
+    // Refresh ScrollTrigger after webfonts settle to ensure pin positions are exact
+    document.fonts?.ready?.then(() => {
+      ScrollTrigger.refresh();
+    });
+  });
+
   return () => {
-    stopFrame();
-    cleanups.forEach((cleanup) => cleanup());
-    frameJobs.length = 0;
+    ctx.revert();
   };
 }

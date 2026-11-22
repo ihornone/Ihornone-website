@@ -1,7 +1,9 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import Faq from '../../shared/components/sections/Faq.astro';
+import Tag from '../../shared/components/ui/Tag.astro';
 import BentoCta from '../../shared/components/sections/BentoCta.astro';
+import MokiWidget from '../../shared/components/moki/MokiWidget.astro';
 import ProcessSteps from '../../shared/components/sections/ProcessSteps.astro';
 import Breadcrumbs from '../../shared/components/ui/Breadcrumbs.astro';
 import Button from '../../shared/components/ui/Button.astro';
@@ -11,8 +13,6 @@ import {
   ServiceDetailHero,
   ServiceIncludes,
   ServicePricing,
-  PlanDecisionGuide,
-  TechTags,
 } from '../../features/services';
 import { getCollection } from 'astro:content';
 
@@ -25,10 +25,25 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
-const { title, shortTitle, icon, description, heroSubtitle, isPopular, includes, examples, process, technologies, pricing, guide = [], faq } = entry.data;
+const {
+  title,
+  shortTitle,
+  icon,
+  description,
+  heroSubtitle,
+  isPopular,
+  includes,
+  examples,
+  process,
+  technologies,
+  pricing,
+  faq,
+} = entry.data;
+
+const startingPrice = pricing?.[0]?.price || '';
 
 const allProjects = await getCollection('projects');
-const serviceProjects = allProjects
+const sortedServiceProjects = allProjects
   .filter((p) => {
     if (entry.id === 'telegram-bots') return p.id.startsWith('bot-');
     if (entry.id === 'websites') return p.id.startsWith('web-');
@@ -44,7 +59,20 @@ const serviceProjects = allProjects
     const orderA = a.data.order ?? (typeof a.data.pinned === 'number' ? a.data.pinned : 99);
     const orderB = b.data.order ?? (typeof b.data.pinned === 'number' ? b.data.pinned : 99);
     return orderA - orderB;
-  })
+  });
+
+const latestProject = sortedServiceProjects[0] ? {
+  id: sortedServiceProjects[0].id,
+  title: sortedServiceProjects[0].data.title,
+  category: sortedServiceProjects[0].data.category,
+  type: sortedServiceProjects[0].data.type,
+  duration: sortedServiceProjects[0].data.duration,
+  technologies: sortedServiceProjects[0].data.technologies,
+  description: sortedServiceProjects[0].data.description,
+  image: sortedServiceProjects[0].data.image,
+} : null;
+
+const serviceProjects = sortedServiceProjects
   .slice(0, 3)
   .map((p) => ({
     id: p.id,
@@ -85,38 +113,46 @@ const serviceProjects = allProjects
     }
   }}
 >
-  <div class="w-full max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20 pt-1 sm:pt-2 pb-16 sm:pb-24 space-y-10 sm:space-y-16">
-    <div class="space-y-4 sm:space-y-5">
+  <div class="w-full max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-20 pt-2 sm:pt-4 pb-16 sm:py-24 space-y-16 sm:space-y-24">
+    <!-- 1. Breadcrumbs & Hero -->
+    <div class="space-y-8">
       <Breadcrumbs
         items={[
-          { label: 'Усі послуги', href: '/services' },
+          { label: 'Усі послуги', href: '/services/' },
           { label: title },
         ]}
       />
 
       <ServiceDetailHero
         title={title}
+        shortTitle={shortTitle}
         icon={icon}
         description={description}
         heroSubtitle={heroSubtitle}
+        startingPrice={startingPrice}
+        technologies={technologies}
+        latestProject={latestProject}
       />
     </div>
 
+    <!-- 2. Що входить (4 ключові пункти) -->
     <ServiceIncludes includes={includes} />
 
+    <!-- 3. Кейси саме цього напрямку (2-3 проєкти) -->
     {serviceProjects.length > 0 && (
-      <section class="space-y-6 w-full" data-animate="fade-up">
-        <div class="flex items-center justify-between">
+      <section class="space-y-8 w-full" data-animate="fade-up">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <SectionHeader
-            title="Приклади готових рішень"
-            subtitle="Реалізовані кейси за цим напрямком"
+            title="Приклади реалізованих рішень"
+            highlight="реалізованих"
+            tagColor="lilac"
           />
-          <Button href="/portfolio/" variant="outline" size="sm" icon="fa-solid fa-arrow-right">
+          <Button href="/portfolio/" variant="outline" size="sm" icon="arrow-right">
             Усі кейси
           </Button>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6" data-animate="fade-up" data-stagger>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8" data-animate="fade-up" data-stagger>
           {serviceProjects.map((project) => (
             <ProjectCard project={project} />
           ))}
@@ -124,15 +160,43 @@ const serviceProjects = allProjects
       </section>
     )}
 
+    <!-- 4. Тарифи з одним рядком технологій -->
+    <ServicePricing pricing={pricing} technologies={technologies} />
+
+    <!-- 5. Процес (4 великі картки) -->
     <ProcessSteps title="Як відбувається процес розробки" steps={process} />
 
-    <ServicePricing pricing={pricing} />
+    <!-- 6. FAQ (3-4 питання про послугу у темному espresso блоці) -->
+    <div
+      class="w-full bg-[#2A1E1E] text-white rounded-[48px] sm:rounded-[64px] py-16 sm:py-20"
+      data-animate="fade-up"
+    >
+      <div class="max-w-[1800px] mx-auto w-full px-4 sm:px-8 lg:px-12 xl:px-20 space-y-8">
+        <div class="flex items-center justify-between sm:justify-start gap-4">
+          <h2
+            data-reveal-text
+            class="text-3xl sm:text-4xl lg:text-[56px] font-black text-white tracking-[-0.035em] leading-[1.13]"
+          >
+            Часті <Tag color="lilac" class="mx-1">запитання</Tag> про послугу
+          </h2>
+          <div class="shrink-0 -mt-2">
+            <MokiWidget
+              size={85}
+              expression="curieux"
+              color="#D09AFC"
+              shape="galet"
+              follow="page"
+            />
+          </div>
+        </div>
 
-    <TechTags technologies={technologies} />
+        <div class="w-full">
+          <Faq items={faq} showHeader={false} />
+        </div>
+      </div>
+    </div>
 
-    <Faq items={faq} />
-
-    <!-- Bento CTA with Mascot -->
+    <!-- 7. Єдиний фінальний CTA banner -->
     <BentoCta
       title="Маєте завдання для розробки?"
       subtitle="Зв'яжіться зі мною напряму в Telegram — обговоримо концепцію, терміни та бюджет без жодних зобов'язань."

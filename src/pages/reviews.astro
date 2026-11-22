@@ -1,42 +1,46 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Hero from '../shared/components/sections/Hero.astro';
 import BentoCta from '../shared/components/sections/BentoCta.astro';
+import MokiWidget from '../shared/components/moki/MokiWidget.astro';
 import { ReviewsMasonry } from '../features/reviews';
 
-const imageModules = import.meta.glob('/src/content/reviews/*.{png,jpg,jpeg,webp,avif,gif}', { eager: true, query: '?url', import: 'default' });
 const imageMetaModules = import.meta.glob('/src/content/reviews/*.{png,jpg,jpeg,webp,avif,gif}', { eager: true, import: 'default' });
 
-// Carry the intrinsic dimensions along so the browser can reserve the exact
-// space before a lazy image loads — otherwise every image that arrives shifts
-// the content below it and the page visibly jumps while scrolling.
-const images = Object.values(imageMetaModules).map((meta) => {
-  const m = meta as unknown as { src: string; width: number; height: number };
-  return { src: m.src, width: m.width, height: m.height };
+const allReviews = Object.entries(imageMetaModules).map(([path, meta]) => {
+  const m = meta as { src: string; width: number; height: number };
+  return {
+    id: path,
+    image: { src: m.src, width: m.width, height: m.height },
+  };
 });
 ---
 
 <Layout
-  title="Відгуки клієнтів — Результати співпраці з розробником | ihornone"
-  description="Справжні скріншоти відгуків клієнтів про співпрацю з розробником ihornone: Telegram-боти з оплатами, веб-сайти та додатки, виконані в обумовлені строки."
+  title="Відгуки клієнтів | ihornone"
+  description="Справжні відгуки клієнтів та скріншоти повідомлень про співпрацю з розробником ihornone."
   url="/reviews"
-  structuredData={{
-    "@context": "https://schema.org",
-    "@type": "ItemPage",
-    "name": "Відгуки про роботу з ihornone",
-    "description": "Скріншоти та реальні відгуки клієнтів про створені Telegram-боти, сайти та застосунки",
-    "url": "https://www.ihornone.site/reviews/"
-  }}
 >
-  <div class="w-full max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20 pt-2 sm:pt-4 pb-16 sm:pb-24 space-y-16 sm:space-y-24">
-    <Hero
-      title="Реальні відгуки клієнтів про співпрацю"
-    />
+  <section class="w-full pt-10 pb-6 sm:pt-14 sm:pb-8">
+    <div class="flex items-center justify-center gap-3 sm:gap-5 max-w-4xl mx-auto px-4 text-center">
+      <MokiWidget
+        size={85}
+        color="#D09AFC"
+        expression="heureux"
+        state="idle"
+        follow="page"
+      />
+      <h1
+        data-reveal-text
+        class="text-3xl sm:text-5xl lg:text-6xl font-black text-[#1E1414] tracking-tight leading-[1.12] m-0"
+      >
+        Відгуки клієнтів
+      </h1>
+    </div>
+  </section>
 
-    <ReviewsMasonry images={images} />
+  <div class="w-full max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-20 pt-2 sm:pt-4 pb-16 sm:pb-24 space-y-16 sm:space-y-24">
+    <ReviewsMasonry reviews={allReviews} />
 
-    <!-- Bento CTA with Mascot -->
     <BentoCta />
   </div>
 </Layout>
-

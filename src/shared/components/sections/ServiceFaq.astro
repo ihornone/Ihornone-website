@@ -1,6 +1,7 @@
 ---
 import Faq, { type FaqItem } from './Faq.astro';
 import { getCollection } from 'astro:content';
+import MokiWidget from '../moki/MokiWidget.astro';
 
 export interface Props {
   title?: string;
@@ -10,7 +11,7 @@ export interface Props {
   limit?: number;
 }
 
-const { title, serviceId, showHeader, limit = 6 } = Astro.props;
+const { title = 'Часті запитання', serviceId, showHeader = false, limit = 6 } = Astro.props;
 
 const allServices = (await getCollection('services')).sort((a, b) => a.data.order - b.data.order);
 const globalFaqs = (await getCollection('faqs')).sort((a, b) => a.data.order - b.data.order);
@@ -30,7 +31,6 @@ if (serviceId) {
     }
   }
 } else {
-  // General page: show top structured global FAQs
   for (const item of globalFaqs) {
     const question = item.data.question.trim();
     const answer = item.data.answer.trim();
@@ -46,5 +46,25 @@ if (serviceId) {
 const displayedFaqItems = limit && limit > 0 ? faqItems.slice(0, limit) : faqItems;
 ---
 
-<Faq {title} items={displayedFaqItems} {showHeader} />
+{showHeader && title ? (
+  <div class="space-y-8 w-full">
+    <div class="flex items-center justify-center gap-3 sm:gap-4 mb-8">
+      <h2 class="text-3xl sm:text-4xl lg:text-[56px] font-black text-[#1E1414] tracking-[-0.035em] leading-[1.13] text-center">
+        {title}
+      </h2>
+      <div class="shrink-0 -mt-2">
+        <MokiWidget
+          size={85}
+          expression="curieux"
+          color="#D09AFC"
+          shape="galet"
+          follow="page"
+        />
+      </div>
+    </div>
+    <Faq items={displayedFaqItems} showHeader={false} />
+  </div>
+) : (
+  <Faq {title} items={displayedFaqItems} {showHeader} />
+)}
 

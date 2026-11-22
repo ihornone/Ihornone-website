@@ -1,5 +1,6 @@
 ---
 import type { Project } from '../data/projects';
+import Icon from '../../../shared/components/ui/Icon.astro';
 
 interface Props {
   project: Project;
@@ -11,53 +12,46 @@ const { project, class: className = '' } = Astro.props;
 
 <article
   class:list={[
-    'project-card spotlight-card tilt-card group flex flex-col justify-between rounded-[24px] sm:rounded-[32px] overflow-hidden border border-[#623A2D]/10 bg-white p-4 sm:p-5 shadow-[0_12px_36px_rgba(42,30,30,0.04)] hover:border-[#D09AFC] hover:shadow-[0_22px_48px_rgba(42,30,30,0.1)] hover:-translate-y-1.5 transition-all duration-300 text-[#2A1E1E]',
+    'project-card relative cursor-pointer group flex flex-col justify-between rounded-3xl overflow-hidden border-2 border-[#1E1414] bg-white p-4 sm:p-6 transition-[translate,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_12px_0_#D09AFC] focus-within:ring-2 focus-within:ring-[#D09AFC] motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-none text-[#2A1E1E]',
     className
   ]}
   data-category={project.category}
 >
-  <!-- 1. Велика картка фото (3:2, без обрізань, без зайвих бейджів) -->
-  <a
-    href={`/portfolio/${project.id}/`}
-    class="block aspect-[3/2] w-full rounded-[20px] sm:rounded-[24px] overflow-hidden bg-[#2A1E1E] relative border border-[#623A2D]/8 shadow-xs no-underline group/media"
-    aria-label={project.title}
-  >
+  <div class="aspect-[3/2] w-full rounded-2xl overflow-hidden bg-[#2A1E1E] relative border-2 border-[#1E1414] shadow-[6px_6px_0_#E8BA98] group/media">
     <img
       src={project.image}
       alt={project.title}
-      class="w-full h-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
+      class="w-full h-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105 motion-reduce:transition-none"
       loading="lazy"
     />
-  </a>
+  </div>
 
-  <!-- Тіло картки під фото: Категорія, Назва, Кнопка -->
-  <div class="pt-5 pb-1 px-1 flex flex-col flex-1 justify-between space-y-4">
+  <div class="pt-6 pb-1 px-1 flex flex-col flex-1 justify-between space-y-4">
     <div class="space-y-3">
-      <!-- 2. Категорія -->
       <div>
-        <span class="inline-flex items-center px-3.5 py-1 rounded-full bg-[#FAF1EC] border border-[#623A2D]/12 text-[#623A2D] text-[11px] sm:text-xs font-black uppercase tracking-wider">
-          {project.category}
+        <span class="inline-block -rotate-2 rounded-lg bg-[#1E1414] text-white px-3 py-1 text-[11px] font-black uppercase tracking-wider">
+          ✦ {project.category}
         </span>
       </div>
 
-      <!-- 3. Назва -->
-      <h3 class="text-lg sm:text-xl font-black text-[#2A1E1E] m-0 tracking-tight leading-snug group-hover:text-[#95553C] transition-colors">
-        <a href={`/portfolio/${project.id}/`} class="text-[#2A1E1E] hover:text-[#95553C] transition-colors no-underline">
+      <h3 class="text-lg sm:text-xl font-black text-[#1E1414] tracking-tight leading-snug group-hover:text-[#95553C] transition-colors">
+        <a
+          href={`/portfolio/${project.id}/`}
+          class="text-[#1E1414] group-hover:text-[#95553C] transition-colors no-underline after:absolute after:inset-0 after:z-10 focus:outline-none"
+        >
           {project.title}
         </a>
       </h3>
     </div>
 
-    <!-- 4. Кнопка -->
     <div class="pt-2 mt-auto w-full">
-      <a
-        href={`/portfolio/${project.id}/`}
-        class="w-full inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full bg-[#2A1E1E] text-white hover:bg-[#3D2C2C] text-xs sm:text-sm font-black shadow-xs hover:shadow-md transition-all duration-300 no-underline group/btn"
-        aria-label={`Детальніше про проєкт ${project.title}`}
+      <div
+        class="w-full inline-flex items-center justify-center gap-3 px-6 py-4 rounded-xl border-2 border-[#1E1414] bg-[#1E1414] text-white text-xs sm:text-sm font-black transition-[translate,box-shadow] duration-200 group-hover:-translate-y-0.5 group-hover:shadow-[0_6px_0_#D09AFC] active:translate-y-0 active:shadow-none motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-none group/btn pointer-events-none"
+        aria-hidden="true"
       >
         <span>Детальніше про проєкт</span>
-        <i class="fa-solid fa-arrow-right text-[11px] transition-transform duration-300 group-hover/btn:translate-x-1" aria-hidden="true" />
-      </a>
+        <Icon name="arrow-right" size={13} class="transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none" />
+      </div>
     </div>
   </div>
 </article>

@@ -1,88 +1,93 @@
 ---
+import Icon from "../ui/Icon.astro";
+
 interface StatItem {
-  value: string;
-  label: string;
-  subtext?: string;
-  link?: { text: string; href: string };
+ value: string;
+ label: string;
+ subtext?: string;
+ link?: { text: string; href: string };
 }
 
 interface Props {
-  items?: StatItem[];
-  variant?: 'default' | 'accent';
-  columns?: 2 | 3 | 4 | 5;
-  class?: string;
+ items?: StatItem[];
+ variant?: 'default' | 'accent';
+ columns?: 2 | 3 | 4 | 5;
+ class?: string;
 }
 
 const defaultItems: StatItem[] = [
-  { value: '100%', label: 'прозорий процес', link: { text: 'Дивитись кейси', href: '/portfolio' } },
-  { value: '3+', label: 'роки досвіду' },
-  { value: '14-28', label: 'днів на запуск MVP' },
-  { value: '30 днів', label: 'гарантійної підтримки' },
+ { value: '100%', label: 'прозорий процес', link: { text: 'Дивитись кейси', href: '/portfolio/' } },
+ { value: '3+', label: 'роки досвіду' },
+ { value: '14-28', label: 'днів на запуск MVP' },
+ { value: '30 днів', label: 'гарантійної підтримки' },
 ];
 
 const {
-  items = defaultItems,
-  variant = 'default',
-  columns = 4,
-  class: className = '',
+ items = defaultItems,
+ variant = 'default',
+ columns = 4,
+ class: className = '',
 } = Astro.props;
 
 const variantClasses = {
-  default: 'bg-white border border-[#623A2D]/10 shadow-[0_12px_36px_rgba(42,30,30,0.05)]',
-  accent: 'bg-[#FAF1EC] border border-[#623A2D]/10 shadow-[0_12px_36px_rgba(42,30,30,0.05)]',
+ default: 'bg-white border-2 border-[#1E1414]',
+ accent: 'bg-[#F4E8E3] border-2 border-[#1E1414]',
 };
 
 const columnsClasses = {
-  2: 'grid-cols-2',
-  3: 'grid-cols-2 sm:grid-cols-3',
-  4: 'grid-cols-2 md:grid-cols-4',
-  5: 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-5',
+ 2: 'grid-cols-2',
+ 3: 'grid-cols-2 sm:grid-cols-3',
+ 4: 'grid-cols-2 md:grid-cols-4',
+ 5: 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-5',
 };
 
 function parseStatValue(val: string) {
-  // Matches pure numbers with prefix/suffix like "100%", "3+", "30 днів"
-  // Excludes ranges like "14-28" to preserve formatting
-  if (val.includes('-') || val.includes('–')) return null;
-  const match = val.match(/^([^\d]*)(\d+(?:\.\d+)?)(.*)$/);
-  if (match) {
-    return {
-      prefix: match[1],
-      target: match[2],
-      suffix: match[3],
-    };
-  }
-  return null;
+ // Matches pure numbers with prefix/suffix like "100%", "3+", "30 днів"
+ // Excludes ranges like "14-28" to preserve formatting
+ if (val.includes('-') || val.includes('–')) return null;
+ const match = val.match(/^([^\d]*)(\d+(?:\.\d+)?)(.*)$/);
+ if (match) {
+ return {
+ prefix: match[1],
+ target: match[2],
+ suffix: match[3],
+ };
+ }
+ return null;
 }
+
+// Accent colours for the trailing sign of each stat (rotates per item)
+const signColors = ['text-[#D09AFC]', 'text-[#95553C]', 'text-[#E2959E]', 'text-[#C28257]'];
 ---
 
-<section class={`spotlight-card rounded-[24px] sm:rounded-[32px] p-6 sm:p-8 md:p-10 w-full ${variantClasses[variant]} ${className}`} data-animate="fade-up">
-  <div class={`grid ${columnsClasses[columns]} gap-6 text-center`} data-animate="fade-up" data-stagger>
-    {items.map((item) => {
-      const parsed = parseStatValue(item.value);
-      return (
-        <div class="space-y-1 flex flex-col items-center justify-center group/stat">
-          <div
-            class="text-3xl md:text-4xl font-black text-[#2A1E1E] tracking-tight group-hover/stat:text-[#95553C] transition-colors"
-            data-count-to={parsed?.target}
-            data-count-prefix={parsed?.prefix}
-            data-count-suffix={parsed?.suffix}
-          >
-            {item.value}
-          </div>
-          <div class="text-xs font-bold text-[#623A2D]/75 uppercase tracking-wider">
-            {item.label}
-          </div>
-          {item.subtext && (
-            <p class="text-[11px] text-[#623A2D]/60 font-medium m-0">{item.subtext}</p>
-          )}
-          {item.link && (
-            <a href={item.link.href} class="inline-flex items-center gap-1 text-[11px] font-bold text-[#95553C] hover:text-[#2A1E1E] transition-colors mt-0.5 no-underline">
-              <span>{item.link.text}</span>
-              <i class="fa-solid fa-arrow-right text-[9px]"></i>
-            </a>
-          )}
-        </div>
-      );
-    })}
-  </div>
+<section class={`rounded-3xl p-6 sm:p-8 md:p-12 w-full ${variantClasses[variant]} ${className}`} data-animate="fade-up">
+ <div class={`grid ${columnsClasses[columns]} gap-8 text-center`} data-animate="fade-up" data-stagger>
+ {items.map((item, index) => {
+ const parsed = parseStatValue(item.value);
+ return (
+ <div class="space-y-1 flex flex-col items-center justify-center group/stat">
+ <div
+ class="text-4xl sm:text-5xl md:text-[56px] font-black text-[#1E1414] tracking-[-0.05em] leading-none group-hover/stat:text-[#95553C] transition-colors"
+ data-count-to={parsed?.target}
+ data-count-prefix={parsed?.prefix}
+ data-count-suffix={parsed?.suffix}
+ >
+ {item.value}
+ </div>
+ <div class="text-xs font-bold text-[#623A2D]/75 uppercase tracking-wider">
+ {item.label}
+ </div>
+ {item.subtext && (
+ <p class="text-[11px] text-[#623A2D]/60 font-medium ">{item.subtext}</p>
+ )}
+ {item.link && (
+ <a href={item.link.href} class="inline-flex items-center gap-1 text-[11px] font-bold text-[#95553C] hover:text-[#2A1E1E] transition-colors mt-1 no-underline">
+ <span>{item.link.text}</span>
+ <Icon name="arrow-right" size={11} />
+ </a>
+ )}
+ </div>
+ );
+ })}
+ </div>
 </section>

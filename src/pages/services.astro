@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import SectionHeader from '../shared/components/ui/SectionHeader.astro';
 import Hero from '../shared/components/sections/Hero.astro';
 import BentoCta from '../shared/components/sections/BentoCta.astro';
 import ServiceCard from '../shared/components/sections/ServiceCard.astro';
@@ -30,42 +31,56 @@ const allServices = (await getCollection('services')).sort((a, b) => a.data.orde
     }
   }}
 >
-  <div class="w-full max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20 pt-2 sm:pt-4 pb-16 sm:pb-24 space-y-16 sm:space-y-24">
-    <Hero
+          <Hero
       title="Послуги індивідуальної розробки для бізнесу"
+      tag="розробки"
+      tagColor="caramel"
       buttons={[
         { label: 'Обговорити проєкт', href: 'https://t.me/ihornone', variant: 'dark' },
-        { label: 'Переглянути роботи', href: '/portfolio', variant: 'outline' },
+        { label: 'Переглянути роботи', href: '/portfolio/', variant: 'outline' },
       ]}
     />
 
-    <section class="w-full" data-animate="fade-up">
-      <div
-        class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8"
-        data-animate="fade-up"
-        data-stagger
-      >
-        {
-          allServices.map((service) => {
-            const firstPlan = service.data.pricing?.[0];
-            const startingPrice = firstPlan ? `${firstPlan.price}` : '';
-            return (
-              <ServiceCard
-                id={service.id}
-                icon={service.data.icon}
-                title={service.data.title}
-                shortTitle={service.data.shortTitle}
-                description={service.data.description}
-                isPopular={service.data.isPopular}
-                startingPrice={startingPrice}
-              />
-            );
-          })
-        }
-      </div>
-    </section>
+<div class="w-full max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-20 pt-2 sm:pt-4 pb-16 sm:pb-24 space-y-16 sm:space-y-24">
+    <!-- Full-width white panel with the services grid (homepage rhythm) -->
+    <div
+      class="w-full bg-white rounded-[48px] sm:rounded-[64px] py-8 sm:py-12"
+      data-animate="fade-up"
+    >
+      <div class="max-w-[1800px] mx-auto w-full px-4 sm:px-8 lg:px-12 xl:px-20 space-y-8">
+        <SectionHeader
+          title="Напрямки розробки під ключ"
+          highlight="розробки"
+          tagColor="lilac"
+        />
 
-    <!-- Bento CTA with Mascot -->
+        <div
+          class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8"
+          data-animate="fade-up"
+          data-stagger
+        >
+          {
+            allServices.map((service) => {
+              const firstPlan = service.data.pricing?.[0];
+              const startingPrice = firstPlan ? `${firstPlan.price}` : '';
+              return (
+                <ServiceCard
+                  id={service.id}
+                  icon={service.data.icon}
+                  title={service.data.title}
+                  shortTitle={service.data.shortTitle}
+                  description={service.data.description}
+                  isPopular={service.data.isPopular}
+                  startingPrice={startingPrice}
+                />
+              );
+            })
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA banner -->
     <BentoCta
       title="Потрібна консультація щодо вибору технологій?"
       subtitle="Напишіть мені напряму в Telegram. Безкоштовно розберемо ваше завдання, підберемо стек та розрахуємо кошторис без зобов'язань."

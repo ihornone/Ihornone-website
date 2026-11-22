@@ -2,19 +2,20 @@
 import Card from '../ui/Card.astro';
 import SectionHeader from '../ui/SectionHeader.astro';
 import Button from '../ui/Button.astro';
+import Icon from '../ui/Icon.astro';
 
 interface Props {
-  photos: string[];
-  title?: string;
-  format?: '16:9' | '9:16';
-  class?: string;
+ photos: string[];
+ title?: string;
+ format?: '16:9' | '9:16';
+ class?: string;
 }
 
 const {
-  photos,
-  title = 'Галерея проєкту',
-  format = '16:9',
-  class: className = '',
+ photos,
+ title = 'Галерея проєкту',
+ format = '16:9',
+ class: className = '',
 } = Astro.props;
 
 const isVertical = format === '9:16';
@@ -24,214 +25,214 @@ const remainingCount = photos.length - initialCount;
 ---
 
 {photos.length > 0 && (
-  <section
-    id="project-gallery"
-    class:list={['w-full relative', className]}
-    aria-label={title}
-    data-photos={JSON.stringify(photos)}
-    data-remaining={remainingCount}
-  >
-    <Card class="space-y-6">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2.5">
-          <SectionHeader title={title} class="m-0" />
-          <span class="px-3.5 py-1 bg-[#FAF1EC] border border-[#623A2D]/10 text-[#2A1E1E] rounded-full text-xs font-black" role="status">
-            {photos.length} фото
-          </span>
-        </div>
-      </div>
+ <section
+ id="project-gallery"
+ class:list={['w-full relative', className]}
+ aria-label={title}
+ data-photos={JSON.stringify(photos)}
+ data-remaining={remainingCount}
+ >
+ <Card class="space-y-6">
+ <div class="flex items-center justify-between">
+ <div class="flex items-center gap-3">
+ <SectionHeader title={title} class="" />
+ <span class="px-4 py-1 bg-[#F4E8E3] border border-[#1E1414]/30 text-[#1E1414] rounded-full text-xs font-black" role="status">
+ {photos.length} фото
+ </span>
+ </div>
+ </div>
 
-      {/* Responsive grid tailored to format (16:9 horizontal vs 9:16 vertical mobile screenshots) */}
-      <div class={`grid gap-4 ${isVertical ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'}`} role="list">
-        {photos.map((photoUrl, index) => {
-          const isHidden = index >= initialCount;
-          return (
-            <div
-              class={`rounded-[20px] sm:rounded-[24px] overflow-hidden border border-[#623A2D]/10 bg-[#FAF1EC]/40 shadow-[0_8px_24px_rgba(42,30,30,0.04)] hover:border-[#D09AFC] hover:shadow-[0_16px_36px_rgba(42,30,30,0.1)] transition-all duration-300 group cursor-pointer relative gallery-item ${isVertical ? 'aspect-[9/16]' : 'aspect-[16/10]'} flex items-center justify-center ${isHidden ? 'hidden gallery-hidden' : ''}`}
-              role="listitem"
-              data-url={photoUrl}
-              data-index={index}
-            >
-              <img
-                src={photoUrl}
-                alt={`Фото ${index + 1} з ${photos.length}`}
-                class="w-full h-full object-cover object-top block transition-transform duration-300 group-hover:scale-105"
-                loading="lazy"
-                decoding="async"
-              />
-              <div class="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors duration-300 flex items-end p-3 pointer-events-none">
-                <span class="opacity-0 group-hover:opacity-100 transition-opacity bg-white/95 backdrop-blur-xs text-[#2A1E1E] text-[10px] font-black px-2.5 py-1 rounded-full shadow-xs">
-                  Збільшити <i class="fa-solid fa-expand ml-1" aria-hidden="true"></i>
-                </span>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+ {/* Responsive grid tailored to format (16:9 horizontal vs 9:16 vertical mobile screenshots) */}
+ <div class={`grid gap-6 sm:gap-8 ${isVertical ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'}`} role="list">
+ {photos.map((photoUrl, index) => {
+ const isHidden = index >= initialCount;
+ return (
+ <div
+ class={`rounded-2xl overflow-hidden border-2 border-[#1E1414] bg-[#F4E8E3]/40 transition-[translate,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_0_#D09AFC] motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-none group cursor-pointer relative gallery-item ${isVertical ? 'aspect-[9/16]' : 'aspect-[16/10]'} flex items-center justify-center ${isHidden ? 'hidden gallery-hidden' : ''}`}
+ role="listitem"
+ data-url={photoUrl}
+ data-index={index}
+ >
+ <img
+ src={photoUrl}
+ alt={`Фото ${index + 1} з ${photos.length}`}
+ class="w-full h-full object-cover object-top block transition-transform duration-300 group-hover:scale-105"
+ loading="lazy"
+ decoding="async"
+ />
+ <div class="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors duration-300 flex items-end p-3 pointer-events-none">
+ <span class="opacity-0 group-hover:opacity-100 transition-opacity bg-white/95 backdrop-blur-xs text-[#2A1E1E] text-[10px] font-black px-3 py-1 rounded-full shadow-xs">
+ Збільшити <Icon name="maximize" size={12} class="ml-1" />
+ </span>
+ </div>
+ </div>
+ );
+ })}
+ </div>
 
-      {hasMore && (
-        <div class="pt-2">
-          <button
-            id="gallery-toggle-btn"
-            type="button"
-            class="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-[#FAF1EC] hover:bg-[#F4E8E3] border border-[#623A2D]/15 text-[#2A1E1E] text-sm font-bold transition-all duration-300 cursor-pointer shadow-2xs"
-          >
-            <span id="gallery-toggle-text">Показати решту фото ({remainingCount})</span>
-            <i id="gallery-toggle-icon" class="fa-solid fa-chevron-down text-xs transition-transform duration-300"></i>
-          </button>
-        </div>
-      )}
-    </Card>
+ {hasMore && (
+ <div class="pt-2">
+ <button
+ id="gallery-toggle-btn"
+ type="button"
+ class="w-full inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl border-2 border-[#1E1414]/60 bg-[#F4E8E3] hover:border-[#1E1414] hover:-translate-y-0.5 hover:shadow-[0_6px_0_#D09AFC] text-[#1E1414] text-sm font-bold transition-[translate,box-shadow,border-color] duration-200 cursor-pointer motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-none"
+ >
+ <span id="gallery-toggle-text">Показати решту фото ({remainingCount})</span>
+ <Icon name="chevron-down" id="gallery-toggle-icon" size={14} class="transition-transform duration-300" />
+ </button>
+ </div>
+ )}
+ </Card>
 
-    {/* Lightbox Modal */}
-    <div id="gallery-lightbox" class="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 sm:p-8">
-      <button id="lightbox-close" class="absolute top-5 right-5 text-paper-white text-xl w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors cursor-pointer z-10" aria-label="Закрити">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-      
-      <button id="lightbox-prev" class="absolute left-4 sm:left-8 text-paper-white text-lg w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors cursor-pointer z-10" aria-label="Попереднє">
-        <i class="fa-solid fa-chevron-left"></i>
-      </button>
+ {/* Lightbox Modal */}
+ <div id="gallery-lightbox" class="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 sm:p-8">
+ <button id="lightbox-close" class="absolute to6 right-6 text-paper-white text-xl w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors cursor-pointer z-10" aria-label="Закрити">
+ <Icon name="x" size={20} />
+ </button>
+ 
+ <button id="lightbox-prev" class="absolute left-4 sm:left-8 text-paper-white text-lg w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors cursor-pointer z-10" aria-label="Попереднє">
+ <Icon name="chevron-left" size={20} />
+ </button>
 
-      <button id="lightbox-next" class="absolute right-4 sm:right-8 text-paper-white text-lg w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors cursor-pointer z-10" aria-label="Наступне">
-        <i class="fa-solid fa-chevron-right"></i>
-      </button>
+ <button id="lightbox-next" class="absolute right-4 sm:right-8 text-paper-white text-lg w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors cursor-pointer z-10" aria-label="Наступне">
+ <Icon name="chevron-right" size={20} />
+ </button>
 
-      <div class="max-w-5xl max-h-[85vh] overflow-hidden flex items-center justify-center relative">
-        <img id="lightbox-img" src="" alt="Збільшене фото" class="max-w-full max-h-[85vh] object-contain rounded-xl shadow-2xl" />
-      </div>
-    </div>
-  </section>
+ <div class="max-w-5xl max-h-[85vh] overflow-hidden flex items-center justify-center relative">
+ <img id="lightbox-img" src="" alt="Збільшене фото" class="max-w-full max-h-[85vh] object-contain rounded-xl shadow-2xl" />
+ </div>
+ </div>
+ </section>
 )}
 
 <script>
-  function setupGallery() {
-    const gallerySection = document.getElementById('project-gallery');
-    if (!gallerySection) return;
+ function setupGallery() {
+ const gallerySection = document.getElementById('project-gallery');
+ if (!gallerySection) return;
 
-    let photos: string[] = [];
-    try {
-      photos = JSON.parse(gallerySection.getAttribute('data-photos') || '[]');
-    } catch {
-      photos = [];
-    }
-    const remainingCount = gallerySection.getAttribute('data-remaining') || '0';
+ let photos: string[] = [];
+ try {
+ photos = JSON.parse(gallerySection.getAttribute('data-photos') || '[]');
+ } catch {
+ photos = [];
+ }
+ const remainingCount = gallerySection.getAttribute('data-remaining') || '0';
 
-    let currentIndex = 0;
-    const lightbox = document.getElementById('gallery-lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
-    const closeBtn = document.getElementById('lightbox-close');
-    const prevBtn = document.getElementById('lightbox-prev');
-    const nextBtn = document.getElementById('lightbox-next');
-    const toggleBtn = document.getElementById('gallery-toggle-btn');
-    const toggleText = document.getElementById('gallery-toggle-text');
-    const toggleIcon = document.getElementById('gallery-toggle-icon');
-    const hiddenItems = gallerySection.querySelectorAll('.gallery-hidden');
+ let currentIndex = 0;
+ const lightbox = document.getElementById('gallery-lightbox');
+ const lightboxImg = document.getElementById('lightbox-img');
+ const closeBtn = document.getElementById('lightbox-close');
+ const prevBtn = document.getElementById('lightbox-prev');
+ const nextBtn = document.getElementById('lightbox-next');
+ const toggleBtn = document.getElementById('gallery-toggle-btn');
+ const toggleText = document.getElementById('gallery-toggle-text');
+ const toggleIcon = document.getElementById('gallery-toggle-icon');
+ const hiddenItems = gallerySection.querySelectorAll('.gallery-hidden');
 
-    let isExpanded = false;
+ let isExpanded = false;
 
-    if (toggleBtn) {
-      // Remove any existing clone listeners by cloning node or replacing listener
-      const newToggleBtn = toggleBtn.cloneNode(true);
-      toggleBtn.parentNode?.replaceChild(newToggleBtn, toggleBtn);
+ if (toggleBtn) {
+ // Remove any existing clone listeners by cloning node or replacing listener
+ const newToggleBtn = toggleBtn.cloneNode(true);
+ toggleBtn.parentNode?.replaceChild(newToggleBtn, toggleBtn);
 
-      const currentToggleText = document.getElementById('gallery-toggle-text');
-      const currentToggleIcon = document.getElementById('gallery-toggle-icon');
+ const currentToggleText = document.getElementById('gallery-toggle-text');
+ const currentToggleIcon = document.getElementById('gallery-toggle-icon');
 
-      newToggleBtn.addEventListener('click', () => {
-        isExpanded = !isExpanded;
-        hiddenItems.forEach((item) => {
-          const el = item as HTMLElement;
-          if (isExpanded) {
-            el.classList.remove('hidden');
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(10px)';
-            requestAnimationFrame(() => {
-              el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-              el.style.opacity = '1';
-              el.style.transform = 'translateY(0)';
-            });
-          } else {
-            el.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(10px)';
-            setTimeout(() => {
-              el.classList.add('hidden');
-              el.style.transition = '';
-              el.style.opacity = '';
-              el.style.transform = '';
-            }, 300);
-          }
-        });
+ newToggleBtn.addEventListener('click', () => {
+ isExpanded = !isExpanded;
+ hiddenItems.forEach((item) => {
+ const el = item as HTMLElement;
+ if (isExpanded) {
+ el.classList.remove('hidden');
+ el.style.opacity = '0';
+ el.style.transform = 'translateY(10px)';
+ requestAnimationFrame(() => {
+ el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+ el.style.opacity = '1';
+ el.style.transform = 'translateY(0)';
+ });
+ } else {
+ el.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+ el.style.opacity = '0';
+ el.style.transform = 'translateY(10px)';
+ setTimeout(() => {
+ el.classList.add('hidden');
+ el.style.transition = '';
+ el.style.opacity = '';
+ el.style.transform = '';
+ }, 300);
+ }
+ });
 
-        if (isExpanded) {
-          if (currentToggleText) currentToggleText.textContent = 'Згорнути назад';
-          if (currentToggleIcon) currentToggleIcon.classList.add('rotate-180');
-        } else {
-          if (currentToggleText) currentToggleText.textContent = `Показати решту фото (${remainingCount})`;
-          if (currentToggleIcon) currentToggleIcon.classList.remove('rotate-180');
-          (newToggleBtn as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-      });
-    }
+ if (isExpanded) {
+ if (currentToggleText) currentToggleText.textContent = 'Згорнути назад';
+ if (currentToggleIcon) currentToggleIcon.classList.add('rotate-180');
+ } else {
+ if (currentToggleText) currentToggleText.textContent = `Показати решту фото (${remainingCount})`;
+ if (currentToggleIcon) currentToggleIcon.classList.remove('rotate-180');
+ (newToggleBtn as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+ }
+ });
+ }
 
-    function openLightbox(url: string, index: number) {
-      currentIndex = index;
-      if (lightbox && lightboxImg) {
-        (lightboxImg as HTMLImageElement).src = url;
-        lightbox.classList.remove('hidden');
-        lightbox.classList.add('flex');
-        document.body.style.overflow = 'hidden';
-      }
-    }
+ function openLightbox(url: string, index: number) {
+ currentIndex = index;
+ if (lightbox && lightboxImg) {
+ (lightboxImg as HTMLImageElement).src = url;
+ lightbox.classList.remove('hidden');
+ lightbox.classList.add('flex');
+ document.body.style.overflow = 'hidden';
+ }
+ }
 
-    function closeLightbox() {
-      if (lightbox) {
-        lightbox.classList.remove('flex');
-        lightbox.classList.add('hidden');
-        document.body.style.overflow = '';
-      }
-    }
+ function closeLightbox() {
+ if (lightbox) {
+ lightbox.classList.remove('flex');
+ lightbox.classList.add('hidden');
+ document.body.style.overflow = '';
+ }
+ }
 
-    function showPhoto(index: number) {
-      if (!photos.length) return;
-      if (index < 0) currentIndex = photos.length - 1;
-      else if (index >= photos.length) currentIndex = 0;
-      else currentIndex = index;
+ function showPhoto(index: number) {
+ if (!photos.length) return;
+ if (index < 0) currentIndex = photos.length - 1;
+ else if (index >= photos.length) currentIndex = 0;
+ else currentIndex = index;
 
-      if (lightboxImg) {
-        (lightboxImg as HTMLImageElement).src = photos[currentIndex];
-      }
-    }
+ if (lightboxImg) {
+ (lightboxImg as HTMLImageElement).src = photos[currentIndex];
+ }
+ }
 
-    gallerySection.querySelectorAll('.gallery-item[data-url]').forEach((item) => {
-      item.addEventListener('click', () => {
-        const url = item.getAttribute('data-url') || '';
-        const idx = parseInt(item.getAttribute('data-index') || '0', 10);
-        openLightbox(url, idx);
-      });
-    });
+ gallerySection.querySelectorAll('.gallery-item[data-url]').forEach((item) => {
+ item.addEventListener('click', () => {
+ const url = item.getAttribute('data-url') || '';
+ const idx = parseInt(item.getAttribute('data-index') || '0', 10);
+ openLightbox(url, idx);
+ });
+ });
 
-    if (closeBtn) closeBtn.onclick = closeLightbox;
-    if (lightbox) {
-      lightbox.onclick = (e) => {
-        if (e.target === lightbox) closeLightbox();
-      };
-    }
-    if (prevBtn) prevBtn.onclick = (e) => { e.stopPropagation(); showPhoto(currentIndex - 1); };
-    if (nextBtn) nextBtn.onclick = (e) => { e.stopPropagation(); showPhoto(currentIndex + 1); };
+ if (closeBtn) closeBtn.onclick = closeLightbox;
+ if (lightbox) {
+ lightbox.onclick = (e) => {
+ if (e.target === lightbox) closeLightbox();
+ };
+ }
+ if (prevBtn) prevBtn.onclick = (e) => { e.stopPropagation(); showPhoto(currentIndex - 1); };
+ if (nextBtn) nextBtn.onclick = (e) => { e.stopPropagation(); showPhoto(currentIndex + 1); };
 
-    // Keydown handler
-    const handleKeydown = (e: KeyboardEvent) => {
-      if (!lightbox || lightbox.classList.contains('hidden')) return;
-      if (e.key === 'Escape') closeLightbox();
-      if (e.key === 'ArrowLeft') showPhoto(currentIndex - 1);
-      if (e.key === 'ArrowRight') showPhoto(currentIndex + 1);
-    };
-    document.removeEventListener('keydown', handleKeydown);
-    document.addEventListener('keydown', handleKeydown);
-  }
+ // Keydown handler
+ const handleKeydown = (e: KeyboardEvent) => {
+ if (!lightbox || lightbox.classList.contains('hidden')) return;
+ if (e.key === 'Escape') closeLightbox();
+ if (e.key === 'ArrowLeft') showPhoto(currentIndex - 1);
+ if (e.key === 'ArrowRight') showPhoto(currentIndex + 1);
+ };
+ document.removeEventListener('keydown', handleKeydown);
+ document.addEventListener('keydown', handleKeydown);
+ }
 
-  document.addEventListener('astro:page-load', setupGallery);
-  setupGallery();
+ document.addEventListener('astro:page-load', setupGallery);
+ setupGallery();
 </script>

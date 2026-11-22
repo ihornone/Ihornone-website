@@ -1,4 +1,5 @@
 ---
+import SectionHeader from '../../../shared/components/ui/SectionHeader.astro';
 import Button from '../../../shared/components/ui/Button.astro';
 import ProjectCard from '../../portfolio/components/ProjectCard.astro';
 import { getCollection } from 'astro:content';
@@ -37,20 +38,18 @@ const featuredProjects = sortedEntries.slice(0, 3).map((entry) => ({
 
 <section class:list={['space-y-8 w-full', className]} data-animate="fade-up">
   <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
-    <div>
-      <h2 class="text-2xl sm:text-4xl font-black text-[#2A1E1E] tracking-tight m-0">
-        Приклади реалізованих рішень
-      </h2>
-    </div>
+    <SectionHeader
+      title="Приклади реалізованих рішень"
+    />
 
     <div class="shrink-0">
-      <Button href="/portfolio/" variant="outline" icon="fa-solid fa-arrow-right">
+      <Button href="/portfolio/" variant="outline" icon="arrow-right">
         Переглянути все портфоліо
       </Button>
     </div>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6" data-animate="fade-up" data-stagger>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8" data-animate="fade-up" data-stagger>
     {featuredProjects.map((project) => (
       <ProjectCard project={project} />
     ))}

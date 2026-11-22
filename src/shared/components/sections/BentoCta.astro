@@ -1,5 +1,7 @@
 ---
 import QuickContactModal from '../ui/QuickContactModal.astro';
+import Icon from '../ui/Icon.astro';
+import MokiWidget from '../moki/MokiWidget.astro';
 
 interface Props {
   title?: string;
@@ -9,73 +11,94 @@ interface Props {
 
 const {
   title = 'Готові запустити проєкт або автоматизувати продажі?',
-  subtitle = "Напишіть мені напряму в Telegram. Обговоримо технічну концепцію, архітектуру та орієнтовний кошторис під ваше завдання без жодних зобов'язань.",
+  subtitle = "Напишіть мені напряму в Telegram — обговоримо концепцію та орієнтовний кошторис без зобов'язань.",
   class: className = '',
 } = Astro.props;
 ---
 
-<section class:list={['w-full', className]} data-animate="fade-up">
-  <!-- Container accommodating both the Cat mascot element and the full-width Card within layout width -->
-  <div class="w-full flex flex-col md:flex-row items-center md:items-start relative">
-    
-    <!-- Mascot element: accounted for in width, upper paw grips the top edge of the card, shifted 4px right -->
-    <div class="shrink-0 w-[160px] sm:w-[200px] lg:w-[240px] -mr-6 sm:-mr-8 lg:-mr-10 -mt-[96px] sm:-mt-[120px] lg:-mt-[142px] z-20 pointer-events-none select-none hidden md:block">
-      <img
-        src="/images/mascot/cta-cat.webp"
-        alt="Маскот котик у худі з логотипом коду тримає форму"
-        class="w-full h-auto drop-shadow-xl animate-cat-peek"
-        loading="lazy"
+<section class:list={['w-full py-16 sm:py-20', className]} data-animate="fade-up">
+  <div class="relative w-full rounded-[32px] sm:rounded-[48px] bg-white border-2 border-[#1E1414] p-8 sm:p-12 lg:p-16 text-center shadow-[0_12px_0_#D09AFC]">
+    <div class="absolute -top-[52px] sm:-top-[62px] left-8 sm:left-20 lg:left-32 z-20 pointer-events-auto">
+      <MokiWidget
+        size={120}
+        color="#D09AFC"
+        shape="squircle"
+        expression="heureux"
+        follow="page"
       />
     </div>
 
-    <!-- Main Card Container: stretches freely across the entire width -->
-    <div class="flex-1 w-full rounded-[32px] bg-[#FAF1EC] border border-[#623A2D]/12 p-8 sm:p-14 lg:p-16 text-center relative shadow-[0_20px_50px_rgba(42,30,30,0.05)]">
-      <div class="max-w-3xl mx-auto space-y-6 relative z-10">
-
-        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-[#2A1E1E] tracking-tight leading-[1.15] m-0">
-          {title}
-        </h2>
-
-        <p class="text-sm sm:text-base lg:text-lg text-[#623A2D]/80 leading-relaxed font-medium m-0 max-w-2xl mx-auto">
-          {subtitle}
-        </p>
-
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4 pt-3">
-          <a
-            href="https://t.me/ihornone"
-            target="_blank"
-            rel="noopener noreferrer"
-            data-magnetic="8"
-            class="pill-btn-lilac !rounded-full !text-sm sm:!text-base !px-8 !py-3.5 shadow-md animate-pulse-glow flex items-center justify-center gap-2.5 w-full sm:w-auto"
-          >
-            <i class="fa-brands fa-telegram text-[#2A1E1E] text-lg"></i>
-            <span>Написати в Telegram</span>
-            <i class="fa-solid fa-arrow-right text-xs text-[#2A1E1E]"></i>
-          </a>
-
-          <!-- Quick Contact Modal (matching identical rounded-full pill button) -->
-          <QuickContactModal
-            triggerClass="pill-btn-outline !rounded-full !text-sm sm:!text-base !px-8 !py-3.5 w-full sm:w-auto flex items-center justify-center gap-2.5 cursor-pointer shadow-2xs hover:shadow-sm"
-          />
-        </div>
-
-        <div class="pt-8 border-t border-[#623A2D]/10 flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-xs text-[#623A2D]/75 font-semibold">
-          <span class="flex items-center gap-2">
-            <i class="fa-solid fa-bolt text-[#D09AFC]"></i>
-            Відповідь до 15 хвилин
-          </span>
-          <span class="flex items-center gap-2">
-            <i class="fa-solid fa-shield-check text-[#E8BA98]"></i>
-            Конфіденційність ідеї
-          </span>
-          <span class="flex items-center gap-2">
-            <i class="fa-solid fa-handshake text-[#FAC3C8]"></i>
-            Безкоштовна консультація
-          </span>
-        </div>
-
-      </div>
+    <div class="absolute -top-[48px] sm:-top-[58px] right-8 sm:right-20 lg:right-32 z-20 pointer-events-auto">
+      <MokiWidget
+        size={115}
+        color="#FAC3C8"
+        shape="galet"
+        expression="curieux"
+        follow="page"
+      />
     </div>
 
+    <div class="hidden sm:block absolute -bottom-[46px] sm:-bottom-[56px] left-16 sm:left-28 lg:left-44 z-20 pointer-events-auto">
+      <MokiWidget
+        size={105}
+        color="#FAF1EC"
+        shape="hexagone"
+        expression="attentif"
+        follow="page"
+      />
+    </div>
+
+    <div class="absolute -bottom-[48px] sm:-bottom-[58px] right-10 sm:right-24 lg:right-40 z-20 pointer-events-auto">
+      <MokiWidget
+        size={115}
+        color="#E8BA98"
+        shape="capsule"
+        expression="heureux"
+        follow="page"
+      />
+    </div>
+
+    <div class="max-w-4xl mx-auto space-y-5 sm:space-y-6 relative z-10 py-2 sm:py-4">
+      <h2 data-reveal-text class="text-2xl sm:text-4xl lg:text-[46px] font-black text-[#1E1414] tracking-[-0.03em] leading-[1.15] max-w-3xl mx-auto text-balance m-0">
+        {title}
+      </h2>
+
+      <p class="text-sm sm:text-base text-[#623A2D]/80 font-medium max-w-xl mx-auto leading-relaxed text-balance m-0">
+        {subtitle}
+      </p>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4 pt-3">
+        <a
+          href="https://t.me/ihornone"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-magnetic="8"
+          class="pill-btn-lilac !text-sm sm:!text-base !px-8 !py-4 flex items-center justify-center gap-3 w-full sm:w-auto"
+        >
+          <Icon name="telegram" size={20} class="text-[#1E1414]" />
+          <span>Написати в Telegram</span>
+          <Icon name="arrow-right" size={14} class="text-[#1E1414]" />
+        </a>
+
+        <QuickContactModal
+          triggerClass="pill-btn-outline !text-sm sm:!text-base !px-8 !py-4 w-full sm:w-auto flex items-center justify-center gap-3 cursor-pointer"
+        />
+      </div>
+
+      <div class="pt-6 sm:pt-8 border-t-2 border-dashed border-[#1E1414]/15 flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-xs text-[#623A2D]/75 font-semibold">
+        <span class="flex items-center gap-2">
+          <Icon name="zap" size={15} class="text-[#D09AFC]" />
+          Відповідь до 15 хвилин
+        </span>
+        <span class="flex items-center gap-2">
+          <Icon name="shield-check" size={15} class="text-[#E8BA98]" />
+          Конфіденційність ідеї
+        </span>
+        <span class="flex items-center gap-2">
+          <Icon name="handshake" size={15} class="text-[#FAC3C8]" />
+          Безкоштовна консультація
+        </span>
+      </div>
+    </div>
   </div>
 </section>

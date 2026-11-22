@@ -1,6 +1,7 @@
 ---
 import Navbar from '../shared/components/layout/Navbar.astro';
 import Footer from '../shared/components/layout/Footer.astro';
+import MokiCornerWidget from '../shared/components/moki/MokiCornerWidget';
 import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 
@@ -11,7 +12,6 @@ interface Props {
   url?: string;
   type?: string;
   structuredData?: object;
-  whiteBg?: boolean;
 }
 
 const {
@@ -21,7 +21,6 @@ const {
   url = 'https://www.ihornone.site/',
   type = 'website',
   structuredData,
-  whiteBg = false,
 } = Astro.props;
 
 const siteName = 'ihornone';
@@ -32,7 +31,7 @@ const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '';
 ---
 
 <!doctype html>
-<html lang="uk">
+<html lang="uk" class="bg-[#FAF1EC]">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -78,10 +77,11 @@ const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '';
     <meta name="twitter:image" content={fullImageUrl} />
     <meta name="twitter:creator" content="@ihornone" />
 
-    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+
 
     <!-- Theme Color -->
     <meta name="theme-color" content="#FAF1EC" />
@@ -131,10 +131,29 @@ const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '';
     <!-- Client Router for instant millisecond transitions -->
     <ClientRouter />
 
+    <!-- Trailing-slash guard: /page → /page/ before first paint (covers paths not listed in _redirects) -->
+    <script is:inline>
+      (function () {
+        var p = location.pathname;
+        var last = p.split("/").pop();
+        if (last && !p.endsWith("/") && !last.includes(".")) {
+          location.replace(p + "/" + location.search + location.hash);
+        }
+      })();
+    </script>
+
     <noscript>
       <style>
         [data-animate],
-        [data-stagger] > * {
+        [data-stagger] > *,
+        [data-reveal-text],
+        .hero-btn-primary,
+        .hero-btn-secondary,
+        .reveal-word,
+        .network-lines,
+        .node > *,
+        .moki-interactive-node,
+        .hero-scroll-btn {
           opacity: 1 !important;
           transform: none !important;
           clip-path: none !important;
@@ -142,31 +161,26 @@ const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '';
       </style>
     </noscript>
 
-    {isHome && (
-      <link rel="preload" as="image" href="/images/mascot/hero-cat.webp" type="image/webp" fetchpriority="high" />
-    )}
-
     {structuredData && (
       <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
     )}
   </head>
-  <body class:list={['text-ink-black font-sans min-h-screen antialiased flex flex-col', whiteBg ? 'page-white' : 'bg-oat-cream']}>
+  <body class="text-ink-black font-sans min-h-screen antialiased flex flex-col bg-oat-cream">
     <!-- Film grain texture over the page background -->
-    {!whiteBg && (
-      <div class="grain-fixed" aria-hidden="true">
-        <div class="grain-layer"></div>
-      </div>
-    )}
+    <div class="grain-fixed" aria-hidden="true">
+      <div class="grain-layer"></div>
+    </div>
 
     <!-- Smooth Top Scroll Progress Bar -->
     <div id="scroll-progress-bar" aria-hidden="true"></div>
 
     <a href="#main-content" class="skip-link">Перейти до основного вмісту</a>
     <Navbar />
-    <main id="main-content" class:list={['flex-grow', { 'pt-20 sm:pt-24 lg:pt-24': !isHome }]}>
+    <main id="main-content" class:list={['flex-grow', { 'pt-20 sm:pt-24': !isHome }]}>
       <slot />
     </main>
     <Footer />
+    <MokiCornerWidget client:load />
   </body>
 
   <script>

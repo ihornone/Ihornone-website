@@ -17,20 +17,20 @@ const {
 } = Astro.props;
 ---
 
-<div class={`pt-6 border-t border-[#623A2D]/10 ${className}`}>
+<div class={`pt-6 border-t-2 border-dashed border-[#1E1414]/15 ${className}`}>
   <div class="flex items-center justify-between pb-3">
-    <span class="text-[11px] sm:text-xs font-black text-[#623A2D]/60 uppercase tracking-widest block">
+    <span class="text-xs font-black text-[#1E1414] uppercase tracking-wider block">
       {title}
     </span>
   </div>
   
   <div class="flex sm:grid overflow-x-auto sm:overflow-x-visible snap-x sm:snap-none pb-2 sm:pb-0 scrollbar-none sm:grid-cols-2 lg:grid-cols-4 gap-3 text-left">
     {fields.map((field) => (
-      <div class="bg-[#FAF1EC] border border-[#623A2D]/10 rounded-[20px] sm:rounded-[24px] p-4 sm:p-5 flex flex-col justify-between space-y-1.5 min-w-[150px] sm:min-w-0 snap-start shrink-0 sm:shrink shadow-[0_8px_24px_rgba(42,30,30,0.04)] hover:shadow-[0_14px_32px_rgba(42,30,30,0.08)] hover:border-[#D09AFC] hover:-translate-y-0.5 transition-all duration-300">
-        <span class="text-[10px] sm:text-[11px] font-black text-[#623A2D]/60 uppercase tracking-wider block">
+      <div class="bg-white border-2 border-[#1E1414] rounded-2xl p-4 sm:p-5 flex flex-col justify-between space-y-1.5 min-w-[150px] sm:min-w-0 snap-start shrink-0 sm:shrink shadow-xs transition-colors duration-200 hover:border-[#D09AFC]">
+        <span class="text-[11px] font-black text-[#623A2D]/80 uppercase tracking-wider block">
           {field.label}
         </span>
-        <strong class="text-xs sm:text-sm font-black text-[#2A1E1E] block leading-snug" title={field.value}>
+        <strong class="text-xs sm:text-sm font-black text-[#1E1414] block leading-snug break-words" title={field.value}>
           {field.value}
         </strong>
       </div>

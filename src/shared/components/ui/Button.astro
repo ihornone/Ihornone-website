@@ -1,4 +1,6 @@
 ---
+import Icon from './Icon.astro';
+
 interface Props {
   variant?: 'primary' | 'outline' | 'dark' | 'ghost' | 'accent';
   size?: 'sm' | 'md' | 'lg';
@@ -32,20 +34,20 @@ const {
 const isDisabled = disabled || loading;
 
 const variantClasses = {
-  primary: 'bg-[#2A1E1E] text-white rounded-full shadow-sm hover:bg-[#3D2C2C] hover:-translate-y-0.5 hover:shadow-md focus-visible:ring-2 focus-visible:ring-[#D09AFC]',
-  outline: 'bg-[#FAF1EC]/90 text-[#2A1E1E] border border-[#623A2D]/15 rounded-full hover:bg-[#FAF1EC] hover:border-[#623A2D]/30 hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-[#D09AFC]',
-  dark: 'bg-[#2A1E1E] text-white rounded-full shadow-sm hover:bg-[#3D2C2C] hover:-translate-y-0.5 hover:shadow-md focus-visible:ring-2 focus-visible:ring-[#D09AFC]',
-  ghost: 'bg-transparent text-[#2A1E1E] hover:bg-[#FAF1EC] rounded-full focus-visible:ring-2 focus-visible:ring-[#D09AFC]',
-  accent: 'bg-[#D09AFC] text-[#2A1E1E] rounded-full shadow-sm hover:bg-[#BF80FA] hover:-translate-y-0.5 hover:shadow-md focus-visible:ring-2 focus-visible:ring-[#D09AFC]',
+  primary: 'border-2 border-[#1E1414] bg-[#1E1414] text-white hover:-translate-y-1 hover:shadow-[0_10px_0_#D09AFC] active:translate-y-0 focus-visible:ring-2 focus-visible:ring-[#D09AFC]',
+  outline: 'border-2 border-[#1E1414]/60 bg-[#FAF1EC]/60 text-[#2A1E1E] hover:border-[#1E1414] hover:-translate-y-1 hover:shadow-[0_10px_0_#D09AFC] active:translate-y-0 focus-visible:ring-2 focus-visible:ring-[#D09AFC]',
+  dark: 'border-2 border-[#1E1414] bg-[#1E1414] text-white hover:-translate-y-1 hover:shadow-[0_10px_0_#D09AFC] active:translate-y-0 focus-visible:ring-2 focus-visible:ring-[#D09AFC]',
+  ghost: 'bg-transparent text-[#2A1E1E] hover:bg-[#F4E8E3] focus-visible:ring-2 focus-visible:ring-[#D09AFC]',
+  accent: 'border-2 border-[#1E1414] bg-[#D09AFC] text-[#1E1414] hover:-translate-y-1 hover:shadow-[0_10px_0_#1E1414] active:translate-y-0 focus-visible:ring-2 focus-visible:ring-[#D09AFC]',
 };
 
 const sizeClasses = {
   sm: '!py-2 !px-4 !text-xs',
   md: '!py-3 !px-6 !text-sm',
-  lg: '!py-3.5 !px-8 !text-base',
+  lg: '!py-4 !px-8 !text-base',
 };
 
-const baseClasses = 'inline-flex items-center justify-center gap-2 rounded-full font-sans font-bold transition-all duration-200 cursor-pointer no-underline outline-none';
+const baseClasses = 'inline-flex items-center justify-center gap-2 rounded-2xl font-sans font-bold transition-[translate,box-shadow,background-color,border-color] duration-200 cursor-pointer no-underline outline-none motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-none';
 ---
 
 {href ? (
@@ -65,10 +67,10 @@ const baseClasses = 'inline-flex items-center justify-center gap-2 rounded-full 
         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
       </svg>
     ) : (
-      icon && iconPosition === 'left' && <i class={`${icon} text-xs btn-icon`} aria-hidden="true"></i>
+      icon && iconPosition === 'left' && <Icon name={icon} size={15} class="btn-icon" />
     )}
     <slot />
-    {!loading && icon && iconPosition === 'right' && <i class={`${icon} text-xs btn-icon`} aria-hidden="true"></i>}
+    {!loading && icon && iconPosition === 'right' && <Icon name={icon} size={15} class="btn-icon" />}
   </a>
 ) : (
   <button
@@ -86,9 +88,9 @@ const baseClasses = 'inline-flex items-center justify-center gap-2 rounded-full 
         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
       </svg>
     ) : (
-      icon && iconPosition === 'left' && <i class={`${icon} text-xs btn-icon`} aria-hidden="true"></i>
+      icon && iconPosition === 'left' && <Icon name={icon} size={15} class="btn-icon" />
     )}
     <slot />
-    {!loading && icon && iconPosition === 'right' && <i class={`${icon} text-xs btn-icon`} aria-hidden="true"></i>}
+    {!loading && icon && iconPosition === 'right' && <Icon name={icon} size={15} class="btn-icon" />}
   </button>
 )}

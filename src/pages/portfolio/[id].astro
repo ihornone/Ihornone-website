@@ -103,11 +103,12 @@ const passportFields = [
     "dateCreated": year
   }}
 >
-  <div class="w-full max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20 pt-1 sm:pt-2 pb-16 sm:pb-24 space-y-8 sm:space-y-12">
-    <div class="space-y-4 sm:space-y-5">
+  <div class="w-full max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-20 pt-2 sm:pt-4 pb-16 sm:pb-24 space-y-16 sm:space-y-24">
+    <!-- Breadcrumbs & Hero with Screenshot -->
+    <div class="space-y-8">
       <Breadcrumbs
         items={[
-          { label: 'Портфоліо', href: '/portfolio' },
+          { label: 'Портфоліо', href: '/portfolio/' },
           { label: title },
         ]}
       />
@@ -117,6 +118,7 @@ const passportFields = [
         category={category}
         icon={icon}
         description={description}
+        image={entry.data.image}
         link={link}
         github={github}
         statusBadge={statusBadge}
@@ -124,30 +126,42 @@ const passportFields = [
       />
     </div>
 
-    <div class="space-y-6 md:space-y-10 w-full">
-      <Card padding="lg" class="space-y-4 sm:space-y-5 w-full" data-animate="fade-up">
-        <SectionHeader title="Завдання та реалізація" />
-        <div class="md-prose max-w-none text-[#2A1E1E]/80 font-medium leading-relaxed">
+    <!-- Main Project Content -->
+    <div class="space-y-16 sm:space-y-24 w-full">
+      <!-- Task / Goal (Without duplicate features list) -->
+      <Card padding="lg" class="space-y-6 w-full" data-animate="fade-up">
+        <SectionHeader
+          title="Завдання проєкту"
+          highlight="завдання"
+          tagColor="sand"
+        />
+        <div class="md-prose max-w-none text-[#1E1414]/90 text-base sm:text-lg font-medium leading-relaxed">
           <Content />
         </div>
       </Card>
 
+      <!-- Functional features cards -->
       <ProjectFeatures features={features} />
 
+      <!-- Visual Gallery (if available) -->
       {gallery && gallery.length > 0 && (
         <Gallery photos={gallery} format={galleryFormat} />
       )}
 
+      <!-- Results / Metrics -->
       <ProjectResults results={results} />
 
-      <ProcessSteps steps={process} />
+      <!-- Implementation Process (4 large cards) -->
+      <ProcessSteps title="Етапи реалізації проєкту" steps={process} />
 
+      <!-- Testimonial (if available) -->
       <ProjectTestimonial testimonial={testimonial} />
     </div>
 
+    <!-- Project Navigation (Prev/Next) -->
     <ProjectNavigation prevProject={prevProject} nextProject={nextProject} />
 
-    <!-- Bento CTA with Mascot -->
+    <!-- Single Final CTA banner -->
     <BentoCta />
   </div>
 </Layout>

@@ -1,0 +1,84 @@
+---
+import Icon from '../ui/Icon.astro';
+
+export interface MarqueeItem {
+  text: string;
+  icon: string;
+  accentBg: string;
+  accentColor: string;
+}
+
+interface Props {
+  items?: (string | MarqueeItem)[];
+  class?: string;
+}
+
+const defaultItems: MarqueeItem[] = [
+  { text: 'Astro & Next.js', icon: 'code', accentBg: 'bg-[#D09AFC]/25', accentColor: 'text-[#1E1414]' },
+  { text: 'TypeScript', icon: 'code2', accentBg: 'bg-[#E8BA98]/35', accentColor: 'text-[#1E1414]' },
+  { text: 'Telegram Bot API', icon: 'bot', accentBg: 'bg-[#FAC3C8]/35', accentColor: 'text-[#1E1414]' },
+  { text: 'React & React Native', icon: 'atom', accentBg: 'bg-[#D09AFC]/25', accentColor: 'text-[#1E1414]' },
+  { text: 'Node.js & Bun', icon: 'server', accentBg: 'bg-[#E8BA98]/35', accentColor: 'text-[#1E1414]' },
+  { text: 'PostgreSQL & Redis', icon: 'database', accentBg: 'bg-[#FAC3C8]/35', accentColor: 'text-[#1E1414]' },
+  { text: 'Tailwind CSS', icon: 'palette', accentBg: 'bg-[#D09AFC]/25', accentColor: 'text-[#1E1414]' },
+  { text: 'Monobank & Stripe', icon: 'credit-card', accentBg: 'bg-[#E8BA98]/35', accentColor: 'text-[#1E1414]' },
+  { text: 'Cloudflare Edge', icon: 'cloud', accentBg: 'bg-[#FAC3C8]/35', accentColor: 'text-[#1E1414]' },
+  { text: 'OpenAI & Claude LLM', icon: 'brain', accentBg: 'bg-[#D09AFC]/25', accentColor: 'text-[#1E1414]' },
+];
+
+const { items: propItems, class: className = '' } = Astro.props;
+
+const items: MarqueeItem[] = propItems
+  ? propItems.map((item) => {
+      if (typeof item !== 'string') return item;
+      const lower = item.toLowerCase();
+      if (lower.includes('bot') || lower.includes('бот')) {
+        return { text: item, icon: 'bot', accentBg: 'bg-[#D09AFC]/25', accentColor: 'text-[#1E1414]' };
+      }
+      if (lower.includes('crm') || lower.includes('баз') || lower.includes('data')) {
+        return { text: item, icon: 'database', accentBg: 'bg-[#E8BA98]/35', accentColor: 'text-[#1E1414]' };
+      }
+      if (lower.includes('сайт') || lower.includes('web') || lower.includes('платформ')) {
+        return { text: item, icon: 'code', accentBg: 'bg-[#FAC3C8]/35', accentColor: 'text-[#1E1414]' };
+      }
+      if (lower.includes('ai') || lower.includes('llm') || lower.includes('штучн')) {
+        return { text: item, icon: 'cpu', accentBg: 'bg-[#D09AFC]/25', accentColor: 'text-[#1E1414]' };
+      }
+      if (lower.includes('мобільн') || lower.includes('додат') || lower.includes('app')) {
+        return { text: item, icon: 'smartphone', accentBg: 'bg-[#E8BA98]/35', accentColor: 'text-[#1E1414]' };
+      }
+      if (lower.includes('webapp') || lower.includes('глобал')) {
+        return { text: item, icon: 'globe', accentBg: 'bg-[#FAC3C8]/35', accentColor: 'text-[#1E1414]' };
+      }
+      if (lower.includes('безпек') || lower.includes('shield')) {
+        return { text: item, icon: 'shield', accentBg: 'bg-[#D09AFC]/25', accentColor: 'text-[#1E1414]' };
+      }
+      return { text: item, icon: 'zap', accentBg: 'bg-[#E8BA98]/35', accentColor: 'text-[#1E1414]' };
+    })
+  : defaultItems;
+---
+
+<section
+  class:list={['marquee relative overflow-hidden py-6 sm:py-8', className]}
+  aria-label="Напрямки розробки"
+>
+  <div class="marquee-track flex w-max will-change-transform">
+    {[false, true].map((hidden) => (
+      <div class="flex shrink-0 items-center gap-6 sm:gap-8 pr-6 sm:pr-8" aria-hidden={hidden ? 'true' : undefined}>
+        {items.map((item) => (
+          <div class="flex items-center gap-6 sm:gap-8">
+            <div class="inline-flex items-center gap-2.5 sm:gap-3 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-2xl bg-white border-2 border-[#1E1414] shadow-[3px_3px_0_#1E1414] transition-transform duration-200 hover:-translate-y-0.5 select-none">
+              <div class:list={['w-7 h-7 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center border border-[#1E1414]/20 shrink-0', item.accentBg]}>
+                <Icon name={item.icon} size={16} class={item.accentColor} />
+              </div>
+              <span class="text-sm sm:text-base lg:text-lg font-black tracking-tight text-[#1E1414] whitespace-nowrap">
+                {item.text}
+              </span>
+            </div>
+            <span class="text-[#D09AFC] text-base font-black select-none" aria-hidden="true">✦</span>
+          </div>
+        ))}
+      </div>
+    ))}
+  </div>
+</section>

@@ -1,11 +1,15 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import FullscreenHero from '../shared/components/sections/FullscreenHero.astro';
+import Marquee from '../shared/components/sections/Marquee.astro';
 import BentoServices from '../shared/components/sections/BentoServices.astro';
 import TurboComparison from '../shared/components/sections/TurboComparison.astro';
-import SpecializationGrid from '../shared/components/sections/SpecializationGrid.astro';
+import { Workflow } from '../features/about';
 import ServiceFaq from '../shared/components/sections/ServiceFaq.astro';
 import BentoCta from '../shared/components/sections/BentoCta.astro';
+import Tag from '../shared/components/ui/Tag.astro';
+import Icon from '../shared/components/ui/Icon.astro';
+import MokiWidget from '../shared/components/moki/MokiWidget.astro';
 import { getCollection } from 'astro:content';
 
 const allEntries = await getCollection('projects');
@@ -110,47 +114,57 @@ const featuredProjects = sortedEntries.slice(0, 3).map((entry) => ({
     ]
   }}
 >
-  <!-- Full-screen Cinematic Hero Section (UNTOUCHED) -->
+  <!-- 1. Hero panel with blueprint grid -->
   <FullscreenHero />
 
-  <!-- Ultra-wide / Open Full Page Container (Broad fluid width) -->
-  <div class="w-full max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20 py-16 sm:py-24 space-y-20 sm:space-y-32">
-    
-    <!-- 1. Direction Services -->
+  <!-- 2. Running marquee band (Стрічка технологій) -->
+  <Marquee />
+
+  <div class="w-full max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-20 py-16 sm:py-24">
     <BentoServices />
+  </div>
 
-    <!-- 2. Guarantees & Values -->
+  <!-- 4. Чому я (Guarantees & Values) -->
+  <div class="w-full max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-20 py-16 sm:py-24">
     <TurboComparison />
+  </div>
 
-    <!-- 3. Tech Specializations & Ready Modules -->
-    <section class="w-full space-y-8 sm:space-y-10" data-animate="fade-up">
-      <div class="w-full">
-        <h2 data-reveal-text class="underline-draw text-3xl sm:text-4xl lg:text-5xl font-black text-[#2A1E1E] tracking-tight leading-[1.15] m-0 text-left pb-2">
-          Спеціалізація та готові модулі
-        </h2>
-      </div>
-
-      <SpecializationGrid />
-    </section>
-
-    <!-- 4. Featured Projects Showcase (Sticky Stacking Big Cards with Exact 16:10 Ratio, No Image Cropping) -->
-    <section class="w-full space-y-8 sm:space-y-12" data-animate="fade-up">
+  <!-- 5. Кейси (Featured Projects Showcase — full-width espresso panel) -->
+  <div
+    class="w-full bg-[#1E1414] text-white rounded-[48px] sm:rounded-[64px] py-16 sm:py-24 my-8 sm:my-12"
+    data-animate="fade-up"
+  >
+    <div class="max-w-[1800px] mx-auto w-full px-4 sm:px-8 lg:px-12 xl:px-20 space-y-8 sm:space-y-12">
       <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-        <h2 data-reveal-text class="underline-draw text-3xl sm:text-4xl lg:text-5xl font-black text-[#2A1E1E] tracking-tight leading-[1.15] m-0 text-left pb-2">
-          Останні реалізовані проєкти
-        </h2>
+        <div class="flex items-center gap-3 sm:gap-4">
+          <h2
+            data-reveal-text
+            class="text-3xl sm:text-4xl lg:text-[56px] font-black text-[#FAF1EC] tracking-[-0.035em] leading-[1.13] text-left"
+          >
+            Останні реалізовані <Tag color="pink" class="mx-1">проєкти</Tag>
+          </h2>
+          <div class="shrink-0 -mt-2 hidden sm:block">
+            <MokiWidget
+              size={75}
+              expression="fier"
+              color="#FAC3C8"
+              shape="galet"
+              follow="page"
+            />
+          </div>
+        </div>
 
         <a
           href="/portfolio/"
-          class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#2A1E1E] text-white hover:bg-[#3D2C2C] text-xs font-black shadow-sm hover:shadow-md transition-all self-start sm:self-auto shrink-0 group no-underline"
+          class="pill-btn-lilac self-start sm:self-auto shrink-0 group"
         >
           <span>Усі проєкти</span>
-          <i class="fa-solid fa-arrow-right text-xs transition-transform duration-300 group-hover:translate-x-1"></i>
+          <Icon name="arrow-right" size={14} class="transition-transform duration-300 group-hover:translate-x-1" />
         </a>
       </div>
 
-      <!-- Featured Projects: Alternating Split Cards (Photo Right / Text Left, Photo Left / Text Right) on Desktop; Clean Photo + Text below on Mobile -->
-      <div class="space-y-6 sm:space-y-8 lg:space-y-10">
+      <!-- Featured Projects: Alternating Split Cards -->
+      <div class="space-y-8 sm:space-y-10">
         {featuredProjects.map((project, idx) => {
           const cleanCategory = project.category.includes('бот')
             ? 'Telegram-бот'
@@ -158,59 +172,55 @@ const featuredProjects = sortedEntries.slice(0, 3).map((entry) => ({
               ? 'Сайт'
               : 'Мобільний додаток';
 
-          // idx 0: Photo right, Text left
-          // idx 1: Photo left, Text right
-          // idx 2: Photo right, Text left
           const isPhotoRight = idx % 2 === 0;
+          const photoShadows = ['shadow-[8px_8px_0_#E8BA98]', 'shadow-[8px_8px_0_#D09AFC]', 'shadow-[8px_8px_0_#FAC3C8]'];
 
           return (
             <article
-              data-animate="mask-up"
-              class="spotlight-card bg-white rounded-[24px] sm:rounded-[32px] p-5 sm:p-7 lg:p-9 border border-[#623A2D]/10 shadow-[0_12px_36px_rgba(42,30,30,0.04)] hover:shadow-[0_20px_48px_rgba(42,30,30,0.08)] transition-all duration-300"
+              data-animate="fade-up"
+              class="bg-white rounded-[32px] p-6 sm:p-6 lg:p-8 border-2 border-[#1E1414] transition-[translate,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_12px_0_#D09AFC] motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-none"
             >
-              <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-10 items-stretch">
-                <!-- Text Block: on mobile order-2 (under photo), on desktop order-1 if text-left, order-2 if text-right -->
+              <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:p-8 items-stretch">
+                <!-- Text Block -->
                 <div
                   class:list={[
                     'order-2 flex flex-col justify-between h-full py-1',
                     isPhotoRight ? 'lg:col-span-5 lg:order-1' : 'lg:col-span-5 lg:order-2',
                   ]}
                 >
-                  <!-- Top Content: Category on top, Title, Description -->
-                  <div class="space-y-3.5 sm:space-y-4">
-                    <span class="inline-flex items-center px-3.5 py-1 rounded-full bg-[#FAF1EC] border border-[#623A2D]/12 text-[#623A2D] text-[11px] sm:text-xs font-black uppercase tracking-wider">
-                      {cleanCategory}
+                  <div class="space-y-4 sm:space-y-4">
+                    <span class="inline-block -rotate-2 rounded-lg bg-[#1E1414] text-white px-4 py-2 text-xs sm:text-sm font-black uppercase tracking-wider">
+                      ✦ {cleanCategory}
                     </span>
 
-                    <h3 class="text-xl sm:text-2xl lg:text-3xl font-black text-[#2A1E1E] tracking-tight leading-snug m-0">
+                    <h3 class="text-2xl sm:text-3xl lg:text-4xl font-black text-[#1E1414] tracking-tight leading-snug ">
                       <a
                         href={`/portfolio/${project.id}/`}
-                        class="text-[#2A1E1E] hover:text-[#95553C] transition-colors no-underline"
+                        class="text-[#1E1414] hover:text-[#95553C] transition-colors no-underline"
                       >
                         {project.title}
                       </a>
                     </h3>
 
                     {project.description && (
-                      <p class="text-xs sm:text-sm text-[#623A2D]/80 font-medium leading-relaxed m-0">
+                      <p class="text-sm sm:text-base text-[#623A2D]/80 font-medium leading-relaxed ">
                         {project.description}
                       </p>
                     )}
                   </div>
 
-                  <!-- Bottom: Very Large Prominent Button moved to the bottom -->
                   <div class="pt-6 sm:pt-8 mt-auto w-full">
                     <a
                       href={`/portfolio/${project.id}/`}
-                      class="w-full inline-flex items-center justify-center gap-3 px-8 py-3.5 sm:py-4 rounded-full bg-[#2A1E1E] text-white hover:bg-[#3D2C2C] text-sm sm:text-base font-black shadow-xs hover:shadow-md transition-all duration-300 no-underline group/btn"
+                      class="pill-btn-primary w-full !px-8 !py-4 !text-base group/btn"
                     >
                       <span>Детальніше про проєкт</span>
-                      <i class="fa-solid fa-arrow-right text-xs transition-transform duration-300 group-hover/btn:translate-x-1.5" aria-hidden="true" />
+                      <Icon name="arrow-right" size={14} class="transition-transform duration-300 group-hover/btn:translate-x-1.5" />
                     </a>
                   </div>
                 </div>
 
-                <!-- Photo Block: on mobile order-1 (photo on top), on desktop order-2 if photo-right, order-1 if photo-left -->
+                <!-- Photo Block -->
                 <div
                   class:list={[
                     'order-1 flex items-center',
@@ -219,12 +229,15 @@ const featuredProjects = sortedEntries.slice(0, 3).map((entry) => ({
                 >
                   <a
                     href={`/portfolio/${project.id}/`}
-                    class="group/media block aspect-[3/2] w-full rounded-[20px] sm:rounded-[24px] overflow-hidden border border-[#623A2D]/12 bg-[#2A1E1E] shadow-sm relative no-underline"
+                    class:list={[
+                      'group/media block aspect-[3/2] w-full rounded-[24px] overflow-hidden border-2 border-[#1E1414] bg-[#2A1E1E] relative no-underline',
+                      photoShadows[idx % photoShadows.length],
+                    ]}
                   >
                     <img
                       src={project.image}
                       alt={project.title}
-                      class="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover/media:scale-105"
+                      class="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover/media:scale-105 motion-reduce:transition-none"
                       loading="lazy"
                     />
                   </a>
@@ -234,23 +247,43 @@ const featuredProjects = sortedEntries.slice(0, 3).map((entry) => ({
           );
         })}
       </div>
-    </section>
+    </div>
+  </div>
 
-    <!-- 5. FAQ Accordion -->
-    <section class="w-full space-y-8 sm:space-y-10" data-animate="fade-up">
-      <div class="w-full">
-        <h2 data-reveal-text class="underline-draw text-3xl sm:text-4xl lg:text-5xl font-black text-[#2A1E1E] tracking-tight leading-[1.15] m-0 text-left pb-2">
-          Часті запитання клієнтів
+  <!-- 6. Процес (Workflow Steps) -->
+  <div class="w-full max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-20 py-16 sm:py-24">
+    <Workflow />
+  </div>
+
+  <!-- 7. FAQ -->
+  <div class="w-full max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-20 py-16 sm:py-24">
+    <div class="space-y-8" data-animate="fade-up">
+      <div class="flex items-center justify-between sm:justify-start gap-4">
+        <h2
+          data-reveal-text
+          class="text-3xl sm:text-4xl lg:text-[56px] font-black text-[#1E1414] tracking-[-0.035em] leading-[1.13] text-left"
+        >
+          Часті <Tag color="lilac" class="mx-1">запитання</Tag> клієнтів
         </h2>
+        <div class="shrink-0 -mt-2">
+          <MokiWidget
+            size={85}
+            expression="curieux"
+            color="#D09AFC"
+            shape="galet"
+            follow="page"
+          />
+        </div>
       </div>
 
       <div class="w-full">
         <ServiceFaq globalOnly showHeader={false} />
       </div>
-    </section>
+    </div>
+  </div>
 
-    <!-- 6. Clean CTA Banner -->
+  <!-- 8. Фінальний CTA -->
+  <div class="w-full max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-20 py-16 sm:py-24">
     <BentoCta />
-
   </div>
 </Layout>

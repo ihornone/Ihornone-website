@@ -1,0 +1,47 @@
+---
+import Layout from '../layouts/Layout.astro';
+import MokiWidget from '../shared/components/moki/MokiWidget.astro';
+import Icon from '../shared/components/ui/Icon.astro';
+---
+
+<Layout
+  title="404 — Сторінку не знайдено | ihornone"
+  description="Сторінку не знайдено. Можливо, вона була переміщена або адреса містить помилку."
+>
+  <main class="min-h-[72vh] flex items-center justify-center px-4 sm:px-8 py-16 sm:py-24">
+    <div class="max-w-md w-full text-center flex flex-col items-center">
+      <div class="mb-6 relative flex items-center justify-center">
+        <div class="absolute -inset-6 bg-[#D09AFC]/20 rounded-full blur-2xl pointer-events-none"></div>
+        <MokiWidget
+          size={180}
+          color="#D09AFC"
+          shape="squircle"
+          state="sleep"
+          expression="attentif"
+          follow="page"
+          class="relative drop-shadow-md"
+        />
+      </div>
+
+      <span class="inline-block px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-[#D09AFC]/20 text-[#1E1414] border border-[#1E1414]/10 mb-4">
+        Помилка 404
+      </span>
+
+      <h1 class="text-3xl sm:text-4xl font-black text-[#1E1414] tracking-tight leading-tight mb-3">
+        Сторінку не знайдено
+      </h1>
+
+      <p class="text-sm sm:text-base text-[#623A2D]/80 font-medium max-w-sm mx-auto mb-8 leading-relaxed">
+        Схоже, Мокі міцно заснув і загубив цю сторінку. Можливо, посилання застаріло або адресу було введено неточно.
+      </p>
+
+      <a
+        href="/"
+        class="pill-btn-lilac inline-flex items-center justify-center gap-2.5 px-7 py-3.5 text-sm sm:text-base font-bold shadow-md hover:shadow-lg transition-all"
+      >
+        <Icon name="arrow-left" size={16} />
+        <span>На головну</span>
+      </a>
+    </div>
+  </main>
+</Layout>

@@ -1,0 +1,70 @@
+---
+import Tag from '../../../shared/components/ui/Tag.astro';
+import Icon from '../../../shared/components/ui/Icon.astro';
+import MokiMorpher from '../../../shared/components/moki/MokiMorpher';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<section
+  class:list={[
+    'relative w-full bg-white border-2 border-[#1E1414] rounded-[32px] sm:rounded-[48px] p-6 sm:p-10 lg:p-14 overflow-hidden transition-[translate,box-shadow] duration-200 hover:shadow-[0_12px_0_#D09AFC]',
+    className,
+  ]}
+  data-animate="fade-up"
+>
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+    <div class="lg:col-span-7 flex flex-col items-start gap-5">
+      <span class="inline-block -rotate-2 rounded-lg bg-[#1E1414] text-white px-3.5 py-1.5 text-xs font-black uppercase tracking-wider">
+        ✦ Full-Stack інженер
+      </span>
+
+      <h1
+        data-reveal-text
+        class="text-3xl sm:text-4xl lg:text-[52px] font-black text-[#1E1414] tracking-[-0.035em] leading-[1.13]"
+      >
+        Індивідуальна <Tag color="lilac" class="mx-1">розробка</Tag> без посередників та бюрократії
+      </h1>
+
+      <p class="text-sm sm:text-base lg:text-lg text-[#1E1414]/85 font-medium leading-relaxed max-w-2xl">
+        Привіт! Я Ігор (ihornone) — Full-Stack розробник із 3+ роками досвіду. Створюю Telegram-боти з оплатами, швидкі веб-сайти на Astro/Next.js та мобільні застосунки на React Native. Ви спілкуєтеся напряму з автором коду без прошарку менеджерів.
+      </p>
+
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-3 w-full sm:w-auto">
+        <a
+          href="https://t.me/ihornone"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="pill-btn-primary flex items-center justify-center gap-2.5 !px-8 !py-4 !text-base group no-underline"
+        >
+          <Icon name="telegram" size={20} />
+          <span>Обговорити в Telegram</span>
+          <Icon name="arrow-right" size={14} class="transition-transform duration-300 group-hover:translate-x-1" />
+        </a>
+        <a
+          href="/portfolio/"
+          class="pill-btn-outline !py-3.5 !px-6 !text-sm flex items-center justify-center gap-2 no-underline"
+        >
+          <span>Дивитися кейси</span>
+          <Icon name="external-link" size={13} class="opacity-75" />
+        </a>
+      </div>
+    </div>
+
+    <div class="lg:col-span-5 flex items-center justify-center relative py-4 lg:py-0 w-full">
+      <MokiMorpher
+        client:load
+        size={480}
+        color="#D09AFC"
+        expression="heureux"
+        follow="page"
+        interval={2600}
+        className="w-full max-w-[340px] sm:max-w-[420px] lg:max-w-[480px] xl:max-w-[520px]"
+      />
+    </div>
+  </div>
+</section>

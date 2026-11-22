@@ -1,6 +1,8 @@
 ---
+import SectionHeader from '../../../shared/components/ui/SectionHeader.astro';
 import Card from '../../../shared/components/ui/Card.astro';
 import Button from '../../../shared/components/ui/Button.astro';
+import Icon from '../../../shared/components/ui/Icon.astro';
 
 interface Props {
   class?: string;
@@ -10,22 +12,22 @@ const { class: className = '' } = Astro.props;
 
 const guaranteeItems = [
   {
-    icon: 'fa-solid fa-bug-slash',
+    icon: 'bug-slash',
     title: 'Безкоштовне усунення багів (30 днів)',
     desc: 'Якщо після релізу під час живого навантаження виявиться прихована помилка або розбіжність із ТЗ — усуваю її безкоштовно та першочергово.',
   },
   {
-    icon: 'fa-solid fa-server',
+    icon: 'server',
     title: 'Налаштування серверів та домену',
     desc: 'Повний запуск під ключ на вашому хостингу. Підключаю Cloudflare, Vercel або виділений VPS, налаштовую SSL-сертифікат та перевіряю стабільність.',
   },
   {
-    icon: 'fa-solid fa-key',
+    icon: 'key',
     title: '100% права на вихідний код',
     desc: 'Синхронізація у ваш приватний Git з 1-го дня. Після релізу ви володієте всіма файлами, базою даних та архітектурою без прив\'язки до одного програміста.',
   },
   {
-    icon: 'fa-solid fa-bolt',
+    icon: 'zap',
     title: 'Швидкі консультації в Telegram',
     desc: 'Відповідаю на технічні питання протягом 15 хвилин у робочий час. Допомагаю розібратися з панеллю керування та оновленням налаштувань.',
   },
@@ -33,33 +35,36 @@ const guaranteeItems = [
 ---
 
 <section class:list={['space-y-8 w-full', className]} data-animate="fade-up">
-  <div class="text-center max-w-2xl mx-auto">
-    <h2 class="text-2xl sm:text-4xl font-black text-[#2A1E1E] tracking-tight m-0">
-      Що саме покриває моя 30-денна гарантія на код
-    </h2>
-  </div>
+  <SectionHeader
+    title="Що саме покриває моя 30-денна гарантія на код"
+    highlight="гарантія"
+    tagColor="pink"
+  />
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6" data-animate="fade-up" data-stagger>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8" data-animate="fade-up" data-stagger>
     {guaranteeItems.map((item) => (
       <Card hover class="p-6 space-y-3 h-full flex flex-col justify-start">
-        <div class="w-10 h-10 rounded-full bg-[#FAF1EC] border border-[#623A2D]/15 flex items-center justify-center text-[#95553C] text-base shrink-0">
-          <i class={item.icon}></i>
+        <div class="w-10 h-10 rounded-full bg-[#F4E8E3] border-2 border-[#1E1414] flex items-center justify-center text-[#1E1414] text-base shrink-0">
+          <Icon name={item.icon} size={18} />
         </div>
-        <div class="space-y-1.5 flex-1">
-          <h3 class="text-base font-black text-[#2A1E1E] m-0">{item.title}</h3>
-          <p class="text-xs sm:text-sm text-[#623A2D]/75 font-medium leading-relaxed m-0">{item.desc}</p>
+        <div class="space-y-2 flex-1">
+          <h3 class="text-base sm:text-lg font-black text-[#1E1414]">{item.title}</h3>
+          <p class="text-xs sm:text-sm text-[#623A2D]/75 font-medium leading-relaxed">{item.desc}</p>
         </div>
       </Card>
     ))}
   </div>
 
   <!-- Additional assurance box -->
-  <div class="bento-card p-6 sm:p-8 bg-[#FAF1EC]/60 border border-[#623A2D]/15 flex flex-col sm:flex-row items-center justify-between gap-6" data-animate="fade-up">
-    <div class="space-y-1.5 text-center sm:text-left">
-      <h4 class="text-base font-black text-[#2A1E1E] m-0">
+  <div
+    class="relative bg-[#F4E8E3] border-2 border-[#1E1414] rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 transition-[translate,box-shadow] duration-200 hover:shadow-[0_8px_0_#FAC3C8]"
+    data-animate="fade-up"
+  >
+    <div class="space-y-2 text-center sm:text-left">
+      <h4 class="text-base sm:text-lg font-black text-[#1E1414]">
         Маєте особливі побажання щодо поетапної оплати?
       </h4>
-      <p class="text-xs sm:text-sm text-[#623A2D]/75 font-medium m-0 max-w-xl">
+      <p class="text-xs sm:text-sm text-[#623A2D]/75 font-medium max-w-xl">
         Працюю з фіксованими прозорими етапами оплати (50/50 або потижнево за спринти) та повною демонстрацією результатів.
       </p>
     </div>

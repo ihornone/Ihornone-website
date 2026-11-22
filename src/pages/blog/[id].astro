@@ -57,27 +57,31 @@ const fullUrl = `https://www.ihornone.site/blog/${entry.id}/`;
     }
   }}
 >
-  <div class="w-full max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-14 xl:px-20 pt-2 sm:pt-4 pb-16 sm:pb-24 space-y-10 sm:space-y-14">
+  <div class="w-full max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-20 pt-2 sm:pt-4 pb-16 sm:pb-24 space-y-16 sm:space-y-24">
     <!-- Breadcrumbs -->
     <Breadcrumbs
       items={[
         { label: 'Головна', href: '/' },
-        { label: 'Блог', href: '/blog' },
+        { label: 'Блог', href: '/blog/' },
         { label: title },
       ]}
     />
 
     <!-- Article Header -->
-    <header class="space-y-4 sm:space-y-5" data-animate="fade-up">
-      <div class="flex items-center gap-2.5 text-xs sm:text-sm font-semibold text-[#623A2D]/60 flex-wrap">
-        <span class="text-[#95553C] font-black uppercase tracking-wider">{category}</span>
-        <span>•</span>
+    <header class="space-y-8" data-animate="fade-up">
+      <div class="flex items-center gap-3 text-xs sm:text-sm font-semibold text-[#623A2D]/60 flex-wrap">
+        <span class="inline-block -rotate-2 rounded-lg bg-[#1E1414] text-white px-3 py-2 text-[11px] font-black uppercase tracking-wider">
+          ✦ {category}
+        </span>
         <span>{formatDate(pubDate)}</span>
         <span>•</span>
         <span>{readTime}</span>
       </div>
 
-      <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-[#2A1E1E] tracking-tight leading-[1.2]">
+      <h1
+        data-reveal-text
+        class="text-3xl sm:text-4xl lg:text-[56px] font-black text-[#1E1414] tracking-[-0.035em] leading-[1.13]"
+      >
         {title}
       </h1>
 
@@ -89,7 +93,7 @@ const fullUrl = `https://www.ihornone.site/blog/${entry.id}/`;
     <!-- Article Content Body -->
     <Card
       as="article"
-      class="p-6 sm:p-10 md:p-14 bg-white/90 backdrop-blur-sm border border-[#623A2D]/10 shadow-[0_16px_40px_rgba(42,30,30,0.06)] w-full"
+      class="p-6 sm:p-8 md:p-12 w-full"
       data-animate="fade-up"
     >
       <div class="md-prose font-medium text-[#2A1E1E] text-base sm:text-lg leading-relaxed">
@@ -97,10 +101,10 @@ const fullUrl = `https://www.ihornone.site/blog/${entry.id}/`;
       </div>
 
       {tags && tags.length > 0 && (
-        <div class="pt-8 sm:pt-10 mt-8 sm:mt-10 border-t border-[#623A2D]/10 flex flex-wrap gap-2 items-center">
+        <div class="pt-8 sm:pt-8 mt-8 sm:mt-8 border-t-2 border-dashed border-[#1E1414]/15 flex flex-wrap gap-2 items-center">
           <span class="text-xs font-bold text-[#623A2D]/50 mr-1">Теги:</span>
           {tags.map((tag) => (
-            <span class="text-xs font-bold text-[#623A2D]/70 bg-[#FAF1EC] px-3 py-1 rounded-full border border-[#623A2D]/10">
+            <span class="text-xs font-bold text-[#623A2D]/70 bg-[#F4E8E3] px-3 py-1 rounded-full border border-[#1E1414]/20">
               #{tag}
             </span>
           ))}
@@ -113,9 +117,10 @@ const fullUrl = `https://www.ihornone.site/blog/${entry.id}/`;
       <Button
         href="/blog/"
         variant="outline"
+        icon="arrow-left"
+        iconPosition="left"
         class="w-full sm:w-auto font-black text-xs px-6 py-3"
       >
-        <i class="fa-solid fa-arrow-left mr-2"></i>
         Всі статті блогу
       </Button>
       <Button

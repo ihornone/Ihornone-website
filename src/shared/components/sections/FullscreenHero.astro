@@ -1,4 +1,7 @@
 ---
+import Icon from '../ui/Icon.astro';
+import MokiMorpher from '../moki/MokiMorpher';
+
 interface Props {
   class?: string;
 }
@@ -8,108 +11,156 @@ const { class: className = "" } = Astro.props;
 
 <section
   class:list={[
-    "hero-interactive-container relative w-full h-[100dvh] min-h-[640px] overflow-hidden",
+    "hero-interactive-container relative w-full min-h-[76dvh] lg:min-h-[82dvh] h-auto flex items-center justify-center overflow-hidden rounded-b-[40px] sm:rounded-b-[64px] bg-[#FAF1EC] border-b-2 border-[#1E1414]/10 py-14 sm:py-18 lg:py-20 select-none",
     className,
   ]}
 >
-  <!-- Fullscreen Edge-to-Edge Background Image -->
-  <div class="absolute inset-0 w-full h-full z-0 overflow-hidden">
-    <!-- Ambient zoom lives on the wrapper, pointer parallax on the image itself -->
-    <div class="hero-ambient-zoom absolute inset-0 w-full h-full">
-      <img
-        src="/images/mascot/hero-cat.webp"
-        alt="Dev-кіт ihornone у чорному худі за макбуком"
-        class="hero-parallax-layer w-full h-full object-cover object-center sm:object-[center_35%]"
-        loading="eager"
-        fetchpriority="high"
-      />
-    </div>
-
-    <!-- Subtle overall cinematic vignette -->
-    <div
-      class="absolute inset-0 bg-gradient-to-r from-[#2A1E1E]/40 via-transparent to-transparent pointer-events-none"
-    >
-    </div>
-    <div
-      class="absolute inset-0 bg-gradient-to-t from-[#2A1E1E]/80 via-transparent to-transparent pointer-events-none"
-    >
-    </div>
+  <div class="absolute inset-0 w-full h-full pointer-events-none overflow-hidden z-0">
+    <div class="absolute inset-0 bg-[radial-gradient(#1E1414_1px,transparent_1px)] [background-size:28px_28px] opacity-[0.035]"></div>
   </div>
 
-  <!-- Center-Left Text Block with seamless feathered blur glow behind text -->
-  <div
-    class="absolute top-1/2 -translate-y-1/2 left-6 sm:left-10 lg:left-14 z-10 max-w-xl lg:max-w-2xl text-left pointer-events-auto animate-hero-fade-in"
-  >
-    <!-- Seamless soft blur & dark glow behind text (no rectangle borders) -->
-    <div class="absolute -inset-6 sm:-inset-10 backdrop-blur-md bg-[#2A1E1E]/50 [mask-image:radial-gradient(ellipse_at_center,black_45%,transparent_80%)] pointer-events-none -z-10"></div>
+  <!-- Central Hero Content -->
+  <div class="hero-text-block relative z-20 max-w-2xl sm:max-w-3xl lg:max-w-4xl xl:max-w-5xl text-center px-4 sm:px-6 flex flex-col items-center pointer-events-auto">
+    <!-- Main Headline -->
+    <h1 class="hero-title flex flex-col items-center justify-center text-center m-0 select-none">
+      <!-- Рядок 1 (жирний): «Сайти, боти» + плитка з Moki + «та сервіси» -->
+      <span
+        class="inline-flex flex-wrap items-center justify-center gap-x-2 sm:gap-x-3.5 gap-y-2 text-3xl sm:text-5xl md:text-6xl lg:text-[68px] xl:text-[76px] font-black text-[#1E1414] tracking-[-0.035em] leading-[1.16]"
+      >
+        <span data-reveal-text>Сайти, боти</span>
+        <span
+          class="moki-interactive-node moki-hero-tile inline-flex items-center justify-center w-[1.22em] h-[1.22em] align-middle -mt-[0.06em] rounded-[0.26em] sm:rounded-[0.28em] bg-[#D09AFC] shadow-[3.5px_4.5px_0_#1E1414] sm:shadow-[4.5px_5.5px_0_#1E1414] hover:shadow-[5px_6px_0_#1E1414] transition-all duration-200 hover:scale-105 hover:-translate-y-0.5 active:scale-95 cursor-pointer shrink-0 select-none p-[0.14em] group/moki"
+          title="Привіт від Мокі! Клікни, щоб змінити форму ✨"
+          aria-label="Інтерактивний Мокі у ліловій плитці"
+        >
+          <MokiMorpher
+            client:load
+            size={140}
+            color="#1E1414"
+            paper="#FFFFFF"
+            expression="heureux"
+            follow="page"
+            interval={3200}
+            className="w-full h-full [&>svg]:w-full [&>svg]:h-full"
+          />
+        </span>
+        <span data-reveal-text>та сервіси</span>
+      </span>
 
-    <h1
-      class="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.08] m-0 drop-shadow-md"
-    >
-      Сайти, боти та сервіси, які <span class="text-[#D09AFC] text-shimmer-lilac">приносять заявки</span> й автоматизують бізнес
+      <!-- Рядок 2 (light): «які приносять заявки» -->
+      <span
+        data-reveal-text
+        class="block text-2xl sm:text-4xl md:text-5xl lg:text-[56px] xl:text-[64px] font-light text-[#1E1414] tracking-[-0.025em] leading-[1.18] mt-2 sm:mt-3"
+      >
+        які приносять заявки
+      </span>
     </h1>
 
-    <p
-      class="mt-4 sm:mt-5 text-sm sm:text-base lg:text-lg text-white/90 font-medium leading-relaxed drop-shadow-sm max-w-xl"
-    >
-      Індивідуальна розробка від Full-Stack інженера. Прямий контакт без посередників, перший прототип за 7 днів, 100% права на код у вашому Git та 30 днів гарантії.
-    </p>
-  </div>
-
-  <!-- Bottom-Right Carved Buttons Pocket (Seamless Organic Curves matching site design system) -->
-  <div class="absolute bottom-0 right-0 z-20 pointer-events-auto">
+    <!-- Три чіпи з пастельними іконками: «Заявки», «Оплати», «Гарантія 30 днів» -->
     <div
-      class="grain-surface relative bg-[#FAF1EC] rounded-tl-[24px] sm:rounded-tl-[28px] px-5 sm:px-6 py-3.5 sm:py-4 shadow-md flex items-center gap-3 sm:gap-3.5"
+      class="hero-chips flex flex-wrap items-center justify-center gap-2.5 sm:gap-3.5 pt-6 sm:pt-8"
+      role="list"
+      aria-label="Ключові напрямки та гарантії"
     >
-      <!-- Inverted Scoop Curve (Above the plate along the right edge: curves smoothly inwards R=24) -->
+      <!-- Чіп 1: Заявки -->
       <div
-        class="absolute -top-[24px] right-0 w-[24px] h-[24px] pointer-events-none"
-        style="clip-path: path('M24 24 V0 A24 24 0 0 1 0 24 H24 Z'); transform: translateY(1px)"
-        aria-hidden="true"
-      ><div class="grain-surface h-full w-full bg-[#FAF1EC]"></div></div>
+        role="listitem"
+        class="inline-flex items-center gap-2 sm:gap-2.5 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white border-2 border-[#1E1414] shadow-[2.5px_2.5px_0_#1E1414] hover:shadow-[4px_4px_0_#D09AFC] hover:-translate-y-0.5 transition-all select-none group/chip cursor-default"
+      >
+        <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-xl bg-[#D09AFC]/35 border border-[#1E1414]/15 flex items-center justify-center text-[#1E1414] shrink-0 group-hover/chip:scale-110 transition-transform">
+          <Icon name="sparkles" size={14} class="sm:scale-110 text-[#6B21A8]" />
+        </span>
+        <span class="text-xs sm:text-sm font-black text-[#1E1414] tracking-tight">Заявки</span>
+      </div>
 
-      <!-- Inverted Scoop Curve (To the left of the plate along the bottom edge: curves smoothly inwards R=24) -->
+      <!-- Чіп 2: Оплати -->
       <div
-        class="absolute bottom-0 -left-[24px] w-[24px] h-[24px] pointer-events-none"
-        style="clip-path: path('M24 24 H0 A24 24 0 0 0 24 0 V24 Z'); transform: translateX(1px)"
-        aria-hidden="true"
-      ><div class="grain-surface h-full w-full bg-[#FAF1EC]"></div></div>
+        role="listitem"
+        class="inline-flex items-center gap-2 sm:gap-2.5 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white border-2 border-[#1E1414] shadow-[2.5px_2.5px_0_#1E1414] hover:shadow-[4px_4px_0_#E8BA98] hover:-translate-y-0.5 transition-all select-none group/chip cursor-default"
+      >
+        <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-xl bg-[#E8BA98]/45 border border-[#1E1414]/15 flex items-center justify-center text-[#1E1414] shrink-0 group-hover/chip:scale-110 transition-transform">
+          <Icon name="credit-card" size={14} class="sm:scale-110 text-[#95553C]" />
+        </span>
+        <span class="text-xs sm:text-sm font-black text-[#1E1414] tracking-tight">Оплати</span>
+      </div>
 
-      <!-- Lavender Primary Button with Pulse Glow (Capsule rounded-full) -->
+      <!-- Чіп 3: Гарантія 30 днів -->
+      <div
+        role="listitem"
+        class="inline-flex items-center gap-2 sm:gap-2.5 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white border-2 border-[#1E1414] shadow-[2.5px_2.5px_0_#1E1414] hover:shadow-[4px_4px_0_#FAC3C8] hover:-translate-y-0.5 transition-all select-none group/chip cursor-default"
+      >
+        <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-xl bg-[#FAC3C8]/50 border border-[#1E1414]/15 flex items-center justify-center text-[#1E1414] shrink-0 group-hover/chip:scale-110 transition-transform">
+          <Icon name="shield-check" size={14} class="sm:scale-110 text-[#BE185D]" />
+        </span>
+        <span class="text-xs sm:text-sm font-black text-[#1E1414] tracking-tight">Гарантія 30 днів</span>
+      </div>
+    </div>
+
+    <!-- Одна головна кнопка «Обговорити в Telegram» під чіпами -->
+    <div class="hero-cta-group flex items-center justify-center pt-6 sm:pt-8 w-full sm:w-auto px-4 sm:px-0">
       <a
         href="https://t.me/ihornone"
         target="_blank"
         rel="noopener noreferrer"
-        data-magnetic="8"
-        class="inline-flex items-center justify-center gap-2 rounded-full font-black text-xs sm:text-sm px-6 sm:px-7 py-3 bg-[#D09AFC] text-[#2A1E1E] animate-pulse-glow hover:bg-[#BF80FA] hover:-translate-y-0.5 active:translate-y-0 transition-all no-underline group shadow-xs"
+        class="pill-btn-primary hero-btn-primary group w-full sm:w-auto !px-8 !py-3.5 sm:!py-4 text-sm sm:text-base"
+        data-magnetic="10"
       >
-        <i
-          class="fa-brands fa-telegram text-[#2A1E1E] text-base group-hover:scale-110 transition-transform"
-        ></i>
+        <Icon
+          name="telegram"
+          size={18}
+          class="group-hover:scale-110 transition-transform"
+        />
         <span>Обговорити в Telegram</span>
-        <i class="fa-solid fa-arrow-right text-[10px] text-[#2A1E1E]"></i>
-      </a>
-
-      <!-- Dark Contrast Button (Capsule rounded-full) -->
-      <a
-        href="/portfolio/"
-        data-magnetic="6"
-        class="inline-flex items-center justify-center gap-2 rounded-full font-bold text-xs sm:text-sm px-6 sm:px-7 py-3 bg-[#2A1E1E] hover:bg-[#3D2C2C] text-white shadow-xs hover:-translate-y-0.5 active:translate-y-0 transition-all no-underline"
-      >
-        <span>Дивитися кейси</span>
-        <i class="fa-solid fa-arrow-up-right-from-square text-[10px] opacity-75"
-        ></i>
+        <Icon name="arrow-right" size={14} class="transition-transform group-hover:translate-x-1" />
       </a>
     </div>
   </div>
-
-  <!-- Subtle Scroll Down Indicator in Glass Pill -->
-  <a
-    href="#services"
-    class="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-10 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/25 hover:bg-black/45 backdrop-blur-md border border-white/20 text-[#FAF1EC] hover:text-white transition-all no-underline text-xs font-bold shadow-xs"
-    aria-label="Гортати вниз"
-  >
-    <span>Гортати вниз</span>
-    <i class="fa-solid fa-chevron-down text-[10px] animate-bounce"></i>
-  </a>
 </section>
+
+<script>
+  function initMokiRejoice() {
+    const nodes = document.querySelectorAll('.moki-interactive-node');
+    const symbols = ['✦', '✨', '💜', '⚡', '🎉'];
+
+    nodes.forEach((node) => {
+      node.addEventListener('click', () => {
+        const rect = node.getBoundingClientRect();
+        for (let i = 0; i < 5; i++) {
+          const particle = document.createElement('span');
+          particle.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+          particle.style.position = 'fixed';
+          particle.style.pointerEvents = 'none';
+          particle.style.fontSize = `${14 + Math.random() * 8}px`;
+          particle.style.fontWeight = 'bold';
+          particle.style.userSelect = 'none';
+          particle.style.zIndex = '9999';
+          particle.style.color = i % 2 === 0 ? '#9333EA' : '#DB2777';
+          const startX = rect.left + rect.width / 2 + (Math.random() - 0.5) * 30;
+          const startY = rect.top + rect.height / 2 + (Math.random() - 0.5) * 20;
+          particle.style.left = `${startX}px`;
+          particle.style.top = `${startY}px`;
+          particle.style.opacity = '1';
+          particle.style.transform = 'translate(-50%, -50%) scale(0.6)';
+          particle.style.transition = 'all 0.85s cubic-bezier(0.16, 1, 0.3, 1)';
+          document.body.appendChild(particle);
+
+          requestAnimationFrame(() => {
+            const offsetX = (Math.random() - 0.5) * 70;
+            const offsetY = -45 - Math.random() * 45;
+            particle.style.transform = `translate(calc(-50% + ${offsetX}px), calc(-50% + ${offsetY}px)) scale(1.2)`;
+            particle.style.opacity = '0';
+          });
+
+          setTimeout(() => particle.remove(), 900);
+        }
+      });
+    });
+  }
+
+  document.addEventListener('astro:page-load', initMokiRejoice);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMokiRejoice);
+  } else {
+    initMokiRejoice();
+  }
+</script>
