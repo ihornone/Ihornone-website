@@ -28,8 +28,8 @@ interface Props {
 
 export default function MokiMorpher({
   size = 320,
-  color = '#1E1414',
-  paper = '#FFFFFF',
+  color = '#D09AFC',
+  paper = '#FAF1EC',
   expression = 'heureux',
   state = 'idle',
   follow = 'page',

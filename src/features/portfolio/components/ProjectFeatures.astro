@@ -23,7 +23,7 @@ const { features } = Astro.props;
   />
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8" data-animate="fade-up" data-stagger>
     {features.map((f) => (
-      <div class="bg-white border-2 border-[#1E1414] rounded-3xl p-6 space-y-4 flex flex-col justify-start hover:-translate-y-1 hover:shadow-[0_12px_0_#D09AFC] transition-[translate,box-shadow] duration-200">
+      <div class="bg-white border-2 border-[#1E1414] rounded-3xl p-6 space-y-4 flex flex-col justify-start hover:-translate-y-1 hover:shadow-[0_12px_0_#D09AFC] transition-[translate,box-shadow] duration-200 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-none">
         <IconBox icon={f.icon} />
         <div class="space-y-2 flex-1">
           <h3 class="text-base sm:text-lg font-black text-[#1E1414] leading-snug">{f.title}</h3>

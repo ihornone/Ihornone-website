@@ -9,7 +9,7 @@ import Icon from '../shared/components/ui/Icon.astro';
   description="Сторінку не знайдено. Можливо, вона була переміщена або адреса містить помилку."
 >
   <main class="min-h-[72vh] flex items-center justify-center px-4 sm:px-8 py-16 sm:py-24">
-    <div class="max-w-md w-full text-center flex flex-col items-center">
+    <div class="max-w-md w-full text-center flex flex-col items-center" data-animate="fade-up">
       <div class="mb-6 relative flex items-center justify-center">
         <div class="absolute -inset-6 bg-[#D09AFC]/20 rounded-full blur-2xl pointer-events-none"></div>
         <MokiWidget
@@ -37,7 +37,7 @@ import Icon from '../shared/components/ui/Icon.astro';
 
       <a
         href="/"
-        class="pill-btn-lilac inline-flex items-center justify-center gap-2.5 px-7 py-3.5 text-sm sm:text-base font-bold shadow-md hover:shadow-lg transition-all"
+        class="pill-btn-lilac inline-flex items-center justify-center gap-2.5 px-7 py-3.5 text-sm sm:text-base font-bold shadow-md hover:shadow-lg transition-[box-shadow]"
       >
         <Icon name="arrow-left" size={16} />
         <span>На головну</span>

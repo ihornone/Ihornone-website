@@ -347,20 +347,28 @@ const widths = { sm: '400px', md: '480px', lg: '560px' };
  const EASE_SHEET_IN = makeEase(0.32, 0.72, 0, 1);
  const EASE_SHEET_OUT = makeEase(0.4, 0, 1, 1);
 
- /** Крокує t∈[0,1] впродовж duration: rAF-цикл + таймерна підстраховка. */
- function stepFrames(duration: number, apply: (t: number) => void) {
- return new Promise<void>((resolve) => {
+ /** Крокує t∈[0,1] впродовж duration: rAF-цикл + таймерна підстраховка.
+ Повертає true, якщо кадри дойшли до кінця; false — якщо рух скасовано
+ (isAborted), і тоді застосувати фінальний кадр не можна. */
+ function stepFrames(duration: number, apply: (t: number) => void, isAborted?: () => boolean) {
+ return new Promise<boolean>((resolve) => {
  const start = performance.now();
  let done = false;
  let lastRaf = 0;
  const finish = () => {
  if (done) return;
  done = true;
- apply(1);
- resolve();
+ const aborted = isAborted?.() ?? false;
+ if (!aborted) apply(1);
+ resolve(!aborted);
  };
  const step = () => {
  if (done) return;
+ if (isAborted?.()) {
+ done = true;
+ resolve(false);
+ return;
+ }
  apply(Math.min(1, (performance.now() - start) / duration));
  if (performance.now() - start >= duration) finish();
  };
@@ -413,6 +421,28 @@ const widths = { sm: '400px', md: '480px', lg: '560px' };
  };
  }
 
+ /* ── Скасування анімацій ─────────────────────────────────────────────
+ Швидкі взаємодії (клік під час закриття, повторний drag під час
+ пружного повернення) мусять перебивати поточний рух з поточної
+ позиції, а не змагатися з ним за той самий CSS-вираз transform. Кожен степер
+ носить покоління свого каналу; новий рух збільшує покоління — старий
+ степер на наступному кадрі бачить, що він застарів, і виходить. */
+ type AnimChannels = { slide: number; spring: number };
+ const drawerAnim = new WeakMap<HTMLElement, AnimChannels>();
+ const closingDrawers = new WeakSet<HTMLElement>();
+
+ function bumpAnim(drawer: HTMLElement, kind: keyof AnimChannels): number {
+ const rec = drawerAnim.get(drawer) ?? { slide: 0, spring: 0 };
+ rec[kind] += 1;
+ drawerAnim.set(drawer, rec);
+ return rec[kind];
+ }
+
+ function animStale(drawer: HTMLElement, kind: keyof AnimChannels, gen: number): boolean {
+ const rec = drawerAnim.get(drawer);
+ return !rec || rec[kind] !== gen;
+ }
+
  function cleanupSlide(parts: SlideParts) {
  const { panel } = parts;
  panel.style.transition = '';
@@ -422,28 +452,41 @@ const widths = { sm: '400px', md: '480px', lg: '560px' };
  }
  }
 
- /** Відкриття: з «закритого» положення в нуль, сповідною кривою. */
- async function runSlideIn(parts: SlideParts) {
+ /** Відкриття: з поточного положення (закрите, недоіграний drag чи
+ недоігране закриття) в нуль, сповідною кривою. */
+ async function runSlideIn(parts: SlideParts, drawer: HTMLElement, gen: number) {
  const { panel, axis, sign, extent } = parts;
- panel.style.setProperty(axis, `${sign * extent}px`);
- await stepFrames(SLIDE_IN_DURATION, (t) => {
- panel.style.setProperty(axis, `${sign * extent * (1 - EASE_SHEET_IN(t))}px`);
- });
- cleanupSlide(parts);
+ const measured = parseFloat(panel.style.getPropertyValue(axis));
+ const from = Number.isFinite(measured) ? measured : sign * extent;
+ panel.style.setProperty(axis, `${from}px`);
+ const completed = await stepFrames(SLIDE_IN_DURATION, (t) => {
+ panel.style.setProperty(axis, `${from * (1 - EASE_SHEET_IN(t))}px`);
+ }, () => animStale(drawer, 'slide', gen));
+ // Застарілий степер (перебито відкриттям/закриттям) не чіпає панель —
+ // рух продовжує вже новий степер з поточної позиції.
+ if (completed) cleanupSlide(parts);
  }
 
- /** Закриття: з поточного положення (з недоіграним drag) за край. */
- async function runSlideOut(parts: SlideParts, drawer: HTMLElement) {
+ /** Закриття: з поточного положення (з недоіграним drag чи slide) за край. */
+ async function runSlideOut(parts: SlideParts, drawer: HTMLElement, gen: number) {
  const { panel, axis, dragAxis, sign, extent } = parts;
- const dragOffset = parseFloat(panel.style.getPropertyValue(dragAxis)) || 0;
+ const dragOffset = parseFloat(panel.style.getPropertyValue(dragAxis));
+ const fallOffset = parseFloat(panel.style.getPropertyValue(axis));
+ const start = Number.isFinite(fallOffset)
+ ? fallOffset
+ : Number.isFinite(dragOffset)
+ ? dragOffset
+ : 0;
  panel.style.removeProperty(dragAxis);
- const start = dragOffset;
  const target = sign * extent;
 
- await stepFrames(SLIDE_OUT_DURATION, (t) => {
+ const completed = await stepFrames(SLIDE_OUT_DURATION, (t) => {
  const p = EASE_SHEET_OUT(t);
  panel.style.setProperty(axis, `${start + (target - start) * p}px`);
- });
+ }, () => animStale(drawer, 'slide', gen));
+
+ closingDrawers.delete(drawer);
+ if (!completed) return;
 
  drawer.classList.remove('is-open');
  if (drawer.open) drawer.close();
@@ -452,31 +495,49 @@ const widths = { sm: '400px', md: '480px', lg: '560px' };
  }
 
  /** Пружне повернення панелі на місце після невдалого drag. */
- function springBack(panel: HTMLElement, dragAxis: '--drag-x' | '--drag-y') {
+ function springBack(drawer: HTMLElement, panel: HTMLElement, dragAxis: '--drag-x' | '--drag-y') {
+ const gen = bumpAnim(drawer, 'spring');
  const start = parseFloat(panel.style.getPropertyValue(dragAxis)) || 0;
  return stepFrames(220, (t) => {
  panel.style.setProperty(dragAxis, `${start * (1 - EASE_SHEET_IN(t))}px`);
- }).then(() => {
+ }, () => animStale(drawer, 'spring', gen)).then((completed) => {
+ if (!completed) return;
  panel.classList.remove('is-dragging');
  panel.style.removeProperty(dragAxis);
  });
  }
 
  function openDrawer(drawer: HTMLElement, trigger: HTMLElement | null) {
- if (drawer.hasAttribute('open')) return;
+ const midClose = closingDrawers.has(drawer);
+ if (drawer.hasAttribute('open') && !midClose) return;
+
+ // Перебиваємо будь-який in-flight рух цього drawer'а новим поколінням.
+ const gen = bumpAnim(drawer, 'slide');
+ closingDrawers.delete(drawer);
 
  // Один drawer за раз: попередній закриваємо одразу, щоб два панелі
- // не накладалися одна на одну.
+ // не накладалися одна на одну (його степери також гасимо).
  document.querySelectorAll<HTMLElement>('[data-drawer]').forEach((other) => {
  if (other === drawer || !other.hasAttribute('open')) return;
+ bumpAnim(other, 'slide');
+ bumpAnim(other, 'spring');
+ closingDrawers.delete(other);
  other.classList.remove('is-open');
  if (other.open) other.close();
+ const otherPanel = getPanel(other);
+ if (otherPanel) {
+ otherPanel.style.transition = '';
+ otherPanel.classList.remove('is-dragging');
+ for (const axis of ['--fall-x', '--fall-y', '--drag-x', '--drag-y']) {
+ otherPanel.style.removeProperty(axis);
+ }
+ }
  });
 
  applyTriggerMeta(drawer, trigger);
  applyPanelSelection(drawer, trigger);
 
- drawer.showModal();
+ if (!drawer.open) drawer.showModal();
  syncPageScroll();
 
  // Примусовий reflow: панель має отримати розміри ДО першого кадру,
@@ -488,7 +549,7 @@ const widths = { sm: '400px', md: '480px', lg: '560px' };
 
  if (!REDUCED.matches) {
  const parts = prepSlide(drawer);
- if (parts) runSlideIn(parts);
+ if (parts) runSlideIn(parts, drawer, gen);
  }
  }
 
@@ -501,12 +562,19 @@ const widths = { sm: '400px', md: '480px', lg: '560px' };
  const panel = getPanel(drawer);
  panel?.style.removeProperty('--drag-x');
  panel?.style.removeProperty('--drag-y');
+ closingDrawers.delete(drawer);
  syncPageScroll();
  return;
  }
 
+ // Якщо панель уже закривається — не перезапускаємо закриття заново:
+ // поточний степер і так доводить рух до краю.
+ if (closingDrawers.has(drawer)) return;
+ closingDrawers.add(drawer);
+ const gen = bumpAnim(drawer, 'slide');
  const parts = prepSlide(drawer);
- if (parts) runSlideOut(parts, drawer);
+ if (parts) runSlideOut(parts, drawer, gen);
+ else closingDrawers.delete(drawer);
  }
 
  /** Перетягування панелі мишею або пальцем для закриття. */
@@ -521,6 +589,10 @@ const widths = { sm: '400px', md: '480px', lg: '560px' };
  const start = event as PointerEvent;
  if (start.pointerType === 'mouse' && start.button !== 0) return;
  if ((start.target as HTMLElement).closest('button, a, input, textarea, select')) return;
+
+ // Хват панелі перебиває пружне повернення (якщо воно триває), щоб
+ // степер і drag не писали в одну вісь одночасно.
+ bumpAnim(drawer, 'spring');
 
  const vertical = SHEET_LAYOUT.matches;
  const axis = vertical ? '--drag-y' : '--drag-x';
@@ -590,12 +662,14 @@ const widths = { sm: '400px', md: '480px', lg: '560px' };
  if (!dragging) return;
 
  const extent = vertical ? panel.offsetHeight : panel.offsetWidth;
- const dismissed = endEvent.type === 'pointerup' && (delta > extent * 0.22 || velocity > 0.45);
+ // Поріг фліка ~0.11 px/ms (стандарт швидкого жесту): короткий різкий
+ // свіп має закривати панель так само, як і довге протягування.
+ const dismissed = endEvent.type === 'pointerup' && (delta > extent * 0.22 || velocity > 0.11);
  if (dismissed) {
  closeDrawer(drawer);
  } else {
  // Пружне повернення на місце степером — працює скрізь.
- springBack(panel, axis as '--drag-x' | '--drag-y');
+ springBack(drawer, panel, axis as '--drag-x' | '--drag-y');
  }
  };
 

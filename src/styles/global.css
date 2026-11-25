@@ -80,24 +80,6 @@
     @apply inline-block rounded-xl px-[0.3em] py-[0.1em] text-[0.9em] leading-none font-black align-middle max-sm:rounded-lg;
   }
 
-  /* Pop card — physical card language: 2px espresso outline, no blur shadow */
-  .pop-card {
-    @apply rounded-3xl border-2 border-[#1E1414] bg-white;
-  }
-
-  /* Number badge hanging off a card corner */
-  .num-badge {
-    @apply absolute -left-4 -top-4 sm:-left-5 sm:-top-5 grid size-12 place-items-center rounded-full bg-[#1E1414] text-lg font-black text-white;
-  }
-
-  /* Blueprint grid backdrop for hero panels — warm 1px lines on cream */
-  .grid-blueprint {
-    background-image:
-      linear-gradient(to right, rgba(98, 58, 45, 0.09) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(98, 58, 45, 0.09) 1px, transparent 1px);
-    background-size: 80px 80px;
-  }
-
   /* Buttons: physical hover — the card lifts and a solid offset shadow
      appears beneath it. No blur shadows, no shimmer. */
   .pill-btn {
@@ -526,19 +508,16 @@ html {
    so grids are no longer capped at eight items.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* One shared transform composition for interactive tilt */
-.tilt-card,
+/* One shared 3D context for interactive tilt: preserve-3d keeps the GSAP-driven
+   rotationX/rotationY honest. No permanent will-change here — card grids would
+   each pin a compositor layer for their whole lifetime; the browser promotes
+   the element while its transform actually animates. */
 .bento-card,
 .project-card {
-  --tilt-x: 0deg;
-  --tilt-y: 0deg;
-  --tilt-perspective: 1000px;
   transform-style: preserve-3d;
-  will-change: transform;
 }
 
 [data-animate],
-.tilt-card,
 [data-stagger] > * {
   transition:
     translate var(--dur-base) var(--ease-out-expo) 0ms,
@@ -557,15 +536,6 @@ html {
 /* Visible state */
 [data-animate].is-visible {
   opacity: 1;
-}
-
-[data-animate="mask-up"] {
-  clip-path: inset(0 0 100% 0);
-  transition: clip-path 0.7s var(--ease-out-expo);
-}
-
-[data-animate="mask-up"].is-visible {
-  clip-path: inset(0 0 0 0);
 }
 
 /* Staggered entry for grids */
@@ -612,11 +582,24 @@ details[open] .faq-item-inner {
   transform: translateY(0);
 }
 
-/* Portfolio Filter Transition — FLIP reflow driven by --flip-x / --flip-y */
+/* NOTE on accordion close: animating the close direction via ::details-content
+   (block-size + content-visibility with allow-discrete) was implemented and
+   verified working on plain <details>, but Chromium 152 currently breaks the
+   slot on EXCLUSIVE accordions (<details name="…">): the slot stays
+   content-visibility:hidden with block-size 0 even while [open] matches.
+   Until that's fixed upstream, close stays an instant snap here — the open
+   direction above carries the spatial explanation, and per the motion
+   standards exits should be fast anyway. Revisit when the Chromium bug lands. */
+
+/* Portfolio filter cards. The FLIP reflow glide is driven inline by JS
+   (PortfolioFilterGrid sets a temporary `transform` transition during the
+   measured move), because the 3D tilt engine also writes inline transforms
+   on these cards via gsap.quickTo — a permanent CSS `transform` transition
+   here would re-ease every tilt frame and make the card swim after the
+   cursor. This transition only covers the filter fade states. */
 .project-card {
   transition:
     opacity var(--dur-base) var(--ease-out-expo),
-    transform 0.45s var(--ease-out-expo),
     translate var(--dur-base) var(--ease-out-expo),
     scale var(--dur-base) var(--ease-out-expo),
     border-color var(--dur-base) var(--ease-out-expo),
@@ -627,8 +610,6 @@ details[open] .faq-item-inner {
 
 .project-card.is-hidden {
   opacity: 0;
-  --reveal-scale: 0.96;
-  --reveal-y: 8px;
   pointer-events: none;
 }
 
@@ -646,20 +627,7 @@ details[open] .faq-item-inner {
 .pill-btn-outline:hover .lucide-arrow-right,
 .pill-btn-outline:hover .btn-icon {
   transform: translateX(4px);
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* Brand monogram wiggle */
-@keyframes markWiggle {
-  0%, 100% { transform: rotate(0deg) scale(1); }
-  25% { transform: rotate(-12deg) scale(1.1); }
-  75% { transform: rotate(12deg) scale(1.1); }
-}
-.brand-mark-icon {
-  transition: transform 0.3s ease;
-}
-.group:hover .brand-mark-icon {
-  animation: markWiggle 0.6s ease-in-out;
+  transition: transform var(--dur-fast) var(--ease-out-expo);
 }
 
 /* Running marquee band — the track carries two identical halves and slides
@@ -674,27 +642,6 @@ details[open] .faq-item-inner {
 }
 .marquee:hover .marquee-track {
   animation-play-state: paused;
-}
-
-/* Hero parallax layer — driven by --px / --py from the animation engine.
-   The pointer-driven transform lives on its own element so it composes
-   cleanly with the reveal system instead of fighting it. */
-.hero-parallax-layer {
-  transform: translate3d(var(--px, 0px), var(--py, 0px), 0) scale(1.04);
-  will-change: transform;
-}
-
-/* Fullscreen Hero Ambient Cinematic Zoom */
-@keyframes heroAmbientZoom {
-  0%, 100% {
-    transform: scale(1) translate3d(0, 0, 0);
-  }
-  50% {
-    transform: scale(1.03) translate3d(-0.4%, -0.4%, 0);
-  }
-}
-.hero-ambient-zoom {
-  animation: heroAmbientZoom 18s ease-in-out infinite alternate;
 }
 
 /* Mascot cat brand logo wiggle */
@@ -720,11 +667,7 @@ details[open] .faq-item-inner {
 }
 
 .hero-btn-primary,
-.hero-btn-secondary,
-.hero-interactive-container .network-lines,
-.hero-interactive-container .node > *,
-.hero-interactive-container .hero-text-block .moki-interactive-node,
-.hero-interactive-container .hero-scroll-btn {
+.hero-interactive-container .hero-text-block .moki-interactive-node {
   opacity: 1;
 }
 
@@ -732,7 +675,6 @@ details[open] .faq-item-inner {
 .reveal-text .reveal-word {
   display: inline-block;
   opacity: 1;
-  will-change: transform, opacity;
 }
 
 .reveal-text.is-visible .reveal-word {
@@ -751,22 +693,106 @@ details[open] .faq-item-inner {
   scale: 0.96;
 }
 
-/* Magnetic buttons — the engine translates the element toward the cursor */
+/* Magnetic buttons — the engine (gsap.quickTo) owns the inline transform
+   completely, so this element must NOT declare a CSS transform transition:
+   every quickTo write would be re-eased by a second transition, producing a
+   laggy double-smoothed pull. Hover feedback stays on the button's own
+   transition-[translate,box-shadow] utilities. will-change stays: the
+   pointer-driven transform is permanent, per-frame work. */
 [data-magnetic] {
-  transform: translate3d(var(--mag-x, 0px), var(--mag-y, 0px), 0);
-  transition:
-    transform var(--dur-base) var(--ease-out-expo),
-    scale var(--dur-fast) var(--ease-out-expo),
-    translate var(--dur-base) var(--ease-out-expo),
-    box-shadow var(--dur-base) var(--ease-out-expo),
-    background-color var(--dur-base) var(--ease-out-expo),
-    border-color var(--dur-base) var(--ease-out-expo);
   will-change: transform;
 }
 
 /* Icon slide inside buttons on hover */
 .btn-icon {
-  transition: transform var(--dur-base) var(--ease-out-expo);
+  transition: transform var(--dur-fast) var(--ease-out-expo);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Hero entrance — CSS-only on purpose: a CSS animation starts at style
+   application (before first paint), so there is no flash of visible-then-
+   hidden the way a JS-driven entrance risks. Staged: headline rows rise,
+   chips cascade, CTA lands last; the mascot tile pops on the site's spring
+   curve. Base state is fully visible, so reduced-motion simply skips it.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes hero-in {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+  }
+  @keyframes hero-pop {
+    from {
+      opacity: 0;
+      scale: 0.88;
+    }
+  }
+  .hero-title > span {
+    animation: hero-in 0.6s var(--ease-out-expo) backwards;
+  }
+  .hero-title > span:nth-child(2) {
+    animation-delay: 90ms;
+  }
+  .moki-interactive-node {
+    animation: hero-pop 0.55s var(--ease-spring) 0.25s backwards;
+  }
+  .hero-chips > * {
+    animation: hero-in 0.55s var(--ease-out-expo) backwards;
+  }
+  .hero-chips > *:nth-child(1) {
+    animation-delay: 180ms;
+  }
+  .hero-chips > *:nth-child(2) {
+    animation-delay: 240ms;
+  }
+  .hero-chips > *:nth-child(3) {
+    animation-delay: 300ms;
+  }
+  .hero-cta-group {
+    animation: hero-in 0.55s var(--ease-out-expo) 360ms backwards;
+  }
+
+  /* Mobile menu items cascade in each time the menu opens (display:none →
+     block restarts the animations, so every open replays the entrance). */
+  @keyframes menu-in {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+  }
+  #mobile-menu-content:not(.hidden) .mobile-item,
+  #mobile-menu-content:not(.hidden) .mobile-subitem {
+    animation: menu-in 0.35s var(--ease-out-expo) backwards;
+  }
+  #mobile-menu-content:not(.hidden) .mobile-item:nth-child(2),
+  #mobile-menu-content:not(.hidden) .mobile-item:nth-child(3),
+  #mobile-menu-content:not(.hidden) .mobile-item:nth-child(4),
+  #mobile-menu-content:not(.hidden) .mobile-item:nth-child(5) {
+    animation-delay: 50ms;
+  }
+  #mobile-menu-content:not(.hidden) .mobile-item:nth-child(n + 6) {
+    animation-delay: 100ms;
+  }
+  #mobile-menu-content:not(.hidden) .mobile-subitem {
+    animation-delay: 80ms;
+  }
+
+  /* Decorative mascot companions drift gently. Uses the standalone `translate`
+     property, so it composes with the poke squash (SVG-internal) and never
+     fights pointer-driven transforms. */
+  @keyframes moki-float {
+    0%,
+    100% {
+      translate: 0 0;
+    }
+    50% {
+      translate: 0 -8px;
+    }
+  }
+  .moki-float {
+    animation: moki-float 7s ease-in-out infinite;
+  }
 }
 
 a:hover > .btn-icon,
@@ -846,21 +872,21 @@ button:hover > .btn-icon,
     scroll-behavior: auto !important;
   }
 
+  /* Reduce, not nuke: scroll-driven entrances, marquees, pointer-driven
+     transforms and wiggles stop; state feedback stays functional.
+     #scroll-progress-bar is deliberately NOT in this list — a blanket
+     transform:none would defeat its scaleX(0) rest state and pin the bar
+     at full width across every page. Its movement encodes scroll position,
+     which is information, not decoration. */
   [data-animate],
   [data-stagger] > *,
-  [data-stack-card],
   .reveal-text .reveal-word,
-  .tilt-card,
-  .animate-hero-fade-in,
-  .brand-mark-icon,
   .brand-cat-icon,
-  .hero-ambient-zoom,
   .marquee-track,
   [data-magnetic],
   .project-card,
   .faq-item-inner,
-  .faq-item-grid,
-  #scroll-progress-bar {
+  .faq-item-grid {
     opacity: 1 !important;
     transform: none !important;
     translate: none !important;
@@ -871,32 +897,10 @@ button:hover > .btn-icon,
     animation: none !important;
   }
 
-  [data-animate="mask-up"] {
-    clip-path: none !important;
-  }
-}
-
-/* Scroll-linked reveal as a progressive enhancement on browsers that
-   support `animation-timeline: view()` — the JS engine still runs everywhere
-   else, so this only adds smoothness, never behaviour. */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    [data-animate="scroll-fade"] {
-      animation: scrollFade linear both;
-      animation-timeline: view();
-      animation-range: entry 0% cover 26%;
-    }
-
-    @keyframes scrollFade {
-      from {
-        opacity: 0.15;
-        transform: translate3d(0, 28px, 0) scale(0.97);
-      }
-      to {
-        opacity: 1;
-        transform: translate3d(0, 0, 0) scale(1);
-      }
-    }
+  /* Arrow nudges are pure hover decoration — freeze them too. */
+  .btn-icon,
+  .lucide-arrow-right {
+    transform: none !important;
   }
 }
 

@@ -20,7 +20,7 @@ const allReviews = Object.entries(imageMetaModules).map(([path, meta]) => {
   description="Справжні відгуки клієнтів та скріншоти повідомлень про співпрацю з розробником ihornone."
   url="/reviews"
 >
-  <section class="w-full pt-10 pb-6 sm:pt-14 sm:pb-8">
+  <section class="w-full pt-10 pb-6 sm:pt-14 sm:pb-8" data-animate="fade-up">
     <div class="flex items-center justify-center gap-3 sm:gap-5 max-w-4xl mx-auto px-4 text-center">
       <MokiWidget
         size={85}
@@ -28,6 +28,7 @@ const allReviews = Object.entries(imageMetaModules).map(([path, meta]) => {
         expression="heureux"
         state="idle"
         follow="page"
+        class="moki-float"
       />
       <h1
         data-reveal-text

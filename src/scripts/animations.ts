@@ -61,7 +61,9 @@ export function initSiteAnimations(): () => void {
       gsap.fromTo(
         navbarPocket,
         { y: -25, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', delay: 0.05 },
+        // 0.5s: this runs on EVERY page navigation (view transitions), so it
+        // stays inside the marketing-intro budget instead of a slow 0.8s.
+        { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out', delay: 0.05 },
       );
     }
 
@@ -233,6 +235,10 @@ export function initSiteAnimations(): () => void {
             duration: 0.85,
             stagger: 0.07,
             ease: 'power3.out',
+            // Free the inline transform once settled: leftover identity
+            // matrices would otherwise sit on every card for the page's
+            // lifetime and pin FLIP/tilt interactions that write transform.
+            clearProps: 'transform',
             scrollTrigger: {
               trigger: container,
               start: 'top 88%',
@@ -258,31 +264,15 @@ export function initSiteAnimations(): () => void {
           return;
         }
 
-        const variant = el.getAttribute('data-animate');
-        let fromProps: gsap.TweenVars = { opacity: 0, y: 30 };
-
-        if (variant === 'fade-down') {
-          fromProps = { opacity: 0, y: -30 };
-        } else if (variant === 'fade-in') {
-          fromProps = { opacity: 0 };
-        } else if (variant === 'zoom-in') {
-          fromProps = { opacity: 0, scale: 0.96 };
-        } else if (variant === 'slide-left') {
-          fromProps = { opacity: 0, x: 30 };
-        } else if (variant === 'slide-right') {
-          fromProps = { opacity: 0, x: -30 };
-        }
-
         gsap.fromTo(
           el,
-          fromProps,
+          { opacity: 0, y: 30 },
           {
             opacity: 1,
             y: 0,
-            x: 0,
-            scale: 1,
             duration: 0.85,
             ease: 'power3.out',
+            clearProps: 'transform',
             scrollTrigger: {
               trigger: el,
               start: 'top 88%',
@@ -392,13 +382,7 @@ export function initSiteAnimations(): () => void {
        10. 3D Perspective Tilt on All Bento & Project Cards
        ───────────────────────────────────────────────────────────────────────── */
     if (isFinePointer && !prefersReducedMotion) {
-      const cardSelectors = [
-        '.tilt-card',
-        '.bento-card',
-        '.project-card',
-        '.spotlight-card',
-        'article.bg-white',
-      ].join(', ');
+      const cardSelectors = ['.bento-card', '.project-card', 'article.bg-white'].join(', ');
 
       document.querySelectorAll<HTMLElement>(cardSelectors).forEach((card) => {
         const maxTilt = parseFloat(card.dataset.tilt || '3.5');
@@ -411,58 +395,16 @@ export function initSiteAnimations(): () => void {
           const normY = (e.clientY - rect.top) / (rect.height / 2) - 1;
           rxTo(-normY * maxTilt);
           ryTo(normX * maxTilt);
-
-          card.style.setProperty('--mouse-x', `${(e.clientX - rect.left).toFixed(1)}px`);
-          card.style.setProperty('--mouse-y', `${(e.clientY - rect.top).toFixed(1)}px`);
         };
 
         const onMouseLeave = () => {
           rxTo(0);
           ryTo(0);
-          card.style.setProperty('--mouse-x', '-999px');
-          card.style.setProperty('--mouse-y', '-999px');
         };
 
         card.addEventListener('mousemove', onMouseMove, { passive: true });
         card.addEventListener('mouseleave', onMouseLeave, { passive: true });
       });
-    }
-
-    /* ─────────────────────────────────────────────────────────────────────────
-       11. Hero Mouse Parallax (Dev-cat background)
-       ───────────────────────────────────────────────────────────────────────── */
-    const heroLayers = Array.from(document.querySelectorAll<HTMLElement>('.hero-parallax-layer'));
-
-    if (heroContainer && heroLayers.length && isFinePointer && !prefersReducedMotion) {
-      const quickTos = heroLayers.map((layer) => {
-        const depth = parseFloat(layer.dataset.depth || '1');
-        return {
-          depth,
-          xTo: gsap.quickTo(layer, 'x', { duration: 0.55, ease: 'power2.out' }),
-          yTo: gsap.quickTo(layer, 'y', { duration: 0.55, ease: 'power2.out' }),
-        };
-      });
-
-      const onHeroMouseMove = (e: MouseEvent) => {
-        const rect = heroContainer.getBoundingClientRect();
-        const targetX = -((e.clientX - rect.left) / rect.width - 0.5) * 18;
-        const targetY = -((e.clientY - rect.top) / rect.height - 0.5) * 18;
-
-        quickTos.forEach(({ depth, xTo, yTo }) => {
-          xTo(targetX * depth);
-          yTo(targetY * depth);
-        });
-      };
-
-      const onHeroMouseLeave = () => {
-        quickTos.forEach(({ xTo, yTo }) => {
-          xTo(0);
-          yTo(0);
-        });
-      };
-
-      heroContainer.addEventListener('mousemove', onHeroMouseMove, { passive: true });
-      heroContainer.addEventListener('mouseleave', onHeroMouseLeave, { passive: true });
     }
 
     // Refresh ScrollTrigger after webfonts settle to ensure pin positions are exact

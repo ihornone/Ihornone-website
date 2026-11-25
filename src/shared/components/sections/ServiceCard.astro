@@ -65,7 +65,7 @@ const currentTheme = themeConfig[id] || {
  <div class="flex items-center justify-between gap-3 mb-6">
  <div
  class:list={[
- "grid size-14 place-items-center rounded-2xl border-2 border-[#1E1414] text-2xl text-[#1E1414] transition-transform duration-300 group-hover:-rotate-3 group-hover:scale-105",
+ "grid size-14 place-items-center rounded-2xl border-2 border-[#1E1414] text-2xl text-[#1E1414] transition-transform duration-300 group-hover:-rotate-3 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:rotate-0 motion-reduce:group-hover:scale-100",
  currentTheme.tile,
  ]}
  >

@@ -33,7 +33,7 @@ const variantClasses = {
   muted: 'bg-[#F4E8E3] text-[#623A2D] border-2 border-[#1E1414]/40',
 };
 
-const baseClasses = 'rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3';
+const baseClasses = 'rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3 motion-reduce:transition-none motion-reduce:group-hover:scale-100 motion-reduce:group-hover:rotate-0';
 ---
 
 <div class={`${baseClasses} ${sizeClasses[size]} ${variantClasses[variant]} ${className}`}>

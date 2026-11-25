@@ -9,6 +9,20 @@ import { clampDuration, defaultCycle, offsetOf, type Block } from './core/cycles
 import { MokiArtwork } from './MokiArtwork';
 
 const defaultBlocks = defaultCycle().blocks;
+
+/** Compact fingerprint of a rendered frame. The rAF loop compares signatures
+    instead of pushing state every tick, so a visually settled mascot costs
+    zero React re-renders; the full SVG diff runs only while something moves. */
+function frameSignature(f: BotFrame): string {
+  let s = f.bodyPath + f.bodyAlpha.toFixed(4) + (f.dotsBehind ? 1 : 0);
+  for (const e of f.eyes) s += e.d + e.matrix + e.alpha.toFixed(4);
+  for (const d of f.dots) s += `${d.x},${d.y},${d.r},${d.opacity},${d.color ?? ''},${d.depth ?? ''},${d.d ?? ''},${d.rot ?? ''}`;
+  for (const a of f.arcs) s += `${a.id}${a.t.toFixed(4)}${a.opacity.toFixed(4)}${a.width}${a.front}${a.back}${a.grad.x1},${a.grad.y1},${a.grad.x2},${a.grad.y2},${a.grad.stops.join('')}`;
+  if (f.notif) s += `n${f.notif.x},${f.notif.y},${f.notif.r}`;
+  if (f.notch) s += `c${f.notch.x},${f.notch.y},${f.notch.r}`;
+  return s;
+}
+
 export type FollowMode = false | true | 'page' | 'area';
 export interface PlaybackPosition { block: number; state: StateId; elapsed: number; time: number; }
 export interface MokiHandle { getSvg(): SVGSVGElement | null; seek(block: number, offset?: number): void; }
@@ -45,11 +59,21 @@ export function Moki({shape=DEFAULT_SHAPE,color=DEFAULT_COLOR,expression=DEFAULT
   const clock=useRef(0),pokeUntil=useRef(0),gazeStart=useRef(0),pokeDirection=useRef(1);
   const svg=useRef<SVGSVGElement>(null);
   const pointer=useRef<{x:number;y:number}|null>(null);
+  /* Cached layout boxes: measured on pointer/scroll/resize events, never per
+     frame — a getBoundingClientRect inside the rAF loop invalidates layout
+     every tick (the engine writes DOM right before the read). */
+  const svgRect=useRef<DOMRect|null>(null);
+  const areaRect=useRef<DOMRect|null>(null);
+  const lastFrameSig=useRef('');
   const player=useRef({index:0,started:0,elapsed:0,running:false,lastNotify:-Infinity,state});
   const config=useRef({state,playing,cycle,follow,followArea,onPlayback,gaze});
   config.current={state,playing,cycle,follow,followArea,onPlayback,gaze};
   const ink=inkOf(color);
-  const snapshot=()=>setFrame({...engine.sample(frozenAt??(clock.current+(window.matchMedia('(prefers-reduced-motion: reduce)').matches?1:0)))});
+  const snapshot=()=>{
+    const next={...engine.sample(frozenAt??(clock.current+(window.matchMedia('(prefers-reduced-motion: reduce)').matches?1:0)))};
+    lastFrameSig.current=frameSignature(next);
+    setFrame(next);
+  };
   const setPose=(next:StateId)=>{engine.setState(next,clock.current);player.current.state=next;setCurrent(next);};
   const seek=(index:number,offset=0)=>{
     const blocks=config.current.cycle;
@@ -88,15 +112,23 @@ export function Moki({shape=DEFAULT_SHAPE,color=DEFAULT_COLOR,expression=DEFAULT
   useEffect(()=>{
     pointer.current=null;engine.setLook(null,clock.current);
     if(!follow||frozenAt!==undefined||reduced)return;
+    const measure=()=>{
+      svgRect.current=svg.current?.getBoundingClientRect()??null;
+      areaRect.current=config.current.follow==='area'?config.current.followArea?.current?.getBoundingClientRect()??null:null;
+    };
+    measure();
     const move=(event:PointerEvent)=>{
       if(event.pointerType==='touch'||!Number.isFinite(event.clientX)||!Number.isFinite(event.clientY)){pointer.current=null;return;}
       pointer.current={x:event.clientX,y:event.clientY};
+      measure();
     };
     const release=()=>{pointer.current=null;engine.setLook(null,clock.current);};
     window.addEventListener('pointermove',move,{passive:true});
+    window.addEventListener('scroll',measure,{passive:true});
+    window.addEventListener('resize',measure,{passive:true});
     document.addEventListener('pointerleave',release);
     window.addEventListener('blur',release);
-    return()=>{window.removeEventListener('pointermove',move);document.removeEventListener('pointerleave',release);window.removeEventListener('blur',release);release();};
+    return()=>{window.removeEventListener('pointermove',move);window.removeEventListener('scroll',measure);window.removeEventListener('resize',measure);document.removeEventListener('pointerleave',release);window.removeEventListener('blur',release);release();};
   },[engine,follow,followArea,frozenAt,reduced]);
 
   useEffect(()=>{
@@ -114,9 +146,9 @@ export function Moki({shape=DEFAULT_SHAPE,color=DEFAULT_COLOR,expression=DEFAULT
         }
       }
       let target=c.gaze?c.gaze(clock.current-gazeStart.current):null;
-      const point=pointer.current,box=svg.current?.getBoundingClientRect();
+      const point=pointer.current,box=svgRect.current;
       if(!c.gaze&&c.follow&&point&&box&&box.width>0&&box.height>0&&STATE_BY_ID.get(p.state)?.baseFace){
-        const area=c.follow==='area'?c.followArea?.current?.getBoundingClientRect():null;
+        const area=c.follow==='area'?areaRect.current:null;
         const allowed=c.follow!=='area'||(area&&area.width>0&&area.height>0&&point.x>=area.left&&point.x<=area.right&&point.y>=area.top&&point.y<=area.bottom);
         if(allowed){
           const halfWidth=Math.max(1,(area?.width??window.innerWidth)/2),halfHeight=Math.max(1,(area?.height??window.innerHeight)/2);
@@ -125,7 +157,17 @@ export function Moki({shape=DEFAULT_SHAPE,color=DEFAULT_COLOR,expression=DEFAULT
           target={yaw:nx*16,pitch:10-ny*13,mix:1,spin:0,wander:0};
         }
       }
-      engine.setLook(target,clock.current,c.gaze?1/60:BotEngine.LOOK_MORPH);setFrame({...engine.sample(clock.current)});
+      engine.setLook(target,clock.current,c.gaze?1/60:BotEngine.LOOK_MORPH);
+      const next={...engine.sample(clock.current)};
+      const sig=frameSignature(next);
+      // The poke squash animates through re-renders (bodyTransform is derived
+      // in render from pokeUntil), so it always pushes a frame; otherwise the
+      // frame is pushed only when the engine output actually changed — an
+      // idle mascot costs zero React re-renders.
+      if(pokeUntil.current>0||sig!==lastFrameSig.current){
+        lastFrameSig.current=sig;
+        setFrame(next);
+      }
       if(clock.current-p.lastNotify>=0.1){
         p.lastNotify=clock.current;
         c.onPlayback?.({block:p.index,state:p.state,elapsed:p.elapsed,time:offsetOf(c.cycle,p.index)+p.elapsed});

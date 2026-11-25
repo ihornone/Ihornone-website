@@ -16,6 +16,10 @@ const { class: className = "" } = Astro.props;
   ]}
 >
   <div class="absolute inset-0 w-full h-full pointer-events-none overflow-hidden z-0">
+    <div
+      class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-75"
+      style="background-image: url('/images/hero-bg.jpg');"
+    ></div>
     <div class="absolute inset-0 bg-[radial-gradient(#1E1414_1px,transparent_1px)] [background-size:28px_28px] opacity-[0.035]"></div>
   </div>
 
@@ -23,28 +27,27 @@ const { class: className = "" } = Astro.props;
   <div class="hero-text-block relative z-20 max-w-2xl sm:max-w-3xl lg:max-w-4xl xl:max-w-5xl text-center px-4 sm:px-6 flex flex-col items-center pointer-events-auto">
     <!-- Main Headline -->
     <h1 class="hero-title flex flex-col items-center justify-center text-center m-0 select-none">
-      <!-- Рядок 1 (жирний): «Сайти, боти» + плитка з Moki + «та сервіси» -->
+      <!-- Рядок 1 (жирний): «Сайти, боти» + Moki (ліловий, великий, без рамки, впритул) + «та сервіси» -->
       <span
-        class="inline-flex flex-wrap items-center justify-center gap-x-2 sm:gap-x-3.5 gap-y-2 text-3xl sm:text-5xl md:text-6xl lg:text-[68px] xl:text-[76px] font-black text-[#1E1414] tracking-[-0.035em] leading-[1.16]"
+        class="inline-flex items-center justify-center flex-wrap sm:flex-nowrap gap-x-1 sm:gap-x-1.5 gap-y-2 text-3xl sm:text-5xl md:text-6xl lg:text-[68px] xl:text-[76px] font-black text-[#1E1414] tracking-[-0.035em] leading-[1.16]"
       >
-        <span data-reveal-text>Сайти, боти</span>
+        <span data-reveal-text class="whitespace-nowrap">Сайти, боти</span>
         <span
-          class="moki-interactive-node moki-hero-tile inline-flex items-center justify-center w-[1.22em] h-[1.22em] align-middle -mt-[0.06em] rounded-[0.26em] sm:rounded-[0.28em] bg-[#D09AFC] shadow-[3.5px_4.5px_0_#1E1414] sm:shadow-[4.5px_5.5px_0_#1E1414] hover:shadow-[5px_6px_0_#1E1414] transition-all duration-200 hover:scale-105 hover:-translate-y-0.5 active:scale-95 cursor-pointer shrink-0 select-none p-[0.14em] group/moki"
+          class="moki-interactive-node inline-flex items-center justify-center w-[1.45em] h-[1.45em] sm:w-[1.6em] sm:h-[1.6em] align-middle -mt-[0.06em] -mx-0.5 sm:-mx-1 transition-transform duration-200 hover:scale-110 active:scale-95 cursor-pointer shrink-0 select-none group/moki"
           title="Привіт від Мокі! Клікни, щоб змінити форму ✨"
-          aria-label="Інтерактивний Мокі у ліловій плитці"
+          aria-label="Інтерактивний Мокі"
         >
           <MokiMorpher
             client:load
-            size={140}
-            color="#1E1414"
-            paper="#FFFFFF"
+            size={180}
+            color="#D09AFC"
             expression="heureux"
             follow="page"
             interval={3200}
-            className="w-full h-full [&>svg]:w-full [&>svg]:h-full"
+            className="w-full h-full [&>svg]:w-full [&>svg]:h-full [&>svg]:overflow-visible"
           />
         </span>
-        <span data-reveal-text>та сервіси</span>
+        <span data-reveal-text class="whitespace-nowrap">та сервіси</span>
       </span>
 
       <!-- Рядок 2 (light): «які приносять заявки» -->
@@ -65,9 +68,9 @@ const { class: className = "" } = Astro.props;
       <!-- Чіп 1: Заявки -->
       <div
         role="listitem"
-        class="inline-flex items-center gap-2 sm:gap-2.5 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white border-2 border-[#1E1414] shadow-[2.5px_2.5px_0_#1E1414] hover:shadow-[4px_4px_0_#D09AFC] hover:-translate-y-0.5 transition-all select-none group/chip cursor-default"
+        class="inline-flex items-center gap-2 sm:gap-2.5 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white border-2 border-[#1E1414] shadow-[2.5px_2.5px_0_#1E1414] hover:shadow-[4px_4px_0_#D09AFC] hover:-translate-y-0.5 transition-[box-shadow,translate] motion-reduce:transition-none motion-reduce:hover:shadow-[2.5px_2.5px_0_#1E1414] motion-reduce:hover:translate-y-0 select-none group/chip cursor-default"
       >
-        <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-xl bg-[#D09AFC]/35 border border-[#1E1414]/15 flex items-center justify-center text-[#1E1414] shrink-0 group-hover/chip:scale-110 transition-transform">
+        <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-xl bg-[#D09AFC]/35 border border-[#1E1414]/15 flex items-center justify-center text-[#1E1414] shrink-0 group-hover/chip:scale-110 transition-transform motion-reduce:transition-none motion-reduce:group-hover/chip:scale-100">
           <Icon name="sparkles" size={14} class="sm:scale-110 text-[#6B21A8]" />
         </span>
         <span class="text-xs sm:text-sm font-black text-[#1E1414] tracking-tight">Заявки</span>
@@ -76,9 +79,9 @@ const { class: className = "" } = Astro.props;
       <!-- Чіп 2: Оплати -->
       <div
         role="listitem"
-        class="inline-flex items-center gap-2 sm:gap-2.5 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white border-2 border-[#1E1414] shadow-[2.5px_2.5px_0_#1E1414] hover:shadow-[4px_4px_0_#E8BA98] hover:-translate-y-0.5 transition-all select-none group/chip cursor-default"
+        class="inline-flex items-center gap-2 sm:gap-2.5 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white border-2 border-[#1E1414] shadow-[2.5px_2.5px_0_#1E1414] hover:shadow-[4px_4px_0_#E8BA98] hover:-translate-y-0.5 transition-[box-shadow,translate] motion-reduce:transition-none motion-reduce:hover:shadow-[2.5px_2.5px_0_#1E1414] motion-reduce:hover:translate-y-0 select-none group/chip cursor-default"
       >
-        <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-xl bg-[#E8BA98]/45 border border-[#1E1414]/15 flex items-center justify-center text-[#1E1414] shrink-0 group-hover/chip:scale-110 transition-transform">
+        <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-xl bg-[#E8BA98]/45 border border-[#1E1414]/15 flex items-center justify-center text-[#1E1414] shrink-0 group-hover/chip:scale-110 transition-transform motion-reduce:transition-none motion-reduce:group-hover/chip:scale-100">
           <Icon name="credit-card" size={14} class="sm:scale-110 text-[#95553C]" />
         </span>
         <span class="text-xs sm:text-sm font-black text-[#1E1414] tracking-tight">Оплати</span>
@@ -87,9 +90,9 @@ const { class: className = "" } = Astro.props;
       <!-- Чіп 3: Гарантія 30 днів -->
       <div
         role="listitem"
-        class="inline-flex items-center gap-2 sm:gap-2.5 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white border-2 border-[#1E1414] shadow-[2.5px_2.5px_0_#1E1414] hover:shadow-[4px_4px_0_#FAC3C8] hover:-translate-y-0.5 transition-all select-none group/chip cursor-default"
+        class="inline-flex items-center gap-2 sm:gap-2.5 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white border-2 border-[#1E1414] shadow-[2.5px_2.5px_0_#1E1414] hover:shadow-[4px_4px_0_#FAC3C8] hover:-translate-y-0.5 transition-[box-shadow,translate] motion-reduce:transition-none motion-reduce:hover:shadow-[2.5px_2.5px_0_#1E1414] motion-reduce:hover:translate-y-0 select-none group/chip cursor-default"
       >
-        <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-xl bg-[#FAC3C8]/50 border border-[#1E1414]/15 flex items-center justify-center text-[#1E1414] shrink-0 group-hover/chip:scale-110 transition-transform">
+        <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-xl bg-[#FAC3C8]/50 border border-[#1E1414]/15 flex items-center justify-center text-[#1E1414] shrink-0 group-hover/chip:scale-110 transition-transform motion-reduce:transition-none motion-reduce:group-hover/chip:scale-100">
           <Icon name="shield-check" size={14} class="sm:scale-110 text-[#BE185D]" />
         </span>
         <span class="text-xs sm:text-sm font-black text-[#1E1414] tracking-tight">Гарантія 30 днів</span>
@@ -108,10 +111,10 @@ const { class: className = "" } = Astro.props;
         <Icon
           name="telegram"
           size={18}
-          class="group-hover:scale-110 transition-transform"
+          class="group-hover:scale-110 transition-transform motion-reduce:transition-none motion-reduce:group-hover:scale-100"
         />
         <span>Обговорити в Telegram</span>
-        <Icon name="arrow-right" size={14} class="transition-transform group-hover:translate-x-1" />
+        <Icon name="arrow-right" size={14} class="transition-transform group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
       </a>
     </div>
   </div>
@@ -121,9 +124,12 @@ const { class: className = "" } = Astro.props;
   function initMokiRejoice() {
     const nodes = document.querySelectorAll('.moki-interactive-node');
     const symbols = ['✦', '✨', '💜', '⚡', '🎉'];
+    const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     nodes.forEach((node) => {
       node.addEventListener('click', () => {
+        // Rare celebratory burst — skipped entirely under reduced motion.
+        if (REDUCED) return;
         const rect = node.getBoundingClientRect();
         for (let i = 0; i < 5; i++) {
           const particle = document.createElement('span');
@@ -141,7 +147,7 @@ const { class: className = "" } = Astro.props;
           particle.style.top = `${startY}px`;
           particle.style.opacity = '1';
           particle.style.transform = 'translate(-50%, -50%) scale(0.6)';
-          particle.style.transition = 'all 0.85s cubic-bezier(0.16, 1, 0.3, 1)';
+          particle.style.transition = 'transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1)';
           document.body.appendChild(particle);
 
           requestAnimationFrame(() => {

@@ -50,7 +50,16 @@ const SOCIALS = [
 
 export default function MokiCornerWidget() {
   const [isOpen, setIsOpen] = useState(false);
+  const [reduced, setReduced] = useState(false);
   const widgetRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => setReduced(media.matches);
+    update();
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
+  }, []);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -73,43 +82,53 @@ export default function MokiCornerWidget() {
     };
   }, [isOpen]);
 
+  // Scale-from-trigger entrance: the panel grows out of the mascot
+  // (origin-bottom-right). Reduced motion keeps opacity feedback only.
+  const panelMotion = reduced
+    ? 'transition-[opacity,visibility] duration-150'
+    : 'transition-[opacity,transform,visibility] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]';
+  const panelState = isOpen
+    ? 'opacity-100 translate-y-0 scale-100 visible'
+    : `opacity-0 pointer-events-none invisible ${reduced ? '' : 'translate-y-1.5 scale-[0.92]'}`;
+
   return (
     <div
       ref={widgetRef}
       className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50 pointer-events-auto select-none"
     >
       {/* Clean compact socials popup - opens UPWARDS above the mascot */}
-      {isOpen && (
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 'calc(100% + 12px)',
-            right: 0,
-            width: '190px',
-          }}
-          className="bg-white border-2 border-[#1E1414] rounded-2xl p-2 shadow-[0_8px_0_#1E1414] flex flex-col gap-1 origin-bottom-right"
-        >
-          {SOCIALS.map((item) => (
-            <a
-              key={item.name}
-              href={item.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-[#1E1414] hover:bg-[#FAF1EC] hover:text-[#95553C] transition-colors no-underline"
-            >
-              <span className="shrink-0 text-[#1E1414]">{item.icon}</span>
-              <span>{item.name}</span>
-            </a>
-          ))}
-        </div>
-      )}
+      <div
+        aria-hidden={!isOpen}
+        inert={!isOpen}
+        style={{
+          position: 'absolute',
+          bottom: 'calc(100% + 12px)',
+          right: 0,
+          width: '190px',
+        }}
+        className={`bg-white border-2 border-[#1E1414] rounded-2xl p-2 shadow-[0_8px_0_#1E1414] flex flex-col gap-1 origin-bottom-right ${panelMotion} ${panelState}`}
+      >
+        {SOCIALS.map((item) => (
+          <a
+            key={item.name}
+            href={item.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-[#1E1414] hover:bg-[#FAF1EC] hover:text-[#95553C] transition-colors no-underline"
+          >
+            <span className="shrink-0 text-[#1E1414]">{item.icon}</span>
+            <span>{item.name}</span>
+          </a>
+        ))}
+      </div>
 
       {/* Mascot Button without framing container */}
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
         aria-label="Соцмережі"
-        className="group relative flex items-center justify-center cursor-pointer p-0 bg-transparent border-0 outline-none transition-transform duration-200 hover:scale-110 active:scale-95 drop-shadow-[0_8px_16px_rgba(30,20,20,0.18)]"
+        aria-expanded={isOpen}
+        className="group relative flex items-center justify-center cursor-pointer p-0 bg-transparent border-0 outline-none transition-transform duration-200 hover:scale-110 active:scale-95 motion-reduce:transition-none motion-reduce:hover:scale-100 motion-reduce:active:scale-100 drop-shadow-[0_8px_16px_rgba(30,20,20,0.18)]"
       >
         <Moki
           size={64}

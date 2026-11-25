@@ -21,7 +21,7 @@ const { project, class: className = '' } = Astro.props;
     <img
       src={project.image}
       alt={project.title}
-      class="w-full h-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105 motion-reduce:transition-none"
+      class="w-full h-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
       loading="lazy"
     />
   </div>
@@ -46,11 +46,11 @@ const { project, class: className = '' } = Astro.props;
 
     <div class="pt-2 mt-auto w-full">
       <div
-        class="w-full inline-flex items-center justify-center gap-3 px-6 py-4 rounded-xl border-2 border-[#1E1414] bg-[#1E1414] text-white text-xs sm:text-sm font-black transition-[translate,box-shadow] duration-200 group-hover:-translate-y-0.5 group-hover:shadow-[0_6px_0_#D09AFC] active:translate-y-0 active:shadow-none motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-none group/btn pointer-events-none"
+        class="w-full inline-flex items-center justify-center gap-3 px-6 py-4 rounded-xl border-2 border-[#1E1414] bg-[#1E1414] text-white text-xs sm:text-sm font-black transition-[translate,box-shadow] duration-200 group-hover:-translate-y-0.5 group-hover:shadow-[0_6px_0_#D09AFC] active:translate-y-0 active:shadow-none motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-none motion-reduce:group-hover:translate-y-0 motion-reduce:group-hover:shadow-none group/btn pointer-events-none"
         aria-hidden="true"
       >
         <span>Детальніше про проєкт</span>
-        <Icon name="arrow-right" size={13} class="transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none" />
+        <Icon name="arrow-right" size={13} class="transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
       </div>
     </div>
   </div>

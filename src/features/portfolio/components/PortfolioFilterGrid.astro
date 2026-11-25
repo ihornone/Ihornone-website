@@ -14,7 +14,7 @@ const { categories, projects } = Astro.props;
     {categories.map((category, i) => (
       <button
         data-category={category}
-        class={`filter-tab px-6 py-3 rounded-xl font-bold text-xs sm:text-sm transition-[background-color,border-color,color,box-shadow] duration-200 cursor-pointer border-2 motion-reduce:transition-none ${i === 0 ? 'bg-[#1E1414] text-white border-[#1E1414]' : 'bg-white text-[#1E1414] border-[#1E1414]/40 hover:border-[#1E1414] hover:-translate-y-0.5 hover:shadow-[0_4px_0_#D09AFC] motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-none'}`}
+        class={`filter-tab px-6 py-3 rounded-xl font-bold text-xs sm:text-sm transition-[background-color,border-color,color,box-shadow,translate] duration-200 cursor-pointer border-2 motion-reduce:transition-none ${i === 0 ? 'bg-[#1E1414] text-white border-[#1E1414]' : 'bg-white text-[#1E1414] border-[#1E1414]/40 hover:border-[#1E1414] hover:-translate-y-0.5 hover:shadow-[0_4px_0_#D09AFC] motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-none'}`}
       >
         {category}
       </button>
@@ -32,6 +32,13 @@ const { categories, projects } = Astro.props;
   document.addEventListener('astro:page-load', () => {
     const filterTabs = document.querySelectorAll<HTMLElement>('.filter-tab');
     const projectCards = Array.from(document.querySelectorAll<HTMLElement>('#projects-grid .project-card'));
+    const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Motion constants: exits stay fast, the measured FLIP glide matches the
+    // site's --ease-out-expo character, stagger sits inside the 30–80ms band.
+    const EXIT_MS = 240;
+    const FLIP_MS = 450;
+    const STAGGER_MS = 45;
 
     const ACTIVE = ['bg-[#1E1414]', 'text-white', 'border-[#1E1414]'];
     const IDLE = [
@@ -43,66 +50,117 @@ const { categories, projects } = Astro.props;
       'hover:shadow-[0_4px_0_#D09AFC]',
     ];
 
+    // Every pending async step of the current choreography lives in one
+    // cancelable set: a new filter click retargets from the live state
+    // instead of racing a stale cleanup timer.
+    let hideTimer: number | undefined;
+    let flipTimers: number[] = [];
+
+    const cancelPending = () => {
+      window.clearTimeout(hideTimer);
+      flipTimers.forEach((t) => window.clearTimeout(t));
+      hideTimer = undefined;
+      flipTimers = [];
+    };
+
     function applyFilter(selected: string) {
-      // First — remember where every visible card currently sits
+      cancelPending();
+
+      // First — remember where every currently-visible card sits
       const first = new Map<HTMLElement, DOMRect>();
       projectCards.forEach((card) => {
         if (card.style.display !== 'none') first.set(card, card.getBoundingClientRect());
       });
 
-      // Last — switch visibility and let the grid reflow
-      const shown: HTMLElement[] = [];
+      // Split cards into exits (fade out now), stays (will glide) and
+      // entering (kept display:none until the reflow so they never flash).
+      const stays: HTMLElement[] = [];
+      const exits: HTMLElement[] = [];
+      const entering: HTMLElement[] = [];
       projectCards.forEach((card) => {
         const category = card.getAttribute('data-category');
         const shouldShow = selected === 'Усі проєкти' || category === selected;
+        const wasVisible = card.style.display !== 'none';
 
         if (shouldShow) {
-          card.style.display = '';
-          card.classList.remove('is-hidden');
-          shown.push(card);
-        } else {
+          if (wasVisible) stays.push(card);
+          else entering.push(card);
+        } else if (wasVisible) {
+          exits.push(card);
+        }
+      });
+
+      if (REDUCED) {
+        exits.concat(entering).forEach((card) => {
           card.style.display = 'none';
           card.classList.remove('is-hidden');
-        }
-      });
+        });
+        stays.forEach((card) => card.classList.remove('is-hidden'));
+        return;
+      }
 
-      // Invert + Play — cards glide from their old slot into the new one
-      shown.forEach((card, index) => {
-        const previous = first.get(card);
-        const next = card.getBoundingClientRect();
+      // Exit: visible cards fade out fast, then leave the layout so the grid
+      // reflows. A card re-shown mid-fade retargets through the CSS opacity
+      // transition — no snap.
+      exits.forEach((card) => card.classList.add('is-hidden'));
+      hideTimer = window.setTimeout(() => {
+        exits.forEach((card) => {
+          card.style.display = 'none';
+          card.classList.remove('is-hidden');
+        });
 
-        if (!previous) {
-          // Newly revealed card: fade and scale in
+        // Invert + Play — cards glide from their old slot into the new one.
+        stays.forEach((card, index) => {
+          const previous = first.get(card);
+          card.classList.remove('is-hidden');
+          card.style.scale = '';
+          if (!previous) return;
+
+          const next = card.getBoundingClientRect();
+          const dx = previous.left - next.left;
+          const dy = previous.top - next.top;
+          if (dx === 0 && dy === 0) return;
+
+          // Inline FLIP: suppress transitions, jump to the old slot, then
+          // glide back to identity. Inline transform (not CSS variables) so
+          // the 3D-tilt engine — which also writes inline transforms — can
+          // never collide with a half-applied variable state.
+          const delay = index * STAGGER_MS;
+          card.style.transition = `transform ${FLIP_MS}ms var(--ease-out-expo) ${delay}ms`;
+          card.style.transform = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px)`;
+          void card.offsetWidth; // force reflow so the jump itself isn't transitioned
+          card.style.transform = '';
+          flipTimers.push(
+            window.setTimeout(() => {
+              card.style.transition = '';
+            }, FLIP_MS + delay + 100),
+          );
+        });
+
+        // Newly revealed cards: fade + scale in with the same stagger.
+        entering.forEach((card, index) => {
+          const delay = index * STAGGER_MS;
+          card.style.display = '';
           card.classList.add('is-hidden');
-          requestAnimationFrame(() => {
-            card.style.transitionDelay = `${index * 45}ms`;
+          card.style.scale = '0.96';
+          card.style.transitionDelay = `${delay}ms`;
+          // Двофазний rAF + таймерний fallback (webview без rAF): без нього
+          // картка назавжди лишилася б у is-hidden (opacity 0).
+          const reveal = () => {
             card.classList.remove('is-hidden');
+            card.style.scale = '';
+          };
+          requestAnimationFrame(() => {
+            requestAnimationFrame(reveal);
           });
-          return;
-        }
-
-        const dx = previous.left - next.left;
-        const dy = previous.top - next.top;
-        if (dx === 0 && dy === 0) return;
-
-        card.style.setProperty('--flip-x', `${dx.toFixed(1)}px`);
-        card.style.setProperty('--flip-y', `${dy.toFixed(1)}px`);
-
-        requestAnimationFrame(() => {
-          card.style.transitionDelay = `${index * 45}ms`;
-          card.style.setProperty('--flip-x', '0px');
-          card.style.setProperty('--flip-y', '0px');
+          window.setTimeout(reveal, 60 + delay);
+          flipTimers.push(
+            window.setTimeout(() => {
+              card.style.transitionDelay = '';
+            }, FLIP_MS + delay + 100),
+          );
         });
-      });
-
-      // Clean up the inline delay once the choreography finished
-      window.setTimeout(() => {
-        projectCards.forEach((card) => {
-          card.style.transitionDelay = '';
-          card.style.removeProperty('--flip-x');
-          card.style.removeProperty('--flip-y');
-        });
-      }, 800);
+      }, EXIT_MS);
     }
 
     filterTabs.forEach((tab) => {

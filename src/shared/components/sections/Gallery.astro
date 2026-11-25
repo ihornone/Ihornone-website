@@ -56,7 +56,7 @@ const remainingCount = photos.length - initialCount;
  <img
  src={photoUrl}
  alt={`Фото ${index + 1} з ${photos.length}`}
- class="w-full h-full object-cover object-top block transition-transform duration-300 group-hover:scale-105"
+ class="w-full h-full object-cover object-top block transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
  loading="lazy"
  decoding="async"
  />
@@ -86,7 +86,7 @@ const remainingCount = photos.length - initialCount;
 
  {/* Lightbox Modal */}
  <div id="gallery-lightbox" class="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 sm:p-8">
- <button id="lightbox-close" class="absolute to6 right-6 text-paper-white text-xl w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors cursor-pointer z-10" aria-label="Закрити">
+ <button id="lightbox-close" class="absolute top-6 right-6 text-paper-white text-xl w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors cursor-pointer z-10" aria-label="Закрити">
  <Icon name="x" size={20} />
  </button>
  
@@ -105,10 +105,43 @@ const remainingCount = photos.length - initialCount;
  </section>
 )}
 
+<style>
+ /* Lightbox entrance: the overlay fades and the image scales in from 0.96 —
+ the same language as the ReviewsMasonry lightbox, so both fullscreen
+ surfaces on the site behave identically (occasional surface, standard
+ motion; exits stay faster than entrances). */
+ #gallery-lightbox {
+ opacity: 0;
+ transition: opacity 0.2s var(--ease-out-expo);
+ }
+ #gallery-lightbox.is-open {
+ opacity: 1;
+ }
+ #lightbox-img {
+ opacity: 0;
+ scale: 0.96;
+ transition:
+ opacity 0.24s var(--ease-out-expo),
+ scale 0.24s var(--ease-out-expo);
+ }
+ #gallery-lightbox.is-open #lightbox-img {
+ opacity: 1;
+ scale: 1;
+ }
+ @media (prefers-reduced-motion: reduce) {
+ #gallery-lightbox,
+ #lightbox-img {
+ transition: none;
+ }
+ }
+</style>
+
 <script>
  function setupGallery() {
  const gallerySection = document.getElementById('project-gallery');
  if (!gallerySection) return;
+
+ const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
  let photos: string[] = [];
  try {
@@ -130,6 +163,10 @@ const remainingCount = photos.length - initialCount;
  const hiddenItems = gallerySection.querySelectorAll('.gallery-hidden');
 
  let isExpanded = false;
+ // Pending async steps of the expand/collapse choreography: a quick
+ // re-toggle must cancel them, or a stale timer hides items mid-fade.
+ let collapseTimer: number | undefined;
+ let closeTimer: number | undefined;
 
  if (toggleBtn) {
  // Remove any existing clone listeners by cloning node or replacing listener
@@ -141,27 +178,45 @@ const remainingCount = photos.length - initialCount;
 
  newToggleBtn.addEventListener('click', () => {
  isExpanded = !isExpanded;
+ window.clearTimeout(collapseTimer);
+ window.clearTimeout(closeTimer);
+
  hiddenItems.forEach((item) => {
  const el = item as HTMLElement;
+
+ if (REDUCED) {
+ // Reduced motion: swap visibility instantly, keep opacity feedback.
+ el.classList.toggle('hidden', !isExpanded);
+ el.style.transition = '';
+ el.style.opacity = '';
+ el.style.transform = '';
+ return;
+ }
+
  if (isExpanded) {
  el.classList.remove('hidden');
+ el.style.transition = 'none';
  el.style.opacity = '0';
  el.style.transform = 'translateY(10px)';
- requestAnimationFrame(() => {
- el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+ const reveal = () => {
+ el.style.transition = 'opacity 0.32s var(--ease-out-expo), transform 0.32s var(--ease-out-expo)';
  el.style.opacity = '1';
  el.style.transform = 'translateY(0)';
- });
+ };
+ requestAnimationFrame(() => requestAnimationFrame(reveal));
+ // rAF-fallback: у webview без анімаційного годинника reveal має
+ // статися через таймер, інакше фото залишаться невидимими.
+ window.setTimeout(reveal, 60);
  } else {
- el.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+ el.style.transition = 'opacity 0.2s var(--ease-out-expo), transform 0.2s var(--ease-out-expo)';
  el.style.opacity = '0';
  el.style.transform = 'translateY(10px)';
- setTimeout(() => {
+ collapseTimer = window.setTimeout(() => {
  el.classList.add('hidden');
  el.style.transition = '';
  el.style.opacity = '';
  el.style.transform = '';
- }, 300);
+ }, 200);
  }
  });
 
@@ -171,7 +226,7 @@ const remainingCount = photos.length - initialCount;
  } else {
  if (currentToggleText) currentToggleText.textContent = `Показати решту фото (${remainingCount})`;
  if (currentToggleIcon) currentToggleIcon.classList.remove('rotate-180');
- (newToggleBtn as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+ (newToggleBtn as HTMLElement).scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'nearest' });
  }
  });
  }
@@ -180,18 +235,32 @@ const remainingCount = photos.length - initialCount;
  currentIndex = index;
  if (lightbox && lightboxImg) {
  (lightboxImg as HTMLImageElement).src = url;
+ window.clearTimeout(closeTimer);
  lightbox.classList.remove('hidden');
  lightbox.classList.add('flex');
  document.body.style.overflow = 'hidden';
+ // Двофазний rAF: display спочатку, потім is-open — інакше opacity
+ // перейде в 1 без переходу ще до появи оверлея. setTimeout-fallback —
+ // для webview із замороженим rAF (той самий патерн, що й у Drawer).
+ requestAnimationFrame(() => lightbox.classList.add('is-open'));
+ window.setTimeout(() => lightbox.classList.add('is-open'), 60);
  }
  }
 
  function closeLightbox() {
- if (lightbox) {
- lightbox.classList.remove('flex');
- lightbox.classList.add('hidden');
+ if (!lightbox) return;
  document.body.style.overflow = '';
+ if (REDUCED || lightbox.classList.contains('hidden')) {
+ lightbox.classList.add('hidden');
+ lightbox.classList.remove('flex', 'is-open');
+ return;
  }
+ lightbox.classList.remove('is-open');
+ // Вихід швидший за вхід; ховаємо display лише після відпрацьованого fade.
+ closeTimer = window.setTimeout(() => {
+ lightbox.classList.add('hidden');
+ lightbox.classList.remove('flex');
+ }, 180);
  }
 
  function showPhoto(index: number) {

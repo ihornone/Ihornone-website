@@ -23,7 +23,7 @@ const photoReviews = reviews.filter((r) => Boolean(r.image));
     <div class="columns-1 sm:columns-2 lg:columns-3 gap-6 sm:gap-8 [column-fill:_balance]" data-animate="fade-up">
       {photoReviews.map((review, idx) => (
         <div
-          class="break-inside-avoid mb-6 sm:mb-8 rounded-[24px] sm:rounded-[32px] overflow-hidden border-2 border-[#1E1414] bg-white shadow-[6px_6px_0_#D09AFC] hover:shadow-[10px_10px_0_#1E1414] hover:-translate-y-1.5 transition-all duration-200 group cursor-pointer relative"
+          class="break-inside-avoid mb-6 sm:mb-8 rounded-[24px] sm:rounded-[32px] overflow-hidden border-2 border-[#1E1414] bg-white shadow-[6px_6px_0_#D09AFC] hover:shadow-[10px_10px_0_#1E1414] hover:-translate-y-1.5 transition-[box-shadow,translate] duration-200 motion-reduce:transition-none motion-reduce:hover:shadow-[6px_6px_0_#D09AFC] motion-reduce:hover:translate-y-0 group cursor-pointer relative"
           data-lightbox
           data-lightbox-src={review.image!.src}
           role="button"
@@ -35,7 +35,7 @@ const photoReviews = reviews.filter((r) => Boolean(r.image));
             alt={`Скріншот відгуку клієнта ${idx + 1}`}
             width={review.image!.width}
             height={review.image!.height}
-            class="w-full h-auto block object-contain transition-transform duration-300 group-hover:scale-[1.02]"
+            class="w-full h-auto block object-contain transition-transform duration-300 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
             loading="lazy"
             decoding="async"
           />
@@ -53,7 +53,7 @@ const photoReviews = reviews.filter((r) => Boolean(r.image));
   )}
 
   <dialog id="lightbox" class="fixed inset-0 z-[200] bg-transparent p-0 max-w-none max-h-none w-full h-full opacity-0 pointer-events-none backdrop:bg-black/85 backdrop:backdrop-blur-sm transition-opacity duration-200">
-    <button id="lightbox-close" class="fixed top-5 right-5 z-[201] w-11 h-11 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center cursor-pointer border border-white/20 transition-all duration-200" aria-label="Закрити">
+    <button id="lightbox-close" class="fixed top-5 right-5 z-[201] w-11 h-11 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center cursor-pointer border border-white/20 transition-colors duration-200" aria-label="Закрити">
       <Icon name="x" size={22} />
     </button>
     <div class="w-full h-full flex items-center justify-center p-4 sm:p-8" id="lightbox-backdrop">

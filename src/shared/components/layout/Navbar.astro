@@ -29,7 +29,7 @@ const allServices = (await getCollection("services")).sort(
 >
   <div
     id="navbar-pocket"
-    class="relative bg-[#FAF1EC] rounded-b-[20px] lg:rounded-b-none lg:rounded-br-[24px] shadow-sm w-full lg:w-auto transition-all duration-300 overflow-hidden lg:overflow-visible"
+    class="relative bg-[#FAF1EC] rounded-b-[20px] lg:rounded-b-none lg:rounded-br-[24px] shadow-sm w-full lg:w-auto transition-[box-shadow] duration-300 overflow-hidden lg:overflow-visible"
   >
     <!-- Inverted Scoop Curve (Top-Right: curves smoothly inwards towards top edge R=24) -->
     <svg
@@ -93,11 +93,11 @@ const allServices = (await getCollection("services")).sort(
             <Icon
               name="chevron-down"
               size={11}
-              class="group-hover:rotate-180 transition-transform duration-200"
+              class="group-hover:rotate-180 transition-transform duration-200 motion-reduce:transition-none"
             />
           </a>
           <div
-            class="hidden group-hover:block absolute top-full left-0 pt-2 z-50"
+            class="invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 absolute top-full left-0 pt-2 z-50 transition-[opacity,visibility] duration-150 motion-reduce:transition-none"
           >
             <div
               class="bg-[#FAF1EC] border border-[#623A2D]/15 rounded-[16px] p-2 min-w-[210px] shadow-xl space-y-1"
@@ -194,7 +194,7 @@ const allServices = (await getCollection("services")).sort(
             <Icon
               name="chevron-down"
               size={12}
-              class="text-[#623A2D]/60 transition-transform duration-200"
+              class="text-[#623A2D]/60 transition-transform duration-200 motion-reduce:transition-none"
               id="mobile-services-chevron"
             />
           </button>
@@ -250,7 +250,7 @@ const allServices = (await getCollection("services")).sort(
     padding: 0.375rem 0.625rem;
     border-radius: 10px;
     text-decoration: none;
-    transition: all 0.15s ease;
+    transition: background-color 0.15s ease, color 0.15s ease;
     white-space: nowrap;
   }
   .nav-item:hover,
@@ -268,7 +268,7 @@ const allServices = (await getCollection("services")).sort(
     font-weight: 800;
     color: var(--color-mascot-espresso);
     text-decoration: none;
-    transition: all 0.15s ease;
+    transition: background-color 0.15s ease;
   }
   .dropdown-item:hover {
     background-color: rgba(98, 58, 45, 0.08);

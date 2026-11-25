@@ -36,7 +36,7 @@ const label = 'block text-[11px] font-black tracking-wider uppercase text-[#2A1E
 <Drawer id={id} title="Зв'язатися зі мною">
  <!-- Success screen -->
  <div class="js-success hidden text-center py-8 space-y-4">
- <div class="w-14 h-14 rounded-full bg-[#F4E8E3] border-2 border-[#1E1414] flex items-center justify-center text-2xl mx-auto">
+ <div class="js-check-circle w-14 h-14 rounded-full bg-[#F4E8E3] border-2 border-[#1E1414] flex items-center justify-center text-2xl mx-auto">
  <Icon name="check" size={24} class="text-[#95553C]" />
  </div>
  <h3 class="text-xl font-black text-[#1E1414] ">Повідомлення надіслано!</h3>
@@ -85,9 +85,13 @@ const label = 'block text-[11px] font-black tracking-wider uppercase text-[#2A1E
  <textarea id={`${id}-message`} name="message" rows="3" required placeholder="Коротко опишіть вашу ідею..." class={`${inp} resize-none`}></textarea>
  </div>
 
- <button type="submit" class="w-full py-4 px-6 rounded-xl border-2 border-[#1E1414] bg-[#1E1414] text-white text-xs sm:text-sm font-black flex items-center justify-center gap-2 cursor-pointer transition-[translate,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-[0_6px_0_#D09AFC] active:translate-y-0 active:shadow-none motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-none disabled:opacity-50">
- <span>Надіслати заявку</span>
- <Icon name="arrow-right" size={13} />
+ <button type="submit" class="w-full py-4 px-6 rounded-xl border-2 border-[#1E1414] bg-[#1E1414] text-white text-xs sm:text-sm font-black flex items-center justify-center gap-2 cursor-pointer transition-[translate,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-[0_6px_0_#D09AFC] active:translate-y-0 active:shadow-none motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-none disabled:opacity-50 disabled:pointer-events-none">
+ <span class="js-submit-text">Надіслати заявку</span>
+ <Icon name="arrow-right" size={13} class="js-submit-arrow" />
+ <svg class="js-submit-spinner hidden animate-spin h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
+ <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" />
+ <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+ </svg>
  </button>
  </form>
 
@@ -104,7 +108,7 @@ const label = 'block text-[11px] font-black tracking-wider uppercase text-[#2A1E
  </div>
  <span class="text-xs sm:text-sm font-bold text-[#1E1414]">{s.name}</span>
  </div>
- <Icon name="external-link" size={12} class="text-[#623A2D]/40 group-hover:text-[#95553C] group-hover:translate-x-0.5 group-hover:translate-y-0.5 transition-all" />
+ <Icon name="external-link" size={12} class="text-[#623A2D]/40 group-hover:text-[#95553C] group-hover:translate-x-0.5 group-hover:translate-y-0.5 transition-[color,translate] motion-reduce:transition-none motion-reduce:group-hover:translate-x-0 motion-reduce:group-hover:translate-y-0" />
  </a>
  ))}
  </div>
@@ -119,26 +123,94 @@ const label = 'block text-[11px] font-black tracking-wider uppercase text-[#2A1E
  if (!form || form.dataset.bound === 'true') return;
  form.dataset.bound = 'true';
 
+ const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
  const body = drawer.querySelector<HTMLElement>('.js-body');
  const success = drawer.querySelector<HTMLElement>('.js-success');
  const error = drawer.querySelector<HTMLElement>('.js-error');
  const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+ const submitText = form.querySelector<HTMLElement>('.js-submit-text');
+ const submitArrow = form.querySelector<HTMLElement>('.js-submit-arrow');
+ const submitSpinner = form.querySelector<SVGElement>('.js-submit-spinner');
+ const checkCircle = drawer.querySelector<HTMLElement>('.js-check-circle');
  const telegramLink = drawer.querySelector<HTMLAnchorElement>('.js-telegram-link');
 
+ /** Pending-стан: спінер замість стрілки + aria-busy (патерн Button.astro). */
+ const setPending = (pending: boolean) => {
+ if (!submitBtn) return;
+ submitBtn.disabled = pending;
+ submitBtn.setAttribute('aria-busy', String(pending));
+ submitText?.classList.toggle('hidden', pending);
+ submitArrow?.classList.toggle('hidden', pending);
+ submitSpinner?.classList.toggle('hidden', !pending);
+ };
+
  const show = (screen: 'body' | 'success' | 'error') => {
- if (body) body.classList.toggle('hidden', screen !== 'body');
- if (success) success.classList.toggle('hidden', screen !== 'success');
- if (error) error.classList.toggle('hidden', screen !== 'error');
+ const screens: Array<[HTMLElement | null, string]> = [
+ [body, 'body'],
+ [success, 'success'],
+ [error, 'error'],
+ ];
+ screens.forEach(([el, name]) => {
+ if (!el) return;
+ if (name !== screen) {
+ el.classList.add('hidden');
+ return;
+ }
+ el.classList.remove('hidden');
+ if (REDUCED) return;
+ // Swap екранів всередині відкритого drawer'а: каскадні delay
+ // належать хореографії ВІДКРИТТЯ drawer'а, тому для swap їх
+ // обнуляємо інлайном. Вихідний екран ховаємо миттєво (без
+ // двоекспозиції та стрибка висоти), вхідний — fade + підйом.
+ // Двофазний rAF + таймерний fallback (webview без rAF).
+ el.style.transition = 'none';
+ el.style.transitionDelay = '0ms';
+ el.style.opacity = '0';
+ el.style.transform = 'translateY(8px)';
+ el.style.scale = '0.98';
+ const enter = () => {
+ el.style.transition = 'opacity 0.24s var(--ease-out-expo), transform 0.24s var(--ease-out-expo), scale 0.24s var(--ease-out-expo)';
+ el.style.opacity = '1';
+ el.style.transform = 'translateY(0)';
+ el.style.scale = '1';
+ window.setTimeout(() => {
+ el.style.transition = '';
+ el.style.transitionDelay = '';
+ el.style.opacity = '';
+ el.style.transform = '';
+ el.style.scale = '';
+ }, 300);
+ };
+ requestAnimationFrame(() => requestAnimationFrame(enter));
+ window.setTimeout(enter, 60);
+ });
+
+ // Рідкісна емоційна вершина конверсійного шляху: галочка успіху
+ // підстрибує пружиною (delight-бюджет дозволений саме тут).
+ if (screen === 'success' && checkCircle && !REDUCED) {
+ checkCircle.style.transition = 'none';
+ checkCircle.style.scale = '0.6';
+ const pop = () => {
+ checkCircle.style.transition = 'scale 0.3s var(--ease-spring)';
+ checkCircle.style.scale = '1';
+ window.setTimeout(() => {
+ checkCircle.style.transition = '';
+ checkCircle.style.scale = '';
+ }, 320);
+ };
+ requestAnimationFrame(() => requestAnimationFrame(pop));
+ window.setTimeout(pop, 60);
+ }
  };
 
  form.addEventListener('submit', async (event) => {
  event.preventDefault();
- if (submitBtn) submitBtn.disabled = true;
+ setPending(true);
 
  const data = new FormData(form);
  const res = await fetch('/api/contact', { method: 'POST', body: data }).catch(() => null);
 
- if (submitBtn) submitBtn.disabled = false;
+ setPending(false);
 
  if (!res?.ok) {
  // window.open після await блокується popup-блокатором, тому

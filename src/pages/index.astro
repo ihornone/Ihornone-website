@@ -159,7 +159,7 @@ const featuredProjects = sortedEntries.slice(0, 3).map((entry) => ({
           class="pill-btn-lilac self-start sm:self-auto shrink-0 group"
         >
           <span>Усі проєкти</span>
-          <Icon name="arrow-right" size={14} class="transition-transform duration-300 group-hover:translate-x-1" />
+          <Icon name="arrow-right" size={14} class="transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
         </a>
       </div>
 
@@ -215,7 +215,7 @@ const featuredProjects = sortedEntries.slice(0, 3).map((entry) => ({
                       class="pill-btn-primary w-full !px-8 !py-4 !text-base group/btn"
                     >
                       <span>Детальніше про проєкт</span>
-                      <Icon name="arrow-right" size={14} class="transition-transform duration-300 group-hover/btn:translate-x-1.5" />
+                      <Icon name="arrow-right" size={14} class="transition-transform duration-300 group-hover/btn:translate-x-1.5 motion-reduce:transition-none motion-reduce:group-hover/btn:translate-x-0" />
                     </a>
                   </div>
                 </div>
@@ -237,7 +237,7 @@ const featuredProjects = sortedEntries.slice(0, 3).map((entry) => ({
                     <img
                       src={project.image}
                       alt={project.title}
-                      class="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover/media:scale-105 motion-reduce:transition-none"
+                      class="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover/media:scale-105 motion-reduce:transition-none motion-reduce:group-hover/media:scale-100"
                       loading="lazy"
                     />
                   </a>
@@ -265,7 +265,7 @@ const featuredProjects = sortedEntries.slice(0, 3).map((entry) => ({
         >
           Часті <Tag color="lilac" class="mx-1">запитання</Tag> клієнтів
         </h2>
-        <div class="shrink-0 -mt-2">
+        <div class="shrink-0 -mt-2 moki-float">
           <MokiWidget
             size={85}
             expression="curieux"
