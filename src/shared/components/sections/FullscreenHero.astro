@@ -26,7 +26,8 @@ const { class: className = "" } = Astro.props;
   <!-- Central Hero Content -->
   <div class="hero-text-block relative z-20 max-w-2xl sm:max-w-3xl lg:max-w-4xl xl:max-w-5xl text-center px-4 sm:px-6 flex flex-col items-center pointer-events-auto">
     <!-- Main Headline -->
-    <h1 class="hero-title flex flex-col items-center justify-center text-center m-0 select-none">
+    <h1 class="sr-only">Сайти, боти та сервіси, які приносять заявки</h1>
+    <div class="hero-title flex flex-col items-center justify-center text-center m-0 select-none" aria-hidden="true">
       <!-- Рядок 1 (жирний): «Сайти, боти» + Moki (ліловий, великий, без рамки, впритул) + «та сервіси» -->
       <span
         class="inline-flex items-center justify-center flex-wrap sm:flex-nowrap gap-x-1 sm:gap-x-1.5 gap-y-2 text-3xl sm:text-5xl md:text-6xl lg:text-[68px] xl:text-[76px] font-black text-[#1E1414] tracking-[-0.035em] leading-[1.16]"
@@ -57,7 +58,7 @@ const { class: className = "" } = Astro.props;
       >
         які приносять заявки
       </span>
-    </h1>
+    </div>
 
     <!-- Три чіпи з пастельними іконками: «Заявки», «Оплати», «Гарантія 30 днів» -->
     <div
