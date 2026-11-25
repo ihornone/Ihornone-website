@@ -36,7 +36,8 @@ const photoReviews = reviews.filter((r) => Boolean(r.image));
             width={review.image!.width}
             height={review.image!.height}
             class="w-full h-auto block object-contain transition-transform duration-300 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-            loading="lazy"
+            loading={idx < 3 ? 'eager' : 'lazy'}
+            fetchpriority={idx === 0 ? 'high' : undefined}
             decoding="async"
           />
           <div class="absolute inset-0 bg-[#1E1414]/30 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-2 text-white text-xs font-black backdrop-blur-xs">
