@@ -72,7 +72,7 @@ export default function MokiMorpher({
         follow={follow}
         playing={false}
         paper={paper}
-        decorative={false}
+        decorative={true}
         label="Мокі"
         className={className}
       />

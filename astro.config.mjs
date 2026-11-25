@@ -30,7 +30,7 @@ export default defineConfig({
   },
   server: {
     headers: {
-      'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' https://a.plerdy.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://fonts.gstatic.com https://a.plerdy.com; frame-ancestors 'self'",
+      'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' https://a.plerdy.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://fonts.gstatic.com https://a.plerdy.com wss://a.plerdy.com; frame-ancestors 'self'",
       'X-Content-Type-Options': 'nosniff',
       'X-Frame-Options': 'SAMEORIGIN',
       'Referrer-Policy': 'strict-origin-when-cross-origin',

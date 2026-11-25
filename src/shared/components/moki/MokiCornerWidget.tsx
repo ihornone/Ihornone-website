@@ -136,6 +136,7 @@ export default function MokiCornerWidget() {
           color="#D09AFC"
           expression={isOpen ? 'excite' : 'heureux'}
           follow="page"
+          decorative={true}
         />
       </button>
     </div>
